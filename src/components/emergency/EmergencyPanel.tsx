@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AlertOctagon, Loader2, MapPin, Mic, Pause, Play, ShieldAlert, Square, Trash2 } from "lucide-react";
 import { useEmergency, type SosSection } from "./EmergencyProvider";
 import { PressHoldButton } from "./PressHoldButton";
+import { SosChatbot } from "./SosChatbot";
 import { EMERGENCY_TYPES } from "@/services/emergency-config";
 import type { EmergencyTypeId } from "@/services/emergency-types";
 
@@ -357,6 +358,13 @@ export function EmergencyPanel({ embedded = false, initialSection = "quick" }: E
                 <Trash2 size={14} /> {recError}
               </p>
             )}
+          </section>
+
+          {/* OPTION D — CHATBOT */}
+          <section className="em-section" id="em-chat">
+            <h3>AI Emergency Guidance</h3>
+            <p>Chat with our AI assistant for immediate first-aid or safety instructions.</p>
+            <SosChatbot />
           </section>
 
           {/* FOOTER NOTE */}

@@ -34,7 +34,7 @@ import { SosModal } from "./SosModal";
 import { EmergencyAlertToast } from "./EmergencyAlertToast";
 import { FloatingSosTrigger } from "./FloatingSosTrigger";
 
-export type SosSection = "quick" | "text" | "voice";
+export type SosSection = "quick" | "text" | "voice" | "chat";
 
 interface EmergencyContextValue {
   sosOpen: boolean;

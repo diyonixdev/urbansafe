@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertOctagon, Mic, MessageSquareText, PhoneCall, ShieldCheck } from "lucide-react";
+import { AlertOctagon, Mic, MessageSquareText, PhoneCall, ShieldCheck, Bot } from "lucide-react";
 import { UrbanSafeNavbar } from "@/components/layouts/UrbanSafeNavbar";
 import { EmergencyPanel } from "@/components/emergency/EmergencyPanel";
 import { useEmergency } from "@/components/emergency/EmergencyProvider";
@@ -92,7 +92,10 @@ export default function EmergencyPage() {
                 <MessageSquareText size={15} /> Type Message
               </button>
               <button type="button" className="em-page-btn" onClick={() => openSos("voice")}>
-                <Mic size={15} /> 🎙 Record Voice
+                <Mic size={15} /> Record Voice
+              </button>
+              <button type="button" className="em-page-btn" onClick={() => openSos("chat")}>
+                <Bot size={15} /> Chat with AI
               </button>
             </div>
           </section>
