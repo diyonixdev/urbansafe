@@ -1,99 +1,401 @@
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion, useInView } from "framer-motion";
-import { Bell, Bot, ChevronRight, Crosshair, Leaf, MapPin, Shield, ShieldCheck, Sparkles, UsersRound, Video, X, Zap } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-
-type Filter = "all" | "safe" | "monitoring" | "attention";
-type ZoneState = Exclude<Filter, "all">;
-
-const features = [
-  { title: "Intelligent vision", copy: "See beyond. Detect early.", detail: "24/7 AI Surveillance", icon: Video, tone: "cyan" },
-  { title: "Predictive shield", copy: "Stop threats before they rise.", detail: "Behavior Analysis", icon: ShieldCheck, tone: "blue" },
-  { title: "Instant response", copy: "Act fast. Reduce risk.", detail: "Real-time Alerts", icon: Zap, tone: "purple" },
-  { title: "Community first", copy: "Stronger together. Safer together.", detail: "Smart Engagement", icon: UsersRound, tone: "magenta" },
-  { title: "Sustainable future", copy: "Building cities that care.", detail: "Eco + Safety Sync", icon: Leaf, tone: "green" },
-];
-
-const zones = [
-  { id: "12", district: "Downtown Sector", state: "safe" as ZoneState, status: "Secure", position: "zone-12", detail: "Protected perimeter clear", confidence: "98.9%" },
-  { id: "07", district: "Central District", state: "monitoring" as ZoneState, status: "AI Monitoring", position: "zone-07", detail: "Sensor signal stable", confidence: "96.4%" },
-  { id: "03", district: "North District", state: "safe" as ZoneState, status: "Secure", position: "zone-03", detail: "Protected perimeter clear", confidence: "99.2%" },
-  { id: "14", district: "West Sector", state: "monitoring" as ZoneState, status: "AI Monitoring", position: "zone-14", detail: "Signal analyzing", confidence: "91.7%" },
-  { id: "19", district: "East District", state: "attention" as ZoneState, status: "Attention", position: "zone-19", detail: "Unusual crowd movement", confidence: "94.2%" },
-  { id: "22", district: "Transit Sector", state: "attention" as ZoneState, status: "Attention", position: "zone-22", detail: "Traffic pattern deviation", confidence: "87.6%" },
-];
-
-const panelContent = {
-  safe: { title: "Safe zones", subtitle: "Protected areas operating normally.", stats: [["Safe zones", "12"], ["Threats", "0"], ["Avg response", "00:24"], ["Protection", "98.9%"]] },
-  monitoring: { title: "Active monitoring", subtitle: "AI is currently observing these zones.", stats: [["Active zones", "07"], ["AI sensors", "128"], ["Anomalies", "03"], ["Monitoring", "24/7"]] },
-  attention: { title: "Attention required", subtitle: "AI has detected unusual activity.", stats: [["Active alerts", "03"], ["High priority", "01"], ["Medium priority", "02"], ["Response ETA", "00:38"]] },
-};
-
-const entrance = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
-
-function HudCard({ title, text, sub, className }: { title: string; text: string; sub: string; className: string }) {
-  return <motion.div whileHover={{ y: -5, scale: 1.02 }} className={`hud-card ${className}`}><div className="hud-title"><Sparkles size={15} />{title}</div><p>{text}</p><small>{sub}</small></motion.div>;
-}
-
-function CountUp({ value }: { value: string }) {
-  const [display, setDisplay] = useState(value.includes(":") ? "00:00" : "0");
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  useEffect(() => {
-    if (!inView) return;
-    const match = value.match(/[\d.]+/); const target = Number(match?.[0] ?? 0); const decimals = value.includes(".") ? 1 : 0; const prefix = value.includes(":") ? "00:" : ""; const suffix = value.includes("%") ? "%" : "";
-    let start = 0; const duration = 1150; const tick = (time: number) => { if (!start) start = time; const p = Math.min((time - start) / duration, 1); const n = target * (1 - Math.pow(1 - p, 3)); setDisplay(prefix ? `${prefix}${Math.round(n).toString().padStart(2, "0")}` : `${n.toLocaleString("en-US", { maximumFractionDigits: decimals, minimumFractionDigits: decimals })}${suffix}`); if (p < 1) requestAnimationFrame(tick); };
-    requestAnimationFrame(tick);
-  }, [inView, value]);
-  return <span ref={ref}>{display}</span>;
-}
-
-function MissionKpiCard({ label, value, trend, tone, index }: { label: string; value: string; trend: string; tone: string; index: number }) {
-  return <motion.article variants={entrance} transition={{ duration: .45, delay: index * .1 }} className={`kpi ${tone}`}><p>{label}</p><strong><CountUp value={value} /></strong><span>{trend}</span><small>Last 24 Hours</small></motion.article>;
-}
-
-function IntelligencePanel({ filter, selectedZone, onClose }: { filter: ZoneState; selectedZone?: typeof zones[number] | null; onClose: () => void }) {
-  const content = panelContent[filter]; const items = selectedZone ? [selectedZone] : zones.filter(zone => zone.state === filter);
-  return <motion.aside className={`intelligence-panel ${filter}`} initial={{ opacity: 0, y: 20, scale: .94 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: .96 }} transition={{ type: "spring", stiffness: 280, damping: 26 }} onClick={e => e.stopPropagation()}>
-    <button className="panel-close" onClick={onClose} aria-label="Close intelligence panel"><X size={17} /></button>
-    <div className="panel-kicker"><i />{selectedZone ? `Zone ${selectedZone.id} intelligence` : filter === "monitoring" ? "AI scanning..." : "Live intelligence"}</div>
-    <h2>{selectedZone ? `Zone ${selectedZone.id} · ${selectedZone.status}` : content.title}</h2><p className="panel-subtitle">{selectedZone ? selectedZone.district : content.subtitle}</p>
-    {!selectedZone && <div className="panel-stats">{content.stats.map(([label, value]) => <div key={label}><span>{label}</span><b>{value}</b></div>)}</div>}
-    <div className="zone-list">{items.map(zone => <article key={zone.id} className="panel-zone"><span className="zone-dot" /><div><b>Zone {zone.id}</b><p>{zone.district}</p></div><small>{selectedZone ? <><em>{zone.detail}</em>AI confidence: {zone.confidence}<br />Last updated: 12 sec ago</> : <><em>Status:</em>{zone.status}{filter === "monitoring" && <><br /><em>Signal:</em> {zone.detail.replace("Sensor signal ", "")}</>}</>}</small></article>)}</div>
-    {filter === "attention" && <a className="response-button" href="#mission">View response plan <ChevronRight size={17} /></a>}
-  </motion.aside>;
-}
+import { 
+  ShieldCheck, MapPin, Search, AlertTriangle, 
+  Lightbulb, Car, UserCheck, Crosshair, 
+  ChevronRight, Phone, Navigation, Clock,
+  AlertOctagon, CheckCircle2, Shield, HeartPulse,
+  Banknote, Coffee, Fuel
+} from "lucide-react";
 
 export default function AegisLanding() {
-  const [selectedFilter, setSelectedFilter] = useState<Filter>("all");
-  const [selectedZone, setSelectedZone] = useState<typeof zones[number] | null>(null);
-  const missionRef = useRef<HTMLElement>(null); const missionInView = useInView(missionRef, { once: true, margin: "-80px" });
-  const closePanel = () => { setSelectedFilter("all"); setSelectedZone(null); };
-  useEffect(() => { const escape = (e: KeyboardEvent) => e.key === "Escape" && closePanel(); window.addEventListener("keydown", escape); return () => window.removeEventListener("keydown", escape); }, []);
-  const selectFilter = (filter: Filter) => { setSelectedFilter(filter); setSelectedZone(null); };
-  return <div className="aegis-page" onClick={() => selectedFilter !== "all" && closePanel()}>
-    <div className="aegis-stars" aria-hidden="true" />
-    <motion.nav className="aegis-nav" initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65, ease: "easeOut" }}>
-      <Link href="/" className="aegis-brand"><span className="brand-mark"><Shield size={26} /><b>A</b></span><span>AEGIS <i>AI</i></span></Link>
-      <div className="aegis-nav-links"><a className="active" href="#home">HOME</a><a href="#mission">PLANNING</a><a href="#details">DETAILS</a><a href="#about">ABOUT</a></div>
-      <div className="aegis-actions"><button aria-label="System status"><Crosshair size={18} /></button><button aria-label="Notifications"><Bell size={18} /></button><span className="aegis-avatar"><Bot size={21} /></span></div>
-    </motion.nav>
-    <main id="home" className="aegis-shell">
-      <section className="aegis-hero">
-        <div className="hero-copy"><motion.p className="eyebrow" initial="hidden" animate="visible" variants={entrance} transition={{ duration: .55 }}>Guardians of tomorrow</motion.p><motion.h1 initial="hidden" animate="visible" variants={entrance} transition={{ duration: .65, delay: .15 }}>Safer today.<br />Stronger tomorrow.</motion.h1><motion.h2 initial="hidden" animate="visible" variants={entrance} transition={{ duration: .55, delay: .3 }}>AI-powered intelligence for a world that thrives.</motion.h2><motion.p className="hero-description" initial="hidden" animate="visible" variants={entrance} transition={{ duration: .55, delay: .4 }}>Aegis AI blends real-time predictive analytics, adaptive surveillance and proactive response to protect what matters most.</motion.p><motion.div className="hero-ctas" initial="hidden" animate="visible" variants={entrance} transition={{ duration: .55, delay: .55 }}><Link href="/dashboard" className="launch-button"><Shield size={18} />Launch shield <ChevronRight size={18} /></Link><a href="#features" className="explore-button">Explore platform <ChevronRight size={17} /></a></motion.div></div>
-        <div className="city-stage" aria-label="Holographic city intelligence visualization"><HudCard title="Predict" text="AI Threat Forecast" sub="98.7% Accuracy" className="hud-predict" /><HudCard title="Prevent" text="Risk Mitigation" sub="Active" className="hud-prevent" /><HudCard title="Protect" text="Communities Safe" sub="Always" className="hud-protect" /><div className="orbital-ring ring-one" /><div className="orbital-ring ring-two" /><div className="globe"><div className="globe-grid" /><div className="city"><span /><span /><span /><span /><span /><span /><span /><span /></div><div className="globe-haze" /></div><div className="city-platform"><i /><i /><i /></div><div className="drone drone-one">✦</div><div className="drone drone-two">✦</div></div>
-      </section>
-      <section id="features" className="feature-strip">{features.map(({ title, copy, detail, icon: Icon, tone }, index) => <motion.article key={title} className={`feature-card ${tone}`} initial={{ opacity: 0, y: 18, scale: .98 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, amount: .35 }} transition={{ duration: .42, delay: index * .08 }} whileHover={{ y: -6 }}><span className="feature-icon"><Icon size={25} /></span><div><h3>{title}</h3><p>{copy}</p><small>• {detail}</small></div></motion.article>)}</section>
-      <motion.section id="mission" ref={missionRef} className="mission-panel" initial={{ opacity: 0, y: 18 }} animate={missionInView ? { opacity: 1, y: 0 } : {}} transition={{ duration: .6 }}>
-        <div className="mission-heading"><div><h2>Mission control <span>• Live feed</span></h2><p>Real-time intelligence across the urban safety network.</p></div><span className="system-state"><i /> All systems synchronized</span></div>
-        <div className="mission-grid"><motion.div className="kpi-area" initial="hidden" animate={missionInView ? "visible" : "hidden"}>{[["Threats detected", "1,248", "-8.2%", "violet"], ["Zones monitored", "326", "+12.5%", "cyan"], ["Response time", "00:38", "-22%", "cyan"], ["Communities safe", "98.9%", "+3.4%", "cyan"]].map(([label, value, trend, tone], index) => <MissionKpiCard key={label} label={label} value={value} trend={trend} tone={tone} index={index} />)}</motion.div>
-          <div id="details" className={`city-overview filter-${selectedFilter}`}><div className="map-header"><h3>Live city overview</h3><div className="filter-tabs">{(["all", "safe", "monitoring", "attention"] as Filter[]).map(filter => <button key={filter} onClick={e => { e.stopPropagation(); selectFilter(filter); }} className={selectedFilter === filter ? `selected ${filter}` : ""}>{filter}</button>)}</div></div><div className="city-map"><div className="map-lines" />{zones.map(zone => <button key={zone.id} className={`map-marker ${zone.position} ${zone.state} ${selectedFilter !== "all" && selectedFilter !== zone.state ? "dimmed" : ""}`} onClick={e => { e.stopPropagation(); setSelectedFilter(zone.state); setSelectedZone(zone); }}><span className="marker-ring" /><MapPin size={14} /><div><b>Zone {zone.id}</b><span>{zone.status}</span></div><span className="marker-tooltip">ZONE {zone.id}<br />{zone.status.toUpperCase()}</span></button>)}</div></div>
-          <div className="threat-index"><h3>Threat index</h3><div className="threat-ring"><div><b>Low</b><span>23%</span></div></div><p><i /> All systems normal</p></div>
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
+      
+      {/* HEADER */}
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-2">
+              <div className="bg-blue-600 p-1.5 rounded-lg text-white">
+                <ShieldCheck size={24} />
+              </div>
+              <span className="font-bold text-xl tracking-tight text-slate-900">Urban Safe</span>
+            </div>
+            
+            <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-slate-600">
+              <Link href="#" className="text-blue-600">Home</Link>
+              <Link href="#" className="hover:text-slate-900 transition-colors">Plan Route</Link>
+              <Link href="#" className="hover:text-slate-900 transition-colors">Safety Map</Link>
+              <Link href="#" className="hover:text-slate-900 transition-colors">Reports</Link>
+              <Link href="#" className="hover:text-slate-900 transition-colors">Alerts</Link>
+            </nav>
+            
+            <div className="flex items-center">
+              <button className="flex items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-full font-semibold text-sm transition-colors border border-red-200">
+                <AlertOctagon size={18} />
+                <span>SOS</span>
+              </button>
+            </div>
+          </div>
         </div>
-        <AnimatePresence>{selectedFilter !== "all" && <IntelligencePanel filter={selectedFilter} selectedZone={selectedZone} onClose={closePanel} />}</AnimatePresence>
-      </motion.section>
-    </main><footer id="about">© 2038 Aegis AI · Autonomous urban intelligence</footer>
-  </div>;
+      </header>
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex flex-col gap-12">
+        
+        {/* HERO / MAIN SCREEN */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          
+          {/* LEFT SIDE */}
+          <div className="lg:col-span-5 flex flex-col gap-8">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.15]">
+                Find the <span className="text-blue-600">safest</span> way to go.
+              </h1>
+              <p className="mt-4 text-lg text-slate-600 leading-relaxed">
+                Plan your route using real-time and historical data on crime, accidents, lighting, road conditions, and more.
+              </p>
+            </div>
+
+            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-4 relative">
+              <div className="absolute left-[31px] top-[46px] bottom-[46px] w-[2px] bg-slate-200 z-0"></div>
+              
+              <div className="relative z-10 flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 border-2 border-white">
+                  <div className="w-2.5 h-2.5 rounded-full bg-blue-600"></div>
+                </div>
+                <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
+                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Your location</p>
+                  <input type="text" defaultValue="Current Location" className="bg-transparent w-full text-slate-900 font-medium outline-none" />
+                </div>
+              </div>
+              
+              <div className="relative z-10 flex items-center gap-3">
+                <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0 border-2 border-white">
+                  <MapPin size={14} className="fill-green-600 text-white" />
+                </div>
+                <div className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 transition-all shadow-sm">
+                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Where do you want to go?</p>
+                  <input type="text" placeholder="Enter destination" className="bg-transparent w-full text-slate-900 font-medium outline-none placeholder:text-slate-400" />
+                </div>
+              </div>
+
+              <button className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-semibold shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
+                <Search size={18} />
+                Find Safest Route
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-4 items-center pt-2">
+              <span className="text-sm font-medium text-slate-500">Analyzes:</span>
+              <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><AlertTriangle size={14} className="text-red-500"/> Crime</div>
+              <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><Car size={14} className="text-orange-500"/> Accidents</div>
+              <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><Lightbulb size={14} className="text-yellow-500"/> Lighting</div>
+              <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><Navigation size={14} className="text-slate-500"/> Roads</div>
+              <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><Shield size={14} className="text-blue-500"/> Police</div>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE (MAP) */}
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[600px] relative">
+            {/* Map Mockup Background */}
+            <div className="absolute inset-0 bg-[#f0f3f5] opacity-50 z-0">
+               {/* Grid pattern to simulate map tiles */}
+               <div className="w-full h-full" style={{backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', backgroundSize: '24px 24px'}}></div>
+            </div>
+            
+            {/* Map Content */}
+            <div className="relative z-10 flex-1 p-4 w-full h-full">
+              
+              {/* Fake Routes */}
+              <div className="absolute top-1/2 left-1/4 right-1/4 h-1/3 pointer-events-none">
+                 {/* Green Route */}
+                 <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
+                    <path d="M0,0 C50,150 150,50 300,200" fill="none" stroke="#16a34a" strokeWidth="6" strokeLinecap="round" className="drop-shadow-sm opacity-90" />
+                    <circle cx="150" cy="90" r="14" fill="#16a34a" />
+                    <text x="150" y="94" fontSize="10" fill="white" fontWeight="bold" textAnchor="middle">89</text>
+                 </svg>
+                 {/* Orange Route */}
+                 <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
+                    <path d="M0,0 C100,-50 200,150 300,200" fill="none" stroke="#ea580c" strokeWidth="4" strokeDasharray="8 4" strokeLinecap="round" className="drop-shadow-sm opacity-70" />
+                    <circle cx="150" cy="50" r="12" fill="#ea580c" />
+                    <text x="150" y="54" fontSize="9" fill="white" fontWeight="bold" textAnchor="middle">81</text>
+                 </svg>
+                 {/* Red Route */}
+                 <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
+                    <path d="M0,0 C100,50 100,250 300,200" fill="none" stroke="#dc2626" strokeWidth="4" strokeDasharray="6 6" strokeLinecap="round" className="drop-shadow-sm opacity-60" />
+                    <circle cx="100" cy="150" r="12" fill="#dc2626" />
+                    <text x="100" y="154" fontSize="9" fill="white" fontWeight="bold" textAnchor="middle">64</text>
+                 </svg>
+                 
+                 {/* Start/End Pins */}
+                 <div className="absolute top-[-10px] left-[-10px] w-5 h-5 bg-blue-600 border-2 border-white rounded-full shadow-md z-20"></div>
+                 <div className="absolute bottom-[-10px] right-[-10px] w-6 h-6 bg-slate-900 border-2 border-white rounded-full shadow-md z-20 flex items-center justify-center">
+                   <div className="w-2 h-2 bg-white rounded-full"></div>
+                 </div>
+                 
+                 {/* Map Markers */}
+                 <div className="absolute top-[80px] left-[200px] bg-white p-1.5 rounded-full shadow-md border border-slate-100 z-10"><Shield size={14} className="text-blue-600"/></div>
+                 <div className="absolute top-[160px] left-[80px] bg-white p-1.5 rounded-full shadow-md border border-slate-100 z-10"><HeartPulse size={14} className="text-red-500"/></div>
+              </div>
+
+              {/* Map Floating Legend */}
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-sm border border-slate-200">
+                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Safety Score</h4>
+                <div className="flex flex-col gap-2 text-sm font-medium text-slate-700">
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500"></div> Low Risk</div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-orange-500"></div> Moderate</div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500"></div> High Risk</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ROUTE COMPARISON */}
+        <section className="flex flex-col gap-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-4">
+            <div>
+              <h2 className="text-2xl font-bold text-slate-900">Choose your route</h2>
+              <p className="text-slate-500 mt-1">Routes are ranked based on safety score and travel time.</p>
+            </div>
+            <button className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors border border-blue-100">
+              <Crosshair size={14} /> Customize Weightage
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Safe Route */}
+            <div className="bg-white border-2 border-green-500 rounded-2xl p-5 shadow-sm shadow-green-100 relative cursor-pointer hover:shadow-md transition-shadow">
+              <div className="absolute -top-3 left-5 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide flex items-center gap-1">
+                <CheckCircle2 size={14} /> Recommended
+              </div>
+              <div className="flex justify-between items-start mt-2">
+                <div>
+                  <h3 className="font-bold text-slate-900 text-lg">Safe Route</h3>
+                  <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
+                    <span className="font-semibold text-slate-900">24 min</span>
+                    <span>•</span>
+                    <span>9.3 km</span>
+                  </div>
+                </div>
+                <div className="bg-green-50 text-green-700 font-bold text-xl px-3 py-1.5 rounded-lg border border-green-100">
+                  89<span className="text-sm text-green-600/70">/100</span>
+                </div>
+              </div>
+              <ul className="mt-5 flex flex-col gap-2 text-sm text-slate-600 font-medium">
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Low crime</li>
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Well lit</li>
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Police nearby</li>
+              </ul>
+            </div>
+
+            {/* Balanced Route */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-orange-300 hover:shadow-md transition-all cursor-pointer opacity-80 hover:opacity-100">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-bold text-slate-900 text-lg">Balanced Route</h3>
+                  <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
+                    <span className="font-semibold text-slate-900">21 min</span>
+                    <span>•</span>
+                    <span>8.5 km</span>
+                  </div>
+                </div>
+                <div className="bg-orange-50 text-orange-700 font-bold text-xl px-3 py-1.5 rounded-lg border border-orange-100">
+                  81<span className="text-sm text-orange-600/70">/100</span>
+                </div>
+              </div>
+              <ul className="mt-5 flex flex-col gap-2 text-sm text-slate-600 font-medium">
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div> Moderate risk</li>
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Average lighting</li>
+              </ul>
+            </div>
+
+            {/* Fastest Route */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-red-300 hover:shadow-md transition-all cursor-pointer opacity-80 hover:opacity-100">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-bold text-slate-900 text-lg">Fastest Route</h3>
+                  <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
+                    <span className="font-semibold text-slate-900">18 min</span>
+                    <span>•</span>
+                    <span>7.1 km</span>
+                  </div>
+                </div>
+                <div className="bg-red-50 text-red-700 font-bold text-xl px-3 py-1.5 rounded-lg border border-red-100">
+                  64<span className="text-sm text-red-600/70">/100</span>
+                </div>
+              </div>
+              <ul className="mt-5 flex flex-col gap-2 text-sm text-slate-600 font-medium">
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> High risk area</li>
+                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> Poor lighting</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* BOTTOM WIDGETS ROW */}
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          
+          {/* Safety Breakdown */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col gap-5 lg:row-span-2">
+            <div>
+              <h3 className="font-bold text-lg text-slate-900">Why this route is safer</h3>
+              <div className="flex items-center gap-2 mt-1 bg-green-50 text-green-700 w-fit px-2 py-1 rounded-md text-sm font-bold border border-green-100">
+                Overall Score: 89/100
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4 mt-2">
+              {[
+                { label: "Crime Risk", score: 92, color: "bg-green-500" },
+                { label: "Accident History", score: 90, color: "bg-green-500" },
+                { label: "Lighting Conditions", score: 84, color: "bg-green-400" },
+                { label: "Road Conditions", score: 76, color: "bg-yellow-500" },
+                { label: "Police Proximity", score: 95, color: "bg-green-500" }
+              ].map((item, i) => (
+                <div key={i}>
+                  <div className="flex justify-between text-sm mb-1 font-medium">
+                    <span className="text-slate-700">{item.label}</span>
+                    <span className="text-slate-900 font-bold">{item.score}/100</span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-2">
+                    <div className={`${item.color} h-2 rounded-full`} style={{ width: `${item.score}%` }}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-2 pt-4 border-t border-slate-100 flex flex-col gap-2 text-sm text-slate-600">
+              <p className="flex items-start gap-2"><span className="text-green-600 font-bold">✓</span> 2 police stations within 1 km</p>
+              <p className="flex items-start gap-2"><span className="text-green-600 font-bold">✓</span> Good lighting for most of the route</p>
+              <p className="flex items-start gap-2"><span className="text-green-600 font-bold">✓</span> No active roadblocks</p>
+              <p className="flex items-start gap-2"><span className="text-green-600 font-bold">✓</span> Low recent accident activity</p>
+              <p className="flex items-start gap-2"><span className="text-yellow-600 font-bold text-lg leading-none">⚠</span> Construction work ahead</p>
+            </div>
+          </div>
+
+          {/* Emergency / SOS */}
+          <div className="bg-white rounded-2xl border-2 border-red-100 p-6 shadow-sm relative overflow-hidden flex flex-col justify-between group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[100px] z-0 transition-transform group-hover:scale-110"></div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center gap-2 text-red-600 mb-2">
+                <AlertOctagon size={20} />
+                <h3 className="font-bold text-lg">Emergency / SOS</h3>
+              </div>
+              <p className="text-slate-600 text-sm mb-6">Tap to alert your contacts and emergency services.</p>
+              
+              <button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-md shadow-red-600/20 transition-all active:scale-95 text-lg">
+                SOS
+              </button>
+            </div>
+            
+            <div className="relative z-10 mt-6 flex flex-col gap-3 text-sm text-slate-700 font-medium">
+              <label className="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-100 cursor-pointer">
+                <span>Share live location</span>
+                <div className="w-10 h-5 bg-blue-600 rounded-full relative">
+                  <div className="w-3.5 h-3.5 bg-white rounded-full absolute top-[3px] right-[3px]"></div>
+                </div>
+              </label>
+              <div className="flex gap-2">
+                <button className="flex-1 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"><Shield size={14}/> Police</button>
+                <button className="flex-1 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"><HeartPulse size={14}/> Hospital</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Time-Based Safety */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col">
+            <div className="mb-4">
+              <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2"><Clock size={18} className="text-blue-600"/> Travel time preview</h3>
+              <p className="text-slate-500 text-sm mt-1">Safety can change depending on when you travel.</p>
+            </div>
+
+            <div className="flex justify-between items-end h-full">
+              {[
+                { time: "NOW", score: 89, color: "bg-green-500", text: "text-green-700", bg: "bg-green-50", border: "border-green-200" },
+                { time: "6 PM", score: 84, color: "bg-green-400", text: "text-slate-700", bg: "bg-white", border: "border-slate-200" },
+                { time: "9 PM", score: 76, color: "bg-yellow-500", text: "text-slate-700", bg: "bg-white", border: "border-slate-200" },
+                { time: "11 PM", score: 62, color: "bg-red-500", text: "text-slate-700", bg: "bg-white", border: "border-slate-200" },
+              ].map((slot, i) => (
+                <div key={i} className={`flex flex-col items-center p-3 rounded-xl border ${slot.border} ${slot.bg} w-[22%]`}>
+                  <span className={`text-xl font-bold ${slot.text}`}>{slot.score}</span>
+                  <div className="w-full h-1 bg-slate-200 rounded-full my-2 overflow-hidden">
+                    <div className={`h-full ${slot.color}`} style={{width: `${slot.score}%`}}></div>
+                  </div>
+                  <span className="text-xs font-bold text-slate-500">{slot.time}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Nearby Safe Places */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col">
+            <h3 className="font-bold text-lg text-slate-900 mb-4">Nearby safe places on route</h3>
+            <div className="flex flex-col gap-3">
+              {[
+                { name: "Police Station", dist: "0.8 km", icon: <Shield size={16} className="text-blue-600"/>, color: "bg-blue-50" },
+                { name: "City Hospital", dist: "1.2 km", icon: <HeartPulse size={16} className="text-red-600"/>, color: "bg-red-50" },
+                { name: "Bank ATM", dist: "200 m", icon: <Banknote size={16} className="text-green-600"/>, color: "bg-green-50" },
+                { name: "24/7 Restaurant", dist: "350 m", icon: <Coffee size={16} className="text-orange-600"/>, color: "bg-orange-50" },
+                { name: "Petrol Pump", dist: "1.5 km", icon: <Fuel size={16} className="text-slate-600"/>, color: "bg-slate-100" },
+              ].map((place, i) => (
+                <div key={i} className="flex justify-between items-center p-2 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full ${place.color} flex items-center justify-center`}>
+                      {place.icon}
+                    </div>
+                    <span className="font-medium text-sm text-slate-700">{place.name}</span>
+                  </div>
+                  <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">{place.dist}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Report an Issue */}
+          <div className="bg-slate-900 rounded-2xl p-6 shadow-sm text-white flex flex-col justify-between relative overflow-hidden">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/20 rounded-full blur-2xl pointer-events-none"></div>
+            <div>
+              <h3 className="font-bold text-lg mb-1">Report an issue</h3>
+              <p className="text-slate-400 text-sm mb-5">Help make the city safer for everyone by reporting hazards.</p>
+              <div className="flex flex-wrap gap-2 mb-6">
+                <span className="text-xs font-medium bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">Suspicious Activity</span>
+                <span className="text-xs font-medium bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">Broken Light</span>
+                <span className="text-xs font-medium bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">Accident</span>
+              </div>
+            </div>
+            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-colors">
+              Report Now
+            </button>
+          </div>
+
+        </section>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="border-t border-slate-200 bg-white mt-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-2">
+            <ShieldCheck size={20} className="text-blue-600" />
+            <span className="font-bold text-slate-900">Urban Safe</span>
+            <span className="text-slate-400 text-sm ml-2">© 2024</span>
+          </div>
+          
+          <p className="text-sm text-slate-500 font-medium text-center md:text-left">
+            In case of emergency, always contact local emergency services immediately.
+          </p>
+
+          <div className="flex gap-4">
+            <span className="text-sm font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg">Police: 100</span>
+            <span className="text-sm font-bold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg">Ambulance: 108</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  );
 }
