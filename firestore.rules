@@ -1,0 +1,72 @@
+rules_version = '2';
+
+// UrbanSafe Firestore security rules.
+//
+// Privacy model:
+//  - Users may only read/write their own `users/{uid}` document.
+//  - Emergency events (`emergencyEvents/{eventId}`) are intentionally
+//    readable by any authenticated user because they exist to alert
+//    nearby users. Documents contain ONLY approximate coordinates,
+//    never exact GPS fixes, and never personal identity data.
+//  - Only the reporter can create (with their own uid) or resolve
+//    (update to "resolved") their own event. Deletion is forbidden.
+//  - Private voice recordings live in
+//    `emergencyEvents/{eventId}/private/...` and are readable/writable
+//    only by the event's creator.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isEmergencyType(value) {
+      return value in ['general', 'accident', 'medical', 'personal_safety', 'fire', 'road', 'other'];
+    }
+
+    // --- User profiles: private to their owner -------------------------
+    match /users/{uid} {
+      allow read, update: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow delete: if false;
+    }
+
+    // --- Emergency events: shared only as needed -----------------------
+    match /emergencyEvents/{eventId} {
+      // Any authenticated user may create an emergency, but only for
+      // themselves, with a valid type and sane approximate coordinates.
+      allow create: if signedIn()
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.status == 'active'
+        && isEmergencyType(request.resource.data.type)
+        && request.resource.data.latitude is number
+        && request.resource.data.longitude is number
+        && request.resource.data.latitude >= -90 && request.resource.data.latitude <= 90
+        && request.resource.data.longitude >= -180 && request.resource.data.longitude <= 180
+        && request.resource.data.geohash is string
+        && request.resource.data.geohash.size() >= 5
+        && request.resource.data.message is string?;
+
+      // Active emergency events must be visible to any authenticated
+      // user so nearby users can be alerted in real time.
+      allow read: if signedIn();
+
+      // Only the reporter may resolve their own active emergency.
+      allow update: if signedIn()
+        && resource.data.createdBy == request.auth.uid
+        && resource.data.status == 'active'
+        && request.resource.data.status == 'resolved';
+
+      // Nobody may delete emergency records.
+      allow delete: if false;
+
+      // Private sub-documents (voice recordings etc.) are readable and
+      // writable only by the event's creator.
+      match /private/{privateDocId} {
+        allow read, write: if signedIn()
+          && get(/databases/$(database)/documents/emergencyEvents/$(eventId)).data.createdBy == request.auth.uid;
+      }
+    }
+  }
+}

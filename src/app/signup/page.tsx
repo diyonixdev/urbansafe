@@ -1,208 +1,61 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent, type InputHTMLAttributes, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { Lock, Mail, ShieldCheck, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getAuthErrorMessage } from "@/lib/authErrors";
 import { isValidEmail, isValidName, isValidPassword } from "@/lib/validation";
-import { AuthShell } from "@/components/auth/AuthShell";
-import { AuthInput } from "@/components/auth/AuthInput";
-import { PageLoader } from "@/components/ui/PageLoader";
+
+function SignupField({ label, icon, error, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string; icon: ReactNode; error?: string }) {
+  return <label className="block"><span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[var(--text-muted)]">{label}</span><span className="relative block"><span className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[var(--text-muted)]">{icon}</span><input {...props} className={`w-full rounded-xl border px-4 py-3 pl-11 text-sm outline-none transition focus:border-[var(--primary)] focus:ring-2 focus:ring-blue-500/15 ${error ? "border-[var(--danger)]" : "border-[var(--border)]"}`} style={{ backgroundColor: "var(--card-secondary, var(--card-bg))", color: "var(--foreground)" }} /></span>{error && <span className="mt-1.5 block text-xs font-medium text-[var(--danger)]">{error}</span>}</label>;
+}
 
 export default function SignupPage() {
-  const { user, loading, signup, googleLogin } = useAuth();
+  const { user, loading, signup, googleLogin, demoMode, demoLogin } = useAuth();
   const router = useRouter();
+  const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const [confirmPassword, setConfirmPassword] = useState("");
+  const [nameError, setNameError] = useState<string | undefined>(); const [emailError, setEmailError] = useState<string | undefined>(); const [passwordError, setPasswordError] = useState<string | undefined>(); const [confirmError, setConfirmError] = useState<string | undefined>();
+  const [submitting, setSubmitting] = useState(false); const [googleSubmitting, setGoogleSubmitting] = useState(false); const [demoSubmitting, setDemoSubmitting] = useState(false);
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [nameError, setNameError] = useState<string | undefined>();
-  const [emailError, setEmailError] = useState<string | undefined>();
-  const [passwordError, setPasswordError] = useState<string | undefined>();
-  const [confirmError, setConfirmError] = useState<string | undefined>();
-  const [submitting, setSubmitting] = useState(false);
-  const [googleSubmitting, setGoogleSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (!loading && user) {
-      router.replace("/dashboard");
-    }
-  }, [user, loading, router]);
-
-  if (loading) return <PageLoader />;
+  useEffect(() => { if (!loading && user) router.replace("/dashboard"); }, [user, loading, router]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const normalizedEmail = email.trim();
-    const nextNameError = isValidName(name) ? undefined : "Enter your full name (2-50 characters).";
-    const nextEmailError = isValidEmail(normalizedEmail)
-      ? undefined
-      : "Please enter a valid email address.";
-    const nextPasswordError = isValidPassword(password)
-      ? undefined
-      : "Password must be at least 6 characters.";
-    const nextConfirmError =
-      confirmPassword === password ? undefined : "Passwords do not match.";
-
-    setNameError(nextNameError);
-    setEmailError(nextEmailError);
-    setPasswordError(nextPasswordError);
-    setConfirmError(nextConfirmError);
+    const normalizedEmail = email.trim(); const nextNameError = isValidName(name) ? undefined : "Enter your full name (2–50 characters)."; const nextEmailError = isValidEmail(normalizedEmail) ? undefined : "Please enter a valid email address."; const nextPasswordError = isValidPassword(password) ? undefined : "Password must be at least 6 characters."; const nextConfirmError = confirmPassword === password ? undefined : "Passwords do not match.";
+    setNameError(nextNameError); setEmailError(nextEmailError); setPasswordError(nextPasswordError); setConfirmError(nextConfirmError);
     if (nextNameError || nextEmailError || nextPasswordError || nextConfirmError) return;
-
     setSubmitting(true);
-    try {
-      await signup(normalizedEmail, password, name.trim());
-      router.replace("/dashboard");
-    } catch (error) {
-      toast.error(getAuthErrorMessage(error));
-    } finally {
-      setSubmitting(false);
-    }
+    try { await signup(normalizedEmail, password, name.trim()); router.replace("/dashboard"); } catch (error) { toast.error(getAuthErrorMessage(error)); } finally { setSubmitting(false); }
   };
+  const handleGoogleLogin = async () => { setGoogleSubmitting(true); try { await googleLogin(); router.replace("/dashboard"); } catch (error) { toast.error(getAuthErrorMessage(error)); } finally { setGoogleSubmitting(false); } };
+  const handleDemoLogin = async () => { setDemoSubmitting(true); try { await demoLogin(email.trim() || "demo-a@urbansafe.test"); router.replace("/dashboard"); } catch (error) { toast.error(getAuthErrorMessage(error)); } finally { setDemoSubmitting(false); } };
 
-  const handleGoogleLogin = async () => {
-    setGoogleSubmitting(true);
-    try {
-      await googleLogin();
-      router.replace("/dashboard");
-    } catch (error) {
-      toast.error(getAuthErrorMessage(error));
-    } finally {
-      setGoogleSubmitting(false);
-    }
-  };
-
-  return (
-    <AuthShell
-      title="Create Account"
-      subtitle="Establish your operator profile to access the network."
-      footer={
-        <p className="text-center font-body-md text-on-surface-variant/60 text-sm">
-          Already registered?{" "}
-          <Link
-            href="/login"
-            className="text-neon-cyan hover:text-white transition-colors font-medium hover-target"
-          >
-            Sign in instead
-          </Link>
-        </p>
-      }
-    >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full" noValidate>
-        <AuthInput
-          label="Full Name"
-          type="text"
-          placeholder="Ada Lovelace"
-          autoComplete="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          error={nameError}
-          icon={<span className="material-symbols-outlined">badge</span>}
-        />
-        <AuthInput
-          label="Email"
-          type="email"
-          placeholder="operator@aegis.def"
-          autoComplete="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          error={emailError}
-          icon={<span className="material-symbols-outlined">mail</span>}
-        />
-        <AuthInput
-          label="Password"
-          type="password"
-          placeholder="Minimum 6 characters"
-          autoComplete="new-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          error={passwordError}
-          icon={<span className="material-symbols-outlined">lock</span>}
-        />
-        <AuthInput
-          label="Confirm Password"
-          type="password"
-          placeholder="Repeat your password"
-          autoComplete="new-password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          error={confirmError}
-          icon={<span className="material-symbols-outlined">verified_user</span>}
-        />
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="hologram-capsule text-neon-cyan w-full px-8 py-3 font-data-label font-bold tracking-widest text-xs flex items-center justify-center gap-2 hover-target disabled:opacity-60 disabled:pointer-events-none"
-        >
-          {submitting ? (
-            <>
-              <span className="w-3.5 h-3.5 rounded-full border-2 border-neon-cyan border-t-transparent animate-spin" />
-              CREATING PROFILE…
-            </>
-          ) : (
-            <>
-              DEPLOY OPERATOR
-              <span className="material-symbols-outlined text-sm">how_to_reg</span>
-            </>
-          )}
-        </button>
-      </form>
-
-      <div className="flex items-center gap-4 w-full">
-        <span className="flex-1 h-[1px] bg-white/10" />
-        <span className="font-code-sm text-on-surface-variant/50 uppercase tracking-widest text-[10px]">
-          or
-        </span>
-        <span className="flex-1 h-[1px] bg-white/10" />
+  return <main className="flex min-h-screen items-center justify-center bg-[var(--background)] px-4 py-10 sm:px-6">
+    <section className="w-full max-w-[460px]">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--card-bg)] p-6 shadow-sm sm:p-8">
+        <header className="mb-7 text-center"><Link href="/" className="mb-4 inline-flex items-center gap-2 text-lg font-bold tracking-tight text-[var(--foreground)]"><span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--primary)] text-white"><ShieldCheck size={23} /></span>UrbanSafe</Link><h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">Create your account</h1><p className="mt-2 text-sm leading-6 text-[var(--text-muted)]">Join UrbanSafe and make every journey safer.</p></header>
+        {loading ? <div className="flex min-h-64 items-center justify-center"><span className="h-7 w-7 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent" aria-label="Loading" /></div> : <><form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          <SignupField label="Full name" icon={<User size={18} />} type="text" placeholder="Enter your full name" autoComplete="name" value={name} onChange={e => setName(e.target.value)} error={nameError} />
+          <SignupField label="Email" icon={<Mail size={18} />} type="email" placeholder="Enter your email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} error={emailError} />
+          <SignupField label="Password" icon={<Lock size={18} />} type="password" placeholder="Create a password" autoComplete="new-password" value={password} onChange={e => setPassword(e.target.value)} error={passwordError} />
+          <SignupField label="Confirm password" icon={<ShieldCheck size={18} />} type="password" placeholder="Confirm your password" autoComplete="new-password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} error={confirmError} />
+          <button type="submit" disabled={submitting} className="mt-2 flex w-full items-center justify-center rounded-xl bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-60">{submitting ? "Creating account…" : "Create Account"}</button>
+        </form>
+        <div className="my-6 flex items-center gap-3"><span className="h-px flex-1 bg-[var(--border)]" /><span className="text-xs font-medium uppercase tracking-wide text-[var(--text-muted)]">or</span><span className="h-px flex-1 bg-[var(--border)]" /></div>
+        <button type="button" onClick={handleGoogleLogin} disabled={googleSubmitting} className="flex w-full items-center justify-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--card-bg)] px-4 py-3 text-sm font-semibold text-[var(--foreground)] transition hover:border-blue-300 hover:bg-blue-50/50 disabled:cursor-not-allowed disabled:opacity-60">{googleSubmitting ? <><span className="h-4 w-4 animate-spin rounded-full border-2 border-[var(--primary)] border-t-transparent" />Connecting…</> : <><GoogleMark />Continue with Google</>}</button>
+        {demoMode && <div className="mt-4 rounded-xl border border-dashed border-[var(--border)] bg-[var(--card-secondary,var(--card-bg))] p-4">
+          <p className="mb-3 text-xs font-medium leading-5 text-[var(--text-muted)]">Demo mode — Firebase is not configured. Use demo accounts to try the app (for example <b className="text-[var(--foreground)]">demo-a@urbansafe.test</b> or <b className="text-[var(--foreground)]">demo-b@urbansafe.test</b>). Open two tabs with different demo users to test community SOS.</p>
+          <button type="button" onClick={handleDemoLogin} disabled={demoSubmitting} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:opacity-60">{demoSubmitting ? <><span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />Starting demo…</> : <><ShieldCheck size={16} />Continue as demo user</>}</button>
+        </div>}
+        <p className="mt-6 text-center text-sm text-[var(--text-muted)]">Already have an account? <Link href="/login" className="font-semibold text-[var(--primary)] hover:underline">Sign in</Link></p></>}
       </div>
-
-      <button
-        type="button"
-        onClick={handleGoogleLogin}
-        disabled={googleSubmitting}
-        className="w-full glass-panel rounded-lg border border-white/15 hover:bg-white/[0.06] transition-colors px-8 py-3 font-data-label tracking-widest text-xs text-white flex items-center justify-center gap-3 hover-target disabled:opacity-60 disabled:pointer-events-none"
-      >
-        {googleSubmitting ? (
-          <>
-            <span className="w-3.5 h-3.5 rounded-full border-2 border-white border-t-transparent animate-spin" />
-            CONNECTING…
-          </>
-        ) : (
-          <>
-            <GoogleMark />
-            SIGN UP WITH GOOGLE
-          </>
-        )}
-      </button>
-    </AuthShell>
-  );
+    </section>
+  </main>;
 }
 
 function GoogleMark() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        fill="#4285F4"
-        d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.57 5.57 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
-      />
-      <path
-        fill="#34A853"
-        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M5.27 14.29A7.18 7.18 0 0 1 4.89 12c0-.8.14-1.57.38-2.29V6.62H1.29a11.99 11.99 0 0 0 0 10.76l3.98-3.09z"
-      />
-      <path
-        fill="#EA4335"
-        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.69 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"
-      />
-    </svg>
-  );
+  return <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47a5.57 5.57 0 0 1-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z" /><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09A11.99 11.99 0 0 0 12 24z" /><path fill="#FBBC05" d="M5.27 14.29A7.18 7.18 0 0 1 4.89 12c0-.8.14-1.57.38-2.29V6.62H1.29a11.99 11.99 0 0 0 0 10.76l3.98-3.09z" /><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.69 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z" /></svg>;
 }

@@ -18,6 +18,7 @@ import {
   signUpWithEmail,
   subscribeToAuthChanges,
 } from "@/firebase/auth";
+import { isFirebaseConfigured } from "@/firebase/config";
 import { ensureUserProfile, getUserProfile } from "@/firebase/firestore";
 import { buildUserProfileInput, parseUserProfile, type UserProfile } from "@/lib/user";
 
@@ -30,17 +31,65 @@ export interface AuthContextValue {
   loading: boolean;
   /** True while the Firestore profile is being fetched/created. */
   profileLoading: boolean;
+  /** True when Firebase is not configured and demo accounts are in use. */
+  demoMode: boolean;
   /** Creates a new account with email + password (and optionally a name). */
   signup: (email: string, password: string, name?: string) => Promise<void>;
   /** Signs in with email + password. */
   login: (email: string, password: string) => Promise<void>;
   /** Signs in with a Google popup. */
   googleLogin: () => Promise<void>;
+  /** Demo-only: signs in with a local demo account (no Firebase needed). */
+  demoLogin: (email?: string) => Promise<void>;
   /** Signs out the current user and clears auth state. */
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
+
+const DEMO_USER_KEY = "urbansafe-demo-user";
+
+function buildDemoUser(email: string): User {
+  const displayName = email.split("@")[0] || "Demo User";
+  return {
+    uid: `demo-${Math.abs(hashString(email)).toString(36)}`,
+    email,
+    displayName,
+    photoURL: null,
+    emailVerified: true,
+    isAnonymous: false,
+    providerData: [],
+    metadata: { creationTime: String(Date.now()), lastSignInTime: String(Date.now()) },
+    phoneNumber: null,
+    refreshToken: "",
+    tenantId: null,
+    delete: async () => undefined,
+    getIdToken: async () => "",
+    getIdTokenResult: async () => ({ token: "" }) as never,
+    reload: async () => undefined,
+    toJSON: () => ({}),
+  } as unknown as User;
+}
+
+function hashString(value: string): number {
+  let hash = 0;
+  for (let i = 0; i < value.length; i += 1) {
+    hash = (hash * 31 + value.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+function readStoredDemoUser(): User | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(DEMO_USER_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as { email: string };
+    return parsed?.email ? buildDemoUser(parsed.email) : null;
+  } catch {
+    return null;
+  }
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -70,6 +119,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
     let unsubscribe: (() => void) | undefined;
+
+    if (!isFirebaseConfigured()) {
+      // Demo mode: Firebase is not configured, so authentication uses
+      // stable local demo accounts. Multiple tabs/accounts stay in sync
+      // via the browser storage event, enabling two-user testing.
+      const stored = readStoredDemoUser();
+      if (stored) {
+        setUser(stored);
+        void ensureProfile(stored);
+      }
+      const onStorage = (event: StorageEvent) => {
+        if (cancelled) return;
+        if (event.key === DEMO_USER_KEY) {
+          const next = readStoredDemoUser();
+          if (next) {
+            setUser(next);
+            void ensureProfile(next);
+          }
+        }
+        if (event.key === "urbansafe-demo-signout") {
+          setUser(null);
+          setProfile(null);
+        }
+      };
+      window.addEventListener("storage", onStorage);
+      setLoading(false);
+      return () => {
+        cancelled = true;
+        window.removeEventListener("storage", onStorage);
+      };
+    }
 
     try {
       unsubscribe = subscribeToAuthChanges((authUser) => {
@@ -123,8 +203,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     toast.success("Logged in with Google.");
   }, [ensureProfile]);
 
+  const demoLogin = useCallback(
+    async (email?: string) => {
+      if (isFirebaseConfigured()) {
+        throw new Error("Demo login is only available when Firebase is not configured.");
+      }
+      const demoEmail = (email ?? "demo-a@urbansafe.test").trim() || "demo-a@urbansafe.test";
+      const demoUser = buildDemoUser(demoEmail);
+      try {
+        window.localStorage.setItem(DEMO_USER_KEY, JSON.stringify({ email: demoEmail }));
+      } catch {
+        // ignore storage errors
+      }
+      setUser(demoUser);
+      await ensureProfile(demoUser);
+      toast.success(`Signed in as demo user ${demoUser.displayName}.`);
+    },
+    [ensureProfile]
+  );
+
   const logout = useCallback(async () => {
-    await logOut();
+    if (isFirebaseConfigured()) {
+      await logOut();
+    } else {
+      try {
+        window.localStorage.removeItem(DEMO_USER_KEY);
+        window.localStorage.setItem("urbansafe-demo-signout", String(Date.now()));
+        window.localStorage.removeItem("urbansafe-demo-signout");
+      } catch {
+        // ignore storage errors
+      }
+    }
     setUser(null);
     setProfile(null);
     toast.success("Signed out. See you soon!");
@@ -136,12 +245,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       loading,
       profileLoading,
+      demoMode: !isFirebaseConfigured(),
       signup,
       login,
       googleLogin,
+      demoLogin,
       logout,
     }),
-    [user, profile, loading, profileLoading, signup, login, googleLogin, logout]
+    [user, profile, loading, profileLoading, signup, login, googleLogin, demoLogin, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

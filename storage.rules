@@ -1,0 +1,22 @@
+rules_version = '2';
+
+// UrbanSafe Storage security rules.
+//
+// Voice recordings uploaded during an emergency are private to the
+// reporting user. They are never published to nearby users; only the
+// event creator may read their own recordings.
+//
+// Layout: emergencies/{userId}/{eventId}/...
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /emergencies/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Everything else (avatars etc.) is reserved for future use.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { 
   ShieldCheck, MapPin, Search, AlertTriangle, 
   Lightbulb, Car, UserCheck, Crosshair, 
@@ -9,44 +8,18 @@ import {
   AlertOctagon, CheckCircle2, Shield, HeartPulse,
   Banknote, Coffee, Fuel
 } from "lucide-react";
+import { UrbanSafeNavbar } from "@/components/layouts/UrbanSafeNavbar";
 
 export default function AegisLanding() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="urban-safe-page min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
       
-      {/* HEADER */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-2">
-              <div className="bg-blue-600 p-1.5 rounded-lg text-white">
-                <ShieldCheck size={24} />
-              </div>
-              <span className="font-bold text-xl tracking-tight text-slate-900">Urban Safe</span>
-            </div>
-            
-            <nav className="hidden md:flex items-center gap-8 font-medium text-sm text-slate-600">
-              <Link href="#" className="text-blue-600">Home</Link>
-              <Link href="#" className="hover:text-slate-900 transition-colors">Plan Route</Link>
-              <Link href="#" className="hover:text-slate-900 transition-colors">Safety Map</Link>
-              <Link href="#" className="hover:text-slate-900 transition-colors">Reports</Link>
-              <Link href="#" className="hover:text-slate-900 transition-colors">Alerts</Link>
-            </nav>
-            
-            <div className="flex items-center">
-              <button className="flex items-center gap-2 bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-full font-semibold text-sm transition-colors border border-red-200">
-                <AlertOctagon size={18} />
-                <span>SOS</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <UrbanSafeNavbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12 flex flex-col gap-12">
         
         {/* HERO / MAIN SCREEN */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <section id="plan-route" className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           
           {/* LEFT SIDE */}
           <div className="lg:col-span-5 flex flex-col gap-8">
@@ -99,7 +72,7 @@ export default function AegisLanding() {
           </div>
 
           {/* RIGHT SIDE (MAP) */}
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[600px] relative">
+          <div id="safety-map" className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[600px] relative">
             {/* Map Mockup Background */}
             <div className="absolute inset-0 bg-[#f0f3f5] opacity-50 z-0">
                {/* Grid pattern to simulate map tiles */}
@@ -278,7 +251,7 @@ export default function AegisLanding() {
           </div>
 
           {/* Emergency / SOS */}
-          <div className="bg-white rounded-2xl border-2 border-red-100 p-6 shadow-sm relative overflow-hidden flex flex-col justify-between group">
+          <div id="emergency" className="bg-white rounded-2xl border-2 border-red-100 p-6 shadow-sm relative overflow-hidden flex flex-col justify-between group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[100px] z-0 transition-transform group-hover:scale-110"></div>
             
             <div className="relative z-10">

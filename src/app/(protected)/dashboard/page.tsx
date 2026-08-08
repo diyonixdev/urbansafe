@@ -1,107 +1,52 @@
 "use client";
 
-import Link from "next/link";
-import { useAuth } from "@/hooks/useAuth";
+import { AlertTriangle, Banknote, Car, Coffee, Construction, Crosshair, HeartPulse, Lightbulb, MapPin, Minus, Plus, Shield, ShieldCheck } from "lucide-react";
+
+const factors = [
+  { label: "Crime", value: 78, tone: "good" },
+  { label: "Accidents", value: 91, tone: "good" },
+  { label: "Lighting", value: 72, tone: "moderate" },
+  { label: "Road condition", value: 84, tone: "good" },
+  { label: "Police proximity", value: 93, tone: "good" },
+];
+
+const alerts = [
+  { icon: Construction, label: "Road construction", distance: "500 m away", tone: "orange" },
+  { icon: AlertTriangle, label: "Accident reported", distance: "1.2 km away", tone: "red" },
+  { icon: Lightbulb, label: "Streetlight not working", distance: "300 m away", tone: "amber" },
+];
+
+const nearby = [
+  { label: "Police", icon: Shield },
+  { label: "Hospital", icon: HeartPulse },
+  { label: "ATM", icon: Banknote },
+  { label: "Restaurant", icon: Coffee },
+];
+
+function MapMarker({ className, icon: Icon, label }: { className: string; icon: typeof AlertTriangle; label: string }) {
+  return <div className={`dashboard-map-marker ${className}`} title={label}><span><Icon size={15} /></span><small>{label}</small></div>;
+}
 
 export default function DashboardPage() {
-  const { user, profile, profileLoading } = useAuth();
+  return <div className="urban-dashboard">
+    <header className="dashboard-heading">
+      <div><p className="dashboard-eyebrow"><MapPin size={15} />Current location</p><h1>Your current area</h1><p>Safety conditions around your current location</p></div>
+      <article className="safety-score"><span>Safety score</span><strong>82<small>/100</small></strong><p><i /> Low Risk</p></article>
+    </header>
 
-  const displayName = profile?.name ?? user?.displayName ?? "Operator";
-  const username = profile?.username ?? "…";
-  const plan = profile?.plan ?? "Free";
-  const verified = profile?.verified ?? false;
+    <section className="dashboard-map" aria-label="Local safety map placeholder">
+      <div className="map-water water-one" /><div className="map-water water-two" />
+      <div className="map-road road-one" /><div className="map-road road-two" /><div className="map-road road-three" /><div className="map-road road-four" />
+      <div className="map-street street-one" /><div className="map-street street-two" /><div className="map-street street-three" /><div className="map-street street-four" />
+      <span className="map-neighbourhood n-one">Riverside</span><span className="map-neighbourhood n-two">Central Market</span><span className="map-neighbourhood n-three">Park View</span>
+      <div className="dashboard-current-location"><span /><b>Your location</b></div>
+      <MapMarker className="crime-marker" icon={AlertTriangle} label="Crime hotspot" /><MapMarker className="construction-marker" icon={Construction} label="Construction" /><MapMarker className="accident-marker" icon={Car} label="Accident" /><MapMarker className="lighting-marker" icon={Lightbulb} label="Poor lighting" /><MapMarker className="police-marker" icon={ShieldCheck} label="Police station" />
+      <div className="map-controls"><button aria-label="Zoom in"><Plus size={18} /></button><button aria-label="Zoom out"><Minus size={18} /></button><button aria-label="Current location"><Crosshair size={18} /></button></div>
+      <div className="map-legend"><b>Safety markers</b><span><i className="crime" />Crime</span><span><i className="construction" />Construction</span><span><i className="accident" />Accident</span><span><i className="lighting" />Poor lighting</span><span><i className="police" />Police</span></div>
+    </section>
 
-  const stats = [
-    { label: "Repositories", value: profile?.repositoriesCount ?? 0 },
-    { label: "Followers", value: profile?.followers ?? 0 },
-    { label: "Following", value: profile?.following ?? 0 },
-    { label: "Stars Received", value: profile?.starsReceived ?? 0 },
-  ];
+    <section className="safety-factors"><div className="section-title"><h2>Safety factors</h2><p>Scores for your surrounding area</p></div><div className="factor-list">{factors.map(factor => <div className="factor-row" key={factor.label}><span>{factor.label}</span><div className="factor-track"><i className={factor.tone} style={{ width: `${factor.value}%` }} /></div><b>{factor.value}/100</b></div>)}</div></section>
 
-  return (
-    <div className="flex flex-col gap-8">
-      {/* Welcome header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 fade-up visible">
-        <div>
-          <p className="font-code-sm text-neon-cyan uppercase tracking-[0.3em] text-glow text-xs flex items-center gap-3">
-            <span className="w-8 h-[1px] bg-neon-cyan inline-block"></span>
-            System Online
-          </p>
-          <h1 className="font-display-lg-mobile text-3xl md:text-5xl font-bold text-white tracking-tight mt-2">
-            Welcome back,{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-electric-blue to-neon-purple">
-              {displayName}
-            </span>
-          </h1>
-          <p className="font-code-sm text-on-surface-variant/60 text-xs mt-2 uppercase tracking-widest">
-            @{username} {verified && "· VERIFIED"}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <span className="glass-panel rounded-full px-4 py-2 font-data-label tracking-widest text-[11px] text-neon-cyan">
-            PLAN: {plan.toUpperCase()}
-          </span>
-          <Link
-            href="/create"
-            className="hologram-capsule text-neon-cyan px-5 py-2 font-data-label font-bold tracking-widest text-[11px] flex items-center gap-2 hover-target"
-          >
-            <span className="material-symbols-outlined text-sm">add</span>
-            NEW REPOSITORY
-          </Link>
-        </div>
-      </div>
-
-      {/* Profile loading indicator */}
-      {profileLoading && (
-        <p className="font-code-sm text-on-surface-variant/50 text-[11px] uppercase tracking-widest animate-pulse">
-          Synchronizing profile…
-        </p>
-      )}
-
-      {/* Stats grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="glass-panel rounded-2xl p-6 flex flex-col gap-2 relative overflow-hidden hologram-flicker"
-          >
-            <span className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-neon-cyan/50 to-transparent" />
-            <span className="font-code-sm text-on-surface-variant/60 uppercase tracking-[0.2em] text-[10px]">
-              {stat.label}
-            </span>
-            <span className="font-display-lg text-4xl text-white font-bold text-glow">
-              {stat.value}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      {/* Placeholder for Phase 3 content */}
-      <div className="glass-panel rounded-2xl p-8 relative overflow-hidden flex flex-col gap-3">
-        <span className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-neon-cyan to-transparent" />
-        <h2 className="font-headline-md text-xl text-white tracking-tight">
-          Command Center
-        </h2>
-        <p className="font-body-md text-on-surface-variant/70 text-sm max-w-xl">
-          Your workspace is ready. Repositories, telemetry and live monitoring
-          modules are being deployed in the next phase.
-        </p>
-        <div className="flex gap-4 mt-2">
-          <Link
-            href="/repositories"
-            className="font-code-sm text-neon-cyan hover:text-white transition-colors uppercase tracking-widest text-xs hover-target"
-          >
-            View Repositories →
-          </Link>
-          <Link
-            href="/profile"
-            className="font-code-sm text-neon-cyan hover:text-white transition-colors uppercase tracking-widest text-xs hover-target"
-          >
-            Edit Profile →
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
+    <section className="dashboard-bottom"><article className="dashboard-panel"><div className="section-title"><h2>Recent alerts</h2><p>Reported nearby</p></div><div className="alert-list">{alerts.map(({ icon: Icon, label, distance, tone }) => <div className="alert-row" key={label}><span className={tone}><Icon size={18} /></span><b>{label}</b><small>{distance}</small></div>)}</div></article><article className="dashboard-panel nearby-panel"><div className="section-title"><h2>Nearby</h2><p>Useful places around you</p></div><div className="nearby-actions">{nearby.map(({ label, icon: Icon }) => <button key={label}><Icon size={18} /><span>{label}</span></button>)}</div></article></section>
+  </div>;
 }
