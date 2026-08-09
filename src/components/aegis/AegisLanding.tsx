@@ -1,17 +1,128 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import dynamic from 'next/dynamic';
 import { 
   ShieldCheck, MapPin, Search, AlertTriangle, 
   Lightbulb, Car, UserCheck, Crosshair, 
   ChevronRight, Phone, Navigation, Clock,
   AlertOctagon, CheckCircle2, Shield, HeartPulse,
-  Banknote, Coffee, Fuel
+  Banknote, Coffee, Fuel, Loader2, Navigation2
 } from "lucide-react";
 import { UrbanSafeNavbar } from "@/components/layouts/UrbanSafeNavbar";
 import { SosChatbot } from "@/components/emergency/SosChatbot";
 
+// Dynamically import map to avoid SSR issues
+const RouteMap = dynamic(() => import("@/components/maps/RouteMap"), { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400"><Loader2 className="animate-spin" size={32} /></div> });
+
+interface LocationResult {
+  lat: string;
+  lon: string;
+  display_name: string;
+}
+
 export default function AegisLanding() {
+  const [origin, setOrigin] = useState<{lat: number, lon: number, name: string} | null>(null);
+  const [destination, setDestination] = useState<{lat: number, lon: number, name: string} | null>(null);
+  const [routeCoords, setRouteCoords] = useState<[number, number][] | null>(null);
+  
+  const [originInput, setOriginInput] = useState("");
+  const [destInput, setDestInput] = useState("");
+  
+  const [destSuggestions, setDestSuggestions] = useState<LocationResult[]>([]);
+  const [showDestSuggestions, setShowDestSuggestions] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
+  const [isRouting, setIsRouting] = useState(false);
+  const [routeError, setRouteError] = useState<string | null>(null);
+
+  const destTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleLocateMe = () => {
+    setIsLocating(true);
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      setIsLocating(false);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+          const data = await res.json();
+          const name = data.display_name || "Current Location";
+          setOrigin({ lat, lon, name });
+          setOriginInput(name);
+        } catch (error) {
+          console.error("Reverse geocode error", error);
+          setOrigin({ lat, lon, name: "Current Location" });
+          setOriginInput("Current Location");
+        }
+        setIsLocating(false);
+      },
+      (error) => {
+        alert("Failed to get location. Please allow location access.");
+        setIsLocating(false);
+      },
+      { enableHighAccuracy: true }
+    );
+  };
+
+  const handleDestChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setDestInput(val);
+    setDestination(null);
+    
+    if (destTimeoutRef.current) clearTimeout(destTimeoutRef.current);
+    
+    if (val.length < 3) {
+      setDestSuggestions([]);
+      setShowDestSuggestions(false);
+      return;
+    }
+
+    destTimeoutRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(val)}&limit=5`);
+        const data = await res.json();
+        setDestSuggestions(data);
+        setShowDestSuggestions(true);
+      } catch (error) {
+        console.error("Geocoding error", error);
+      }
+    }, 500);
+  };
+
+  const selectDest = (s: LocationResult) => {
+    setDestination({ lat: parseFloat(s.lat), lon: parseFloat(s.lon), name: s.display_name });
+    setDestInput(s.display_name);
+    setShowDestSuggestions(false);
+  };
+
+  const calculateRoute = async () => {
+    if (!origin || !destination) {
+      alert("Please set both origin and destination.");
+      return;
+    }
+    setIsRouting(true);
+    setRouteError(null);
+    try {
+      const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${destination.lon},${destination.lat}?overview=full&geometries=geojson`);
+      const data = await res.json();
+      if (data.routes && data.routes.length > 0) {
+        const coords = data.routes[0].geometry.coordinates.map((c: [number, number]) => [c[1], c[0]] as [number, number]);
+        setRouteCoords(coords);
+      } else {
+        setRouteError("No route found.");
+      }
+    } catch (error) {
+      console.error("Routing error", error);
+      setRouteError("Failed to calculate route.");
+    }
+    setIsRouting(false);
+  };
+
   return (
     <div className="urban-safe-page min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
       
@@ -40,9 +151,25 @@ export default function AegisLanding() {
                 <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 border-2 border-white">
                   <div className="w-2.5 h-2.5 rounded-full bg-blue-600"></div>
                 </div>
-                <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
-                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Your location</p>
-                  <input type="text" defaultValue="Current Location" className="bg-transparent w-full text-slate-900 font-medium outline-none" />
+                <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-2">
+                  <div className="flex-1">
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Your location</p>
+                    <input 
+                      type="text" 
+                      value={originInput}
+                      onChange={(e) => setOriginInput(e.target.value)}
+                      placeholder="Current Location" 
+                      className="bg-transparent w-full text-slate-900 font-medium outline-none" 
+                    />
+                  </div>
+                  <button 
+                    onClick={handleLocateMe}
+                    disabled={isLocating}
+                    className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                    title="Use my current location"
+                  >
+                    {isLocating ? <Loader2 size={18} className="animate-spin" /> : <Navigation2 size={18} />}
+                  </button>
                 </div>
               </div>
               
@@ -50,15 +177,47 @@ export default function AegisLanding() {
                 <div className="w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0 border-2 border-white">
                   <MapPin size={14} className="fill-green-600 text-white" />
                 </div>
-                <div className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 transition-all shadow-sm">
-                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Where do you want to go?</p>
-                  <input type="text" placeholder="Enter destination" className="bg-transparent w-full text-slate-900 font-medium outline-none placeholder:text-slate-400" />
+                <div className="flex-1 relative">
+                  <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 transition-all shadow-sm">
+                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Where do you want to go?</p>
+                    <input 
+                      type="text" 
+                      value={destInput}
+                      onChange={handleDestChange}
+                      onFocus={() => { if(destSuggestions.length > 0) setShowDestSuggestions(true); }}
+                      placeholder="Enter destination" 
+                      className="bg-transparent w-full text-slate-900 font-medium outline-none placeholder:text-slate-400" 
+                    />
+                  </div>
+                  {showDestSuggestions && destSuggestions.length > 0 && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg z-50 max-h-60 overflow-y-auto">
+                      {destSuggestions.map((s, i) => (
+                        <div 
+                          key={i} 
+                          className="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100 last:border-0 text-sm"
+                          onClick={() => selectDest(s)}
+                        >
+                          {s.display_name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <button className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-3.5 font-semibold shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-2">
-                <Search size={18} />
-                Find Safest Route
+              {routeError && (
+                <div className="text-red-500 text-sm mt-2 font-medium bg-red-50 p-3 rounded-lg border border-red-100 flex items-center gap-2">
+                  <AlertTriangle size={16} /> {routeError}
+                </div>
+              )}
+
+              <button 
+                onClick={calculateRoute}
+                disabled={isRouting || !origin || !destination}
+                className="mt-2 w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl py-3.5 font-semibold shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-2"
+              >
+                {isRouting ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
+                {isRouting ? "Calculating..." : "Find Safest Route"}
               </button>
             </div>
 
@@ -73,58 +232,12 @@ export default function AegisLanding() {
           </div>
 
           {/* RIGHT SIDE (MAP) */}
-          <div id="safety-map" className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[600px] relative">
-            {/* Map Mockup Background */}
-            <div className="absolute inset-0 bg-[#f0f3f5] opacity-50 z-0">
-               {/* Grid pattern to simulate map tiles */}
-               <div className="w-full h-full" style={{backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', backgroundSize: '24px 24px'}}></div>
-            </div>
-            
-            {/* Map Content */}
-            <div className="relative z-10 flex-1 p-4 w-full h-full">
-              
-              {/* Fake Routes */}
-              <div className="absolute top-1/2 left-1/4 right-1/4 h-1/3 pointer-events-none">
-                 {/* Green Route */}
-                 <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
-                    <path d="M0,0 C50,150 150,50 300,200" fill="none" stroke="#16a34a" strokeWidth="6" strokeLinecap="round" className="drop-shadow-sm opacity-90" />
-                    <circle cx="150" cy="90" r="14" fill="#16a34a" />
-                    <text x="150" y="94" fontSize="10" fill="white" fontWeight="bold" textAnchor="middle">89</text>
-                 </svg>
-                 {/* Orange Route */}
-                 <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
-                    <path d="M0,0 C100,-50 200,150 300,200" fill="none" stroke="#ea580c" strokeWidth="4" strokeDasharray="8 4" strokeLinecap="round" className="drop-shadow-sm opacity-70" />
-                    <circle cx="150" cy="50" r="12" fill="#ea580c" />
-                    <text x="150" y="54" fontSize="9" fill="white" fontWeight="bold" textAnchor="middle">81</text>
-                 </svg>
-                 {/* Red Route */}
-                 <svg className="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none">
-                    <path d="M0,0 C100,50 100,250 300,200" fill="none" stroke="#dc2626" strokeWidth="4" strokeDasharray="6 6" strokeLinecap="round" className="drop-shadow-sm opacity-60" />
-                    <circle cx="100" cy="150" r="12" fill="#dc2626" />
-                    <text x="100" y="154" fontSize="9" fill="white" fontWeight="bold" textAnchor="middle">64</text>
-                 </svg>
-                 
-                 {/* Start/End Pins */}
-                 <div className="absolute top-[-10px] left-[-10px] w-5 h-5 bg-blue-600 border-2 border-white rounded-full shadow-md z-20"></div>
-                 <div className="absolute bottom-[-10px] right-[-10px] w-6 h-6 bg-slate-900 border-2 border-white rounded-full shadow-md z-20 flex items-center justify-center">
-                   <div className="w-2 h-2 bg-white rounded-full"></div>
-                 </div>
-                 
-                 {/* Map Markers */}
-                 <div className="absolute top-[80px] left-[200px] bg-white p-1.5 rounded-full shadow-md border border-slate-100 z-10"><Shield size={14} className="text-blue-600"/></div>
-                 <div className="absolute top-[160px] left-[80px] bg-white p-1.5 rounded-full shadow-md border border-slate-100 z-10"><HeartPulse size={14} className="text-red-500"/></div>
-              </div>
-
-              {/* Map Floating Legend */}
-              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-xl shadow-sm border border-slate-200">
-                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Safety Score</h4>
-                <div className="flex flex-col gap-2 text-sm font-medium text-slate-700">
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-green-500"></div> Low Risk</div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-orange-500"></div> Moderate</div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-red-500"></div> High Risk</div>
-                </div>
-              </div>
-            </div>
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[600px] relative">
+            <RouteMap 
+              origin={origin ? [origin.lat, origin.lon] : null}
+              destination={destination ? [destination.lat, destination.lon] : null}
+              routeCoordinates={routeCoords}
+            />
           </div>
         </section>
 
