@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   AlertOctagon, AlertTriangle, ArrowUpDown, Bot, Car, CheckCircle2, ChevronRight, Clock, Gauge, Lightbulb, Layers,
   Loader2, LocateFixed, MapPin, Minus, Moon, Navigation, Plus, Radar,
@@ -241,7 +242,8 @@ function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: s
   );
 }
 
-export default function PlanRoutePage() {
+function PlanRouteContent() {
+  const searchParams = useSearchParams();
   const location = useGeolocation();
   const [origin, setOrigin] = useState("Current Location");
   const [destination, setDestination] = useState("");
@@ -270,6 +272,18 @@ export default function PlanRoutePage() {
       setSelected("safe");
     }, 950);
   };
+
+  /* Deep link from the landing page (?origin=&destination=): prefill and
+     run the route analysis automatically. */
+  useEffect(() => {
+    const dest = searchParams.get("destination");
+    if (!dest) return;
+    const from = searchParams.get("origin");
+    if (from && from !== "Current Location") setOrigin(from);
+    setDestination(dest);
+    handleSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleSwap = () => {
     setOrigin(destination.trim() ? destination : "Current Location");
@@ -329,7 +343,7 @@ export default function PlanRoutePage() {
                         <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500">Current location</p>
                         {isGps && (
                           <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-green-50 border border-green-100 rounded-full px-2 py-0.5">
-                            <LocateFixed size={10} /> 
+                            <LocateFixed size={10} />
                             {location.latitude ? `${location.latitude.toFixed(4)}, ${location.longitude?.toFixed(4)}` : "GPS detected"}
                           </span>
                         )}
@@ -393,9 +407,9 @@ export default function PlanRoutePage() {
                       alert(location.error || "Please enable location services in your browser settings.");
                       return;
                     }
-                    
+
                     setOrigin("Current Location");
-                    
+
                     if (!destination.trim()) {
                       document.getElementById('destination-input')?.focus();
                     } else {
@@ -904,4 +918,8 @@ export default function PlanRoutePage() {
 
     </div>
   );
+}
+
+export default function PlanRoutePage() {
+  return <Suspense fallback={null}><PlanRouteContent /></Suspense>;
 }
