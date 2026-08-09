@@ -66,28 +66,36 @@ export function useGeolocation() {
       }));
     };
 
-    // Check current permission state before watching (optional, but good for UI)
-    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-      if (result.state === 'prompt') {
-         setLocation((prev) => ({ ...prev, permission: 'prompt' }));
-      } else if (result.state === 'denied') {
-         setLocation((prev) => ({ ...prev, permission: 'denied', error: 'Location permission denied by user.' }));
-      }
-      
-      // Start watching
-      watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      });
-      
-      // Listen for permission changes
-      result.onchange = () => {
-         if (result.state === 'denied') {
-            setLocation((prev) => ({ ...prev, permission: 'denied', error: 'Location permission denied by user.' }));
-         }
-      }
+    // Start watching immediately
+    watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
     });
+
+    // Try to get permission status for UI if available (fails gracefully if unsupported)
+    if (navigator.permissions && navigator.permissions.query) {
+      navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+        if (result.state === 'prompt') {
+           setLocation((prev) => ({ ...prev, permission: 'prompt' }));
+        } else if (result.state === 'denied') {
+           setLocation((prev) => ({ ...prev, permission: 'denied', error: 'Location permission denied by user.' }));
+        } else if (result.state === 'granted') {
+           setLocation((prev) => ({ ...prev, permission: 'granted' }));
+        }
+        
+        // Listen for permission changes
+        result.onchange = () => {
+           if (result.state === 'denied') {
+              setLocation((prev) => ({ ...prev, permission: 'denied', error: 'Location permission denied by user.' }));
+           } else if (result.state === 'granted') {
+              setLocation((prev) => ({ ...prev, permission: 'granted' }));
+           }
+        }
+      }).catch(() => {
+        // Ignore errors if permissions API is acting up
+      });
+    }
 
     return () => {
       if (watchId !== undefined) {

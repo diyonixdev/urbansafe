@@ -11,6 +11,7 @@ import type { LucideIcon } from "lucide-react";
 import { UrbanSafeNavbar } from "@/components/layouts/UrbanSafeNavbar";
 import { buildAlexPayload } from "./alex-suggestions";
 import type { AlexPayload, SuggestionIcon, SuggestionTone } from "./alex-suggestions";
+import { useGeolocation } from "@/hooks/useGeolocation";
 
 type RouteId = "safe" | "balanced" | "fastest";
 
@@ -241,6 +242,7 @@ function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: s
 }
 
 export default function PlanRoutePage() {
+  const location = useGeolocation();
   const [origin, setOrigin] = useState("Current Location");
   const [destination, setDestination] = useState("");
   const [searched, setSearched] = useState(false);
@@ -327,7 +329,8 @@ export default function PlanRoutePage() {
                         <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500">Current location</p>
                         {isGps && (
                           <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-green-50 border border-green-100 rounded-full px-2 py-0.5">
-                            <LocateFixed size={10} /> GPS detected
+                            <LocateFixed size={10} /> 
+                            {location.latitude ? `${location.latitude.toFixed(4)}, ${location.longitude?.toFixed(4)}` : "GPS detected"}
                           </span>
                         )}
                       </div>
@@ -359,6 +362,7 @@ export default function PlanRoutePage() {
                     <div className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 transition-all focus-within:border-blue-500/60 focus-within:ring-2 focus-within:ring-blue-500/10 shadow-sm">
                       <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500 mb-0.5">Destination</p>
                       <input
+                        id="destination-input"
                         type="text"
                         placeholder="Enter destination"
                         value={destination}
@@ -384,10 +388,25 @@ export default function PlanRoutePage() {
 
                 <button
                   type="button"
-                  onClick={() => setOrigin("Current Location")}
-                  className="w-full text-sm font-semibold text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg py-2 transition-colors flex items-center justify-center gap-1.5"
+                  onClick={() => {
+                    if (location.permission === 'denied' || location.error) {
+                      alert(location.error || "Please enable location services in your browser settings.");
+                      return;
+                    }
+                    
+                    setOrigin("Current Location");
+                    
+                    if (!destination.trim()) {
+                      document.getElementById('destination-input')?.focus();
+                    } else {
+                      handleSearch();
+                    }
+                  }}
+                  className="w-full text-sm font-semibold text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg py-2 transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
+                  disabled={location.permission === 'loading'}
                 >
-                  <LocateFixed size={14} /> Use my current location
+                  {location.permission === 'loading' ? <Loader2 size={14} className="animate-spin" /> : <LocateFixed size={14} />}
+                  {location.permission === 'loading' ? 'Locating...' : 'Use my current location'}
                 </button>
               </form>
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import type { RouteMetrics } from '@/utils/routeScoring';
 
 // Fix Leaflet's default icon paths in Next.js
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -28,18 +29,22 @@ const destinationIcon = createIcon('#16a34a'); // green-600
 function MapController({
   origin,
   destination,
-  routeCoordinates,
+  routes,
 }: {
   origin: [number, number] | null;
   destination: [number, number] | null;
-  routeCoordinates: [number, number][] | null;
+  routes: RouteMetrics[] | null;
 }) {
   const map = useMap();
 
   useEffect(() => {
-    if (routeCoordinates && routeCoordinates.length > 0) {
-      const bounds = L.latLngBounds(routeCoordinates);
-      map.fitBounds(bounds, { padding: [50, 50] });
+    if (routes && routes.length > 0) {
+      // Gather all coordinates to fit bounds
+      const allCoords = routes.flatMap(r => r.geometry);
+      if (allCoords.length > 0) {
+        const bounds = L.latLngBounds(allCoords);
+        map.fitBounds(bounds, { padding: [50, 50] });
+      }
     } else if (origin && destination) {
       const bounds = L.latLngBounds([origin, destination]);
       map.fitBounds(bounds, { padding: [50, 50] });
@@ -48,7 +53,7 @@ function MapController({
     } else if (destination) {
       map.setView(destination, 13);
     }
-  }, [origin, destination, routeCoordinates, map]);
+  }, [origin, destination, routes, map]);
 
   return null;
 }
@@ -56,12 +61,13 @@ function MapController({
 interface RouteMapProps {
   origin: [number, number] | null;
   destination: [number, number] | null;
-  routeCoordinates: [number, number][] | null;
+  routes: RouteMetrics[] | null;
+  selectedRouteId: number | null;
+  onRouteSelect: (id: number) => void;
 }
 
-export default function RouteMap({ origin, destination, routeCoordinates }: RouteMapProps) {
-  // Default center to a generic location if no origin or dest is set
-  const defaultCenter: [number, number] = [28.6139, 77.2090]; // New Delhi
+export default function RouteMap({ origin, destination, routes, selectedRouteId, onRouteSelect }: RouteMapProps) {
+  const defaultCenter: [number, number] = [28.6139, 77.2090];
 
   return (
     <div className="w-full h-full relative z-0">
@@ -79,7 +85,7 @@ export default function RouteMap({ origin, destination, routeCoordinates }: Rout
         <MapController
           origin={origin}
           destination={destination}
-          routeCoordinates={routeCoordinates}
+          routes={routes}
         />
 
         {origin && (
@@ -98,12 +104,32 @@ export default function RouteMap({ origin, destination, routeCoordinates }: Rout
           </Marker>
         )}
 
-        {routeCoordinates && routeCoordinates.length > 0 && (
-          <Polyline
-            positions={routeCoordinates}
-            pathOptions={{ color: '#3b82f6', weight: 5, opacity: 0.8 }}
-          />
-        )}
+        {routes && routes.map(route => {
+          const isSelected = selectedRouteId === route.id;
+          const isRecommended = route.recommended;
+          
+          let color = '#94a3b8'; // slate-400 (inactive)
+          let weight = 4;
+          let opacity = 0.6;
+          
+          if (isSelected) {
+            color = isRecommended ? '#10b981' : '#3b82f6'; // emerald-500 or blue-500
+            weight = 6;
+            opacity = 1;
+          }
+
+          return (
+            <Polyline
+              key={route.id}
+              positions={route.geometry}
+              pathOptions={{ color, weight, opacity }}
+              eventHandlers={{
+                click: () => onRouteSelect(route.id)
+              }}
+              className="cursor-pointer transition-all duration-300 hover:opacity-100"
+            />
+          );
+        })}
       </MapContainer>
     </div>
   );

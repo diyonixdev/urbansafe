@@ -7,11 +7,18 @@ interface LocationPermissionProps {
 }
 
 export function LocationPermission({ location, onRequestPermission }: LocationPermissionProps) {
-  if (location.permission === 'loading') {
+  if (location.permission === 'loading' || (location.permission === 'granted' && location.latitude === null)) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] bg-slate-50 rounded-2xl border border-slate-200 p-8 text-center">
         <Loader2 className="w-10 h-10 text-blue-500 animate-spin mb-4" />
-        <h3 className="text-lg font-bold text-slate-900">Checking location...</h3>
+        <h3 className="text-lg font-bold text-slate-900">
+          {location.permission === 'granted' ? 'Acquiring GPS signal...' : 'Checking location...'}
+        </h3>
+        {location.permission === 'granted' && (
+          <p className="text-sm text-slate-500 mt-2 max-w-sm">
+            This may take a few seconds depending on your device and environment.
+          </p>
+        )}
       </div>
     );
   }
