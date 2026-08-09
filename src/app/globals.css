@@ -782,9 +782,41 @@ button {
 }
 
 .em-mock-summary li b {
-  color: var(--foreground);
-  text-align: right;
-}
+    color: var(--foreground);
+    text-align: right;
+  }
+
+  .em-mock-location {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 0.55rem;
+    background: color-mix(in srgb, var(--primary) 7%, transparent);
+  }
+  .em-mock-location > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--foreground);
+    font-size: 0.78rem;
+  }
+  .em-mock-location > span {
+    display: block;
+    margin-top: 0.45rem;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+  }
+  .em-mock-location dl { margin: 0.6rem 0 0; }
+  .em-mock-location dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.3rem;
+    font-size: 0.75rem;
+  }
+  .em-mock-location dt { color: var(--text-muted); }
+  .em-mock-location dd { margin: 0; color: var(--foreground); font-weight: 700; text-align: right; }
+  .em-mock-location-unavailable { background: color-mix(in srgb, var(--warning) 8%, transparent); }
 
 .em-mock-end-btn {
   width: 100%;

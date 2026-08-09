@@ -29,8 +29,6 @@ export function useGeolocation() {
       return;
     }
 
-    let watchId: number;
-
     const handleSuccess = (position: GeolocationPosition) => {
       setLocation({
         latitude: position.coords.latitude,
@@ -66,12 +64,18 @@ export function useGeolocation() {
       }));
     };
 
+<<<<<<< HEAD
     // Start watching immediately
     watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, {
+=======
+    // Live-map consumers need a current fix, not a background tracker.
+    navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
+>>>>>>> b4f283f (Save my current UrbanSafe changes)
       enableHighAccuracy: true,
       timeout: 10000,
       maximumAge: 0,
     });
+<<<<<<< HEAD
 
     // Try to get permission status for UI if available (fails gracefully if unsupported)
     if (navigator.permissions && navigator.permissions.query) {
@@ -102,6 +106,8 @@ export function useGeolocation() {
         navigator.geolocation.clearWatch(watchId);
       }
     };
+=======
+>>>>>>> b4f283f (Save my current UrbanSafe changes)
   }, []);
 
   return location;

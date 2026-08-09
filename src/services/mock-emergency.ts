@@ -27,6 +27,19 @@ export type MockEmergencyStatus =
   | "ACTIVE"
   | "ENDED";
 
+/** One browser GPS fix captured locally at mock-emergency activation. */
+export interface MockEmergencyLocation {
+  latitude: number;
+  longitude: number;
+  accuracy: number | null;
+  timestamp: string;
+}
+
+export interface MockLocationResult {
+  location: MockEmergencyLocation | null;
+  error: string | null;
+}
+
 /** One emergency event — the same record for every activation source. */
 export interface EmergencyEvent {
   type: "MOCK_EMERGENCY";
@@ -34,7 +47,9 @@ export interface EmergencyEvent {
   riskLevel: "HIGH";
   policeCall: "SIMULATED";
   emergencyResponse: "SIMULATED";
-  location: string;
+  /** Local-only browser location; never sent to an API or service. */
+  location: MockEmergencyLocation | null;
+  locationError: string | null;
   timestamp: string;
   source: EmergencySource;
 }
@@ -110,3 +125,48 @@ export function formatEmergencySource(source: EmergencySource): string {
 
 /** Fallback demo location label used when no real location is available. */
 export const DEMO_LOCATION_LABEL = "Current UrbanSafe location";
+
+/**
+ * Gets exactly one browser GPS fix for a demo activation. This deliberately
+ * never starts a continuous location watcher and keeps the result in frontend state only.
+ */
+export function requestMockEmergencyLocation(): Promise<MockLocationResult> {
+  if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
+    return Promise.resolve({ location: null, error: "Unable to determine current location." });
+  }
+
+  return new Promise((resolve) => {
+    const onFailure = (error: GeolocationPositionError) => {
+      const message =
+        error.code === error.PERMISSION_DENIED
+          ? "Location permission was denied."
+          : error.code === error.POSITION_UNAVAILABLE
+            ? "Current location is unavailable."
+            : error.code === error.TIMEOUT
+              ? "Location request timed out."
+              : "Unable to determine current location.";
+      resolve({ location: null, error: message });
+    };
+
+    try {
+      navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const accuracy = position.coords.accuracy;
+        resolve({
+          location: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: Number.isFinite(accuracy) ? accuracy : null,
+            timestamp: new Date(position.timestamp).toISOString(),
+          },
+          error: null,
+        });
+      },
+      onFailure,
+      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 0 }
+      );
+    } catch {
+      resolve({ location: null, error: "Unable to determine current location." });
+    }
+  });
+}

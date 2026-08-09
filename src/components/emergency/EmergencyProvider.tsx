@@ -35,13 +35,13 @@ import { EmergencyAlertToast } from "./EmergencyAlertToast";
 import { FloatingSosTrigger } from "./FloatingSosTrigger";
 import { MockEmergencyFlow } from "./MockEmergencyFlow";
 import {
-  DEMO_LOCATION_LABEL,
-  formatEmergencySource,
   mockStepDelay,
   nextMockStatus,
   type EmergencyEvent,
+  type MockEmergencyLocation,
   type EmergencySource,
   type MockEmergencyStatus,
+  requestMockEmergencyLocation,
 } from "@/services/mock-emergency";
 
 export type SosSection = "quick" | "text" | "voice" | "chat";
@@ -49,6 +49,8 @@ export type SosSection = "quick" | "text" | "voice" | "chat";
 interface MockEmergencyContextValue {
   status: MockEmergencyStatus;
   event: EmergencyEvent | null;
+  mockLocation: MockEmergencyLocation | null;
+  mockLocationError: string | null;
   pendingSource: EmergencySource | null;
   /** Single shared activation function for ALL emergency entry points. */
   activateEmergency: (source: EmergencySource) => void;
@@ -98,62 +100,70 @@ export function EmergencyProvider({ children }: { children: ReactNode }) {
   const [mockStatus, setMockStatus] = useState<MockEmergencyStatus>("IDLE");
   const [mockEvent, setMockEvent] = useState<EmergencyEvent | null>(null);
   const [pendingSource, setPendingSource] = useState<EmergencySource | null>(null);
-
-  const mockLocationLabel = useMemo(() => {
-    if (location && (location.permission === "granted" || location.permission === "demo")) {
-      return `≈${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`;
-    }
-    return DEMO_LOCATION_LABEL;
-  }, [location]);
+  const [pendingMockLocation, setPendingMockLocation] = useState<MockEmergencyLocation | null>(null);
+  const [pendingMockLocationError, setPendingMockLocationError] = useState<string | null>(null);
+  const mockActivationInProgress = useRef(false);
 
   const startMockFlow = useCallback(
-    (source: EmergencySource) => {
+    (source: EmergencySource, mockLocation: MockEmergencyLocation | null, mockLocationError: string | null) => {
       setPendingSource(null);
+      setPendingMockLocation(null);
+      setPendingMockLocationError(null);
       setMockEvent({
         type: "MOCK_EMERGENCY",
         status: "ACTIVE",
         riskLevel: "HIGH",
         policeCall: "SIMULATED",
         emergencyResponse: "SIMULATED",
-        location: mockLocationLabel,
+        location: mockLocation,
+        locationError: mockLocationError,
         timestamp: new Date().toISOString(),
         source,
       });
       setMockStatus("SOS_ACTIVE");
     },
-    [mockLocationLabel]
+    []
   );
 
   const activateEmergency = useCallback(
     (source: EmergencySource) => {
       // No duplicates: an already-running (or pending) emergency ignores
       // further activations from any source.
-      if (mockStatus !== "IDLE" && mockStatus !== "ENDED") return;
+      if ((mockStatus !== "IDLE" && mockStatus !== "ENDED") || mockActivationInProgress.current) return;
+      mockActivationInProgress.current = true;
+      void requestMockEmergencyLocation().then(({ location: mockLocation, error }) => {
       if (source === "VOICE_TRIGGER") {
         // Voice is an explicit emergency trigger — no AI, no analysis,
         // no confirmation, straight into the shared flow.
-        startMockFlow(source);
+        startMockFlow(source, mockLocation, error);
       } else {
+        setPendingMockLocation(mockLocation);
+        setPendingMockLocationError(error);
         setPendingSource(source);
         setMockStatus("CONFIRMATION");
       }
+      });
     },
     [mockStatus, startMockFlow]
   );
 
   const confirmMockEmergency = useCallback(() => {
     if (mockStatus === "CONFIRMATION" && pendingSource) {
-      startMockFlow(pendingSource);
+      startMockFlow(pendingSource, pendingMockLocation, pendingMockLocationError);
     }
-  }, [mockStatus, pendingSource, startMockFlow]);
+  }, [mockStatus, pendingSource, pendingMockLocation, pendingMockLocationError, startMockFlow]);
 
   const cancelMockEmergency = useCallback(() => {
     setPendingSource(null);
+    setPendingMockLocation(null);
+    setPendingMockLocationError(null);
+    mockActivationInProgress.current = false;
     setMockStatus("IDLE");
   }, []);
 
   const endEmergency = useCallback(() => {
-    setMockEvent((current) => (current ? { ...current, status: "ENDED" } : current));
+    setMockEvent(null);
+    mockActivationInProgress.current = false;
     setMockStatus("ENDED");
   }, []);
 
@@ -362,13 +372,15 @@ export function EmergencyProvider({ children }: { children: ReactNode }) {
       cancelEmergency,
       status: mockStatus,
       event: mockEvent,
+      mockLocation: mockEvent?.location ?? pendingMockLocation,
+      mockLocationError: mockEvent?.locationError ?? pendingMockLocationError,
       pendingSource,
       activateEmergency,
       confirmMockEmergency,
       cancelMockEmergency,
       endEmergency,
     }),
-    [sosOpen, sosSection, openSos, closeSos, activeEvent, nearby, location, sending, refreshLocation, sendSos, cancelEmergency, mockStatus, mockEvent, pendingSource, activateEmergency, confirmMockEmergency, cancelMockEmergency, endEmergency]
+    [sosOpen, sosSection, openSos, closeSos, activeEvent, nearby, location, sending, refreshLocation, sendSos, cancelEmergency, mockStatus, mockEvent, pendingSource, pendingMockLocation, pendingMockLocationError, activateEmergency, confirmMockEmergency, cancelMockEmergency, endEmergency]
   );
 
   return (

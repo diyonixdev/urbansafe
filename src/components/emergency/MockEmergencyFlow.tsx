@@ -3,9 +3,9 @@
 import { CheckCircle2, Loader2, MapPin, PhoneCall, Radio } from "lucide-react";
 import { useEmergency } from "./EmergencyProvider";
 import {
-  DEMO_LOCATION_LABEL,
   DEMO_NEARBY_USERS,
   formatEmergencySource,
+  type MockEmergencyLocation,
 } from "@/services/mock-emergency";
 
 /**
@@ -119,12 +119,9 @@ export function MockEmergencyFlow() {
   /* ---------------------------------------------------------- */
   if (status === "LOCATION_DEMO") {
     return (
-      <Overlay title="📍 Location — DEMO">
-        <div className="em-mock-demo-badge">Demo Location</div>
-        <div className="em-mock-connect-row">
-          <MapPin size={16} className="em-mock-pulse-icon" />
-          <span>{event?.location ?? DEMO_LOCATION_LABEL}</span>
-        </div>
+      <Overlay title="📍 CURRENT LOCATION — DEMO">
+        <div className="em-mock-demo-badge">DEMO LOCATION · LOCAL ONLY</div>
+        <MockLocationDetails location={event?.location ?? null} error={event?.locationError ?? null} />
         <MockSpinner />
       </Overlay>
     );
@@ -173,10 +170,11 @@ export function MockEmergencyFlow() {
               <li><span>Status:</span><b>ACTIVE — DEMO</b></li>
               <li><span>Police 100:</span><b>SIMULATED · Connected</b></li>
               <li><span>Emergency 112:</span><b>SIMULATED · Connected</b></li>
-              <li><span>Location:</span><b>{event?.location ?? DEMO_LOCATION_LABEL}</b></li>
+              <li><span>Location:</span><b>{event?.location ? "Captured locally · DEMO" : "Unavailable"}</b></li>
               <li><span>Nearby users:</span><b>{DEMO_NEARBY_USERS.length} demo users notified</b></li>
               <li><span>Time:</span><b>{timestampLabel ?? "—"}</b></li>
             </ul>
+            <MockLocationDetails location={event?.location ?? null} error={event?.locationError ?? null} />
             <button type="button" className="em-mock-end-btn" onClick={endEmergency}>
               🔴 END DEMO CALL
             </button>
@@ -224,4 +222,33 @@ function Overlay({ title, children }: { title: string; children: React.ReactNode
 
 function MockSpinner() {
   return <Loader2 size={18} className="em-spin em-mock-spinner" aria-hidden="true" />;
+}
+
+function MockLocationDetails({
+  location,
+  error,
+}: {
+  location: MockEmergencyLocation | null;
+  error: string | null;
+}) {
+  if (!location) {
+    return (
+      <div className="em-mock-location em-mock-location-unavailable">
+        <div><MapPin size={16} /><b>📍 Location unavailable</b></div>
+        <span>{error ?? "Unable to obtain your current location."}</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="em-mock-location">
+      <div><MapPin size={16} /><b>📍 CURRENT LOCATION — DEMO</b></div>
+      <dl>
+        <div><dt>Latitude</dt><dd>{location.latitude.toFixed(6)}</dd></div>
+        <div><dt>Longitude</dt><dd>{location.longitude.toFixed(6)}</dd></div>
+        {location.accuracy !== null && <div><dt>Accuracy</dt><dd>approximately {Math.round(location.accuracy)} meters</dd></div>}
+        <div><dt>Timestamp</dt><dd>{new Date(location.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</dd></div>
+      </dl>
+    </div>
+  );
 }

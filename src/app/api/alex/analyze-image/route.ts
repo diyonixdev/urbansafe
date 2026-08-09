@@ -7,6 +7,11 @@ import {
   type ThreatAssessment
 } from "@/services/threatAssessment";
 
+// Image files are encoded with Node's Buffer before being sent to the
+// configured NVIDIA model. Keep this route on the Node runtime explicitly.
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 /**
  * UrbanSafe Alex — photo upload + AI image analysis.
  *

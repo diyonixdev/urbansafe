@@ -256,12 +256,17 @@ export function SosChatbot() {
         signal: controller.signal
       });
 
+      // A development-server error overlay can be HTML rather than the API's
+      // normal JSON response. Treat it as a recoverable API failure instead
+      // of throwing a second client-side console error/overlay.
+      const rawBody = await response.text();
       let parsed: unknown = null;
-      try {
-        parsed = await response.json();
-      } catch {
-        if (process.env.NODE_ENV === "development") {
-          console.error(`[SosChatbot] image analysis failed (http_${response.status}): non-JSON response body`);
+      if (rawBody) {
+        try {
+          parsed = JSON.parse(rawBody);
+        } catch {
+          // The assistant message below gives the user a safe fallback. The
+          // server-side route retains the diagnostic details for debugging.
         }
       }
 
@@ -282,11 +287,6 @@ export function SosChatbot() {
       }
 
       const fallback = data.error || "Alex couldn't analyze this image right now. Please try again.";
-      if (process.env.NODE_ENV === "development") {
-        console.error(`[SosChatbot] image analysis failed (http_${response.status})`, {
-          serverMessage: data.error ?? "no error message in response body"
-        });
-      }
       setMessages((prev) => [...prev, { role: "assistant", content: fallback }]);
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
