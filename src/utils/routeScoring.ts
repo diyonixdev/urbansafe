@@ -1,3 +1,5 @@
+import { deriveDangerZones, type DangerZone } from "@/services/dangerZones";
+
 export interface RouteMetrics {
   id: number;
   travelTime: number; // minutes
@@ -10,6 +12,9 @@ export interface RouteMetrics {
   safetyScore: number;
   recommended: boolean;
   geometry: [number, number][];
+  /** Heuristic safety-risk zones near this route (OSM lighting data),
+   * used by journey monitoring. Never confirmed incident locations. */
+  dangerZones: DangerZone[];
 }
 
 const OVERPASS_API = "https://overpass-api.de/api/interpreter";
@@ -42,9 +47,12 @@ export async function analyzeRoute(
   
   const bbox = getBoundingBox(geometry);
   
-  // Build Overpass query to find police, hospitals, and lit roads in the bounding box
+  // Build Overpass query to find police, hospitals, lit roads, AND
+  // unlit highway segments (geometry) in the bounding box. The unlit
+  // segments feed the heuristic danger-zone model — no extra network
+  // call is made for them.
   const query = `
-    [out:json][timeout:15];
+    [out:json][timeout:25];
     (
       node["amenity"="police"](${bbox.s},${bbox.w},${bbox.n},${bbox.e});
       way["amenity"="police"](${bbox.s},${bbox.w},${bbox.n},${bbox.e});
@@ -55,11 +63,14 @@ export async function analyzeRoute(
       way["lit"="yes"](${bbox.s},${bbox.w},${bbox.n},${bbox.e});
     );
     out center;
+    way[highway]["lit"!="yes"](${bbox.s},${bbox.w},${bbox.n},${bbox.e});
+    out geom;
   `;
 
   let policeCount = 0;
   let hospitalCount = 0;
   let litRoadsCount = 0;
+  const unlitWayNodes: { lat: number; lon: number }[] = [];
 
   try {
     const res = await fetch(OVERPASS_API, {
@@ -73,6 +84,15 @@ export async function analyzeRoute(
         if (el.tags?.amenity === 'police') policeCount++;
         else if (el.tags?.amenity === 'hospital') hospitalCount++;
         else if (el.tags?.lit === 'yes') litRoadsCount++;
+        // `out geom` ways carry a geometry array; these are the unlit
+        // highway segments used for heuristic danger-zone derivation.
+        if (el.type === 'way' && Array.isArray(el.geometry)) {
+          for (const point of el.geometry) {
+            unlitWayNodes.push({ lat: point.lat, lon: point.lon });
+            if (unlitWayNodes.length >= 3000) break;
+          }
+        }
+        if (unlitWayNodes.length >= 3000) break;
       }
     }
   } catch (err) {
@@ -104,6 +124,7 @@ export async function analyzeRoute(
     hospitalsNearby: hospitalCount,
     safetyScore: Math.round(score),
     recommended: false, // Will be set later
-    geometry
+    geometry,
+    dangerZones: deriveDangerZones(geometry, unlitWayNodes),
   };
 }

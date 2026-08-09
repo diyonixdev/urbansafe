@@ -1187,3 +1187,7 @@ button {
 .rs-em { animation:sm-em-pulse 1.6s ease-out infinite;border-color:#fecaca !important; }
 .rs-em-focus { animation:none;box-shadow:0 0 0 4px rgba(255,255,255,.28),0 4px 14px rgba(220,38,38,.55) !important; }
 .rs-spotlight { animation:sm-spot .9s ease infinite; }
+
+/* ============ Journey Monitoring ============ */
+.jm-pulse-dot { width:8px;height:8px;border-radius:50%;background:#10b981;flex:none;animation:jm-pulse 1.6s ease-in-out infinite; }
+@keyframes jm-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.5)} 50%{box-shadow:0 0 0 6px rgba(16,185,129,0)} }
