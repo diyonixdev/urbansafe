@@ -14,6 +14,7 @@ import { getEmergencyTypeLabel } from "@/services/emergency-config";
 import { timeAgo } from "@/lib/geo";
 import type { NearbyEmergency } from "@/services/emergency-types";
 
+
 type LayerId = "crime" | "construction" | "accident" | "lighting" | "police";
 
 interface LayerConfig {
