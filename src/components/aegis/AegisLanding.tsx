@@ -539,7 +539,7 @@ export default function AegisLanding() {
           <div className="flex-1 flex flex-col justify-center">
             <h2 className="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">AI Emergency Assistant</h2>
             <p className="text-slate-600 text-lg mb-6 leading-relaxed">
-              Get immediate, calm, and actionable advice during critical situations. Whether it's first aid, disaster response, or safety protocols, our AI is ready to guide you step-by-step.
+              Get immediate, calm, and actionable advice during critical situations. Whether it&apos;s first aid, disaster response, or safety protocols, our AI is ready to guide you step-by-step.
             </p>
             <div className="flex items-center gap-3 bg-blue-50 text-blue-700 px-4 py-3 rounded-xl border border-blue-100 font-medium text-sm w-fit">
               <ShieldCheck size={20} />
