@@ -538,6 +538,313 @@ button {
   line-height: 1.4;
 }
 
+.em-chatbot-danger {
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
+  border-radius: 6px;
+}
+
+.em-chatbot-danger-text {
+  color: var(--foreground);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.em-chatbot-danger-text::first-line {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.em-threat-heading {
+  font-size: 0.85rem;
+}
+
+.em-threat-line {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+/* Shared mock emergency flow (rendered on top of the SOS modal) */
+.em-mock-overlay {
+  z-index: 80;
+}
+
+.em-mock-modal {
+  width: min(480px, 100%);
+}
+
+.em-mock-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.6rem 1.4rem 1.5rem;
+  text-align: center;
+}
+
+.em-mock-step-title {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.em-mock-confirm-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.em-mock-confirm-title {
+  margin: 0;
+  color: var(--danger);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.em-mock-confirm-text {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.em-mock-confirm-note {
+  margin: 0;
+  max-width: 34ch;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.em-mock-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.35rem;
+  width: 100%;
+}
+
+.em-mock-btn-primary {
+  padding: 0.55rem 1.1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.em-mock-btn-primary:hover {
+  opacity: 0.88;
+}
+
+.em-mock-btn-secondary {
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+.em-mock-btn-secondary:hover {
+  border-color: var(--text-muted);
+  opacity: 0.85;
+}
+
+.em-mock-demo-badge {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--warning) 55%, transparent);
+  border-radius: 0.4rem;
+  background: color-mix(in srgb, var(--warning) 12%, transparent);
+  color: var(--warning);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.em-mock-source-line {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.em-mock-connect-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--foreground);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.em-mock-connected {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--success);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.em-mock-pulse-icon {
+  color: var(--danger);
+  animation: em-record-pulse 1.1s ease-in-out infinite;
+}
+
+.em-mock-spinner {
+  color: var(--text-muted);
+}
+
+.em-mock-nearby-count {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 0.85rem;
+}
+
+.em-mock-users {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.em-mock-user {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.55rem;
+  background: var(--card-bg);
+  text-align: left;
+}
+
+.em-mock-user-dot {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.em-mock-user b {
+  display: block;
+  color: var(--foreground);
+  font-size: 0.78rem;
+}
+
+.em-mock-user span {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-style: italic;
+}
+
+.em-mock-active-title {
+  margin: 0;
+  color: var(--danger);
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.em-mock-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.9rem 1rem;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+  background: var(--card-bg);
+  text-align: left;
+}
+
+.em-mock-summary li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.76rem;
+}
+
+.em-mock-summary li span {
+  color: var(--text-muted);
+}
+
+.em-mock-summary li b {
+  color: var(--foreground);
+  text-align: right;
+}
+
+.em-mock-end-btn {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 0.55rem;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.em-mock-end-btn:hover {
+  opacity: 0.9;
+}
+
+.em-mock-ended-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--success) 18%, transparent);
+  color: var(--success);
+}
+
+.em-mock-ended-title {
+  margin: 0;
+  color: var(--success);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.em-mock-ended-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.em-chatbot-danger-btn {
+  width: 100%;
+  margin-top: 0.55rem;
+  padding: 0.45rem 0.6rem;
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.em-chatbot-danger-btn:hover {
+  opacity: 0.9;
+}
+
 .em-chatbot-messages {
   display: flex;
   flex-direction: column;
@@ -631,6 +938,220 @@ button {
 .em-chatbot-input button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Photo upload & image analysis */
+.em-chatbot-photo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+  color: var(--foreground);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+.em-chatbot-photo-btn:hover {
+  border-color: var(--primary);
+}
+
+.em-chatbot-analyzing {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.em-chatbot-assessment-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 0.35rem;
+}
+
+.em-chatbot-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.6rem;
+}
+
+.em-chatbot-preview-img {
+  max-width: 220px;
+  max-height: 160px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+}
+
+.em-chatbot-preview-meta {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.em-chatbot-preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.em-chatbot-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+  color: var(--foreground);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s, opacity 0.2s;
+}
+
+.em-chatbot-secondary-btn:hover {
+  border-color: var(--primary);
+}
+
+.em-chatbot-analyze-btn {
+  padding: 0.45rem 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.em-chatbot-remove-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, opacity 0.2s;
+}
+
+.em-chatbot-remove-btn:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.em-chatbot-photo-btn:disabled,
+.em-chatbot-secondary-btn:disabled,
+.em-chatbot-analyze-btn:disabled,
+.em-chatbot-remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Voice recording */
+.em-chatbot-voice-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+  color: var(--foreground);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.2s, opacity 0.2s, background 0.2s, color 0.2s;
+}
+
+.em-chatbot-voice-btn:hover {
+  border-color: var(--primary);
+}
+
+.em-chatbot-voice-btn.em-recording {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+.em-chatbot-voice-btn.em-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.em-chatbot-recording {
+  border-color: var(--danger);
+  flex-direction: row;
+  justify-content: center;
+}
+
+.em-chatbot-record-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: em-record-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes em-record-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.75); }
+}
+
+.em-chatbot-record-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--danger);
+}
+
+.em-chatbot-stop-btn {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--danger);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--danger);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.em-chatbot-stop-btn:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.em-chatbot-preview audio {
+  display: none;
 }
 .em-history-row { display:grid;grid-template-columns:30px 1fr auto;gap:.65rem;align-items:center;padding:.6rem 0;border-top:1px solid color-mix(in srgb,var(--border) 75%,transparent); }
 .em-history-row:first-child { border-top:0; }

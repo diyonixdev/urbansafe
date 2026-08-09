@@ -33,10 +33,34 @@ import type {
 import { SosModal } from "./SosModal";
 import { EmergencyAlertToast } from "./EmergencyAlertToast";
 import { FloatingSosTrigger } from "./FloatingSosTrigger";
+import { MockEmergencyFlow } from "./MockEmergencyFlow";
+import {
+  DEMO_LOCATION_LABEL,
+  formatEmergencySource,
+  mockStepDelay,
+  nextMockStatus,
+  type EmergencyEvent,
+  type EmergencySource,
+  type MockEmergencyStatus,
+} from "@/services/mock-emergency";
 
 export type SosSection = "quick" | "text" | "voice" | "chat";
 
-interface EmergencyContextValue {
+interface MockEmergencyContextValue {
+  status: MockEmergencyStatus;
+  event: EmergencyEvent | null;
+  pendingSource: EmergencySource | null;
+  /** Single shared activation function for ALL emergency entry points. */
+  activateEmergency: (source: EmergencySource) => void;
+  /** Confirms the mock emergency demo after the confirmation step. */
+  confirmMockEmergency: () => void;
+  /** Cancels the confirmation step (back to IDLE). */
+  cancelMockEmergency: () => void;
+  /** Ends the active mock emergency (stops all timers, status -> ENDED). */
+  endEmergency: () => void;
+}
+
+interface EmergencyContextValue extends MockEmergencyContextValue {
   sosOpen: boolean;
   sosSection: SosSection;
   openSos: (section?: SosSection) => void;
@@ -66,6 +90,83 @@ export function EmergencyProvider({ children }: { children: ReactNode }) {
   const [location, setLocation] = useState<EmergencyLocation | null>(null);
   const [sending, setSending] = useState(false);
   const [alerts, setAlerts] = useState<NearbyEmergency[]>([]);
+
+  /* ---------------------------------------------------------- */
+  /* Shared mock emergency state machine (ONE system for ALL    */
+  /* sources: TEXT / PHOTO / VOICE / MANUAL SOS).               */
+  /* ---------------------------------------------------------- */
+  const [mockStatus, setMockStatus] = useState<MockEmergencyStatus>("IDLE");
+  const [mockEvent, setMockEvent] = useState<EmergencyEvent | null>(null);
+  const [pendingSource, setPendingSource] = useState<EmergencySource | null>(null);
+
+  const mockLocationLabel = useMemo(() => {
+    if (location && (location.permission === "granted" || location.permission === "demo")) {
+      return `≈${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`;
+    }
+    return DEMO_LOCATION_LABEL;
+  }, [location]);
+
+  const startMockFlow = useCallback(
+    (source: EmergencySource) => {
+      setPendingSource(null);
+      setMockEvent({
+        type: "MOCK_EMERGENCY",
+        status: "ACTIVE",
+        riskLevel: "HIGH",
+        policeCall: "SIMULATED",
+        emergencyResponse: "SIMULATED",
+        location: mockLocationLabel,
+        timestamp: new Date().toISOString(),
+        source,
+      });
+      setMockStatus("SOS_ACTIVE");
+    },
+    [mockLocationLabel]
+  );
+
+  const activateEmergency = useCallback(
+    (source: EmergencySource) => {
+      // No duplicates: an already-running (or pending) emergency ignores
+      // further activations from any source.
+      if (mockStatus !== "IDLE" && mockStatus !== "ENDED") return;
+      if (source === "VOICE_TRIGGER") {
+        // Voice is an explicit emergency trigger — no AI, no analysis,
+        // no confirmation, straight into the shared flow.
+        startMockFlow(source);
+      } else {
+        setPendingSource(source);
+        setMockStatus("CONFIRMATION");
+      }
+    },
+    [mockStatus, startMockFlow]
+  );
+
+  const confirmMockEmergency = useCallback(() => {
+    if (mockStatus === "CONFIRMATION" && pendingSource) {
+      startMockFlow(pendingSource);
+    }
+  }, [mockStatus, pendingSource, startMockFlow]);
+
+  const cancelMockEmergency = useCallback(() => {
+    setPendingSource(null);
+    setMockStatus("IDLE");
+  }, []);
+
+  const endEmergency = useCallback(() => {
+    setMockEvent((current) => (current ? { ...current, status: "ENDED" } : current));
+    setMockStatus("ENDED");
+  }, []);
+
+  /* Auto-advance the shared state machine (the effect cleans up its own
+     timer on every status change, so nothing survives ENDED/unmount). */
+  useEffect(() => {
+    const delay = mockStepDelay(mockStatus);
+    if (delay === null) return;
+    const timer = window.setTimeout(() => {
+      setMockStatus((current) => (current === mockStatus ? nextMockStatus(current) : current));
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [mockStatus]);
 
   const seenAlertIds = useRef(new Set<string>());
   const notificationAsked = useRef(false);
@@ -259,8 +360,15 @@ export function EmergencyProvider({ children }: { children: ReactNode }) {
       refreshLocation,
       sendSos,
       cancelEmergency,
+      status: mockStatus,
+      event: mockEvent,
+      pendingSource,
+      activateEmergency,
+      confirmMockEmergency,
+      cancelMockEmergency,
+      endEmergency,
     }),
-    [sosOpen, sosSection, openSos, closeSos, activeEvent, nearby, location, sending, refreshLocation, sendSos, cancelEmergency]
+    [sosOpen, sosSection, openSos, closeSos, activeEvent, nearby, location, sending, refreshLocation, sendSos, cancelEmergency, mockStatus, mockEvent, pendingSource, activateEmergency, confirmMockEmergency, cancelMockEmergency, endEmergency]
   );
 
   return (
@@ -268,6 +376,7 @@ export function EmergencyProvider({ children }: { children: ReactNode }) {
       {children}
       {uid && <FloatingSosTrigger />}
       {uid && <SosModal />}
+      {uid && <MockEmergencyFlow />}
       {alerts.map((event) => (
         <EmergencyAlertToast
           key={event.id}
