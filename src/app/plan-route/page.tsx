@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   AlertOctagon, AlertTriangle, ArrowUpDown, Bot, Car, CheckCircle2, ChevronRight, Clock, Gauge, Lightbulb, Layers,
   Loader2, LocateFixed, MapPin, Minus, Moon, Navigation, Plus, Radar,
@@ -240,7 +241,8 @@ function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: s
   );
 }
 
-export default function PlanRoutePage() {
+function PlanRouteContent() {
+  const searchParams = useSearchParams();
   const [origin, setOrigin] = useState("Current Location");
   const [destination, setDestination] = useState("");
   const [searched, setSearched] = useState(false);
@@ -268,6 +270,18 @@ export default function PlanRoutePage() {
       setSelected("safe");
     }, 950);
   };
+
+  /* Deep link from the landing page (?origin=&destination=): prefill and
+     run the route analysis automatically. */
+  useEffect(() => {
+    const dest = searchParams.get("destination");
+    if (!dest) return;
+    const from = searchParams.get("origin");
+    if (from && from !== "Current Location") setOrigin(from);
+    setDestination(dest);
+    handleSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   const handleSwap = () => {
     setOrigin(destination.trim() ? destination : "Current Location");
@@ -885,4 +899,8 @@ export default function PlanRoutePage() {
 
     </div>
   );
+}
+
+export default function PlanRoutePage() {
+  return <Suspense fallback={null}><PlanRouteContent /></Suspense>;
 }
