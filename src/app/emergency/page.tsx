@@ -112,15 +112,11 @@ export default function EmergencyPage() {
               </div>
               <div className="flex flex-col gap-2.5">
                 {EMERGENCY_SERVICES.map((service) => (
-                  <a
-                    key={service.label}
-                    href={`tel:${service.number}`}
-                    className="em-contact-row"
-                  >
+                  <div key={service.label} className="em-contact-row">
                     <span className="em-contact-dot" style={{ background: service.tone }} />
                     <span>{service.label}</span>
                     <b>{service.number}</b>
-                  </a>
+                  </div>
                 ))}
               </div>
               <p className="mt-4 text-[11px] font-semibold text-slate-400 leading-relaxed">

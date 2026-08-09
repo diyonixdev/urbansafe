@@ -34,7 +34,11 @@ export function PressHoldButton({
   const rafRef = useRef<number | null>(null);
 
   const stopHold = () => {
-    if (holding) onCancel?.();
+    // Completion clears startRef before invoking onComplete. Pointer-up is
+    // delivered immediately afterwards, often before React commits
+    // setHolding(false); using state here could therefore cancel a just-fired
+    // SOS countdown.
+    if (startRef.current !== null) onCancel?.();
     setHolding(false);
     setProgress(0);
     startRef.current = null;

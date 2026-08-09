@@ -376,7 +376,10 @@ export function EmergencyProvider({ children }: { children: ReactNode }) {
       {children}
       {uid && <FloatingSosTrigger />}
       {uid && <SosModal />}
-      {uid && <MockEmergencyFlow />}
+      {/* The mock flow is a local UI simulation. It must subscribe to the
+          shared state even on the public emergency page, where a visitor can
+          use the demo before authentication has resolved. */}
+      <MockEmergencyFlow />
       {alerts.map((event) => (
         <EmergencyAlertToast
           key={event.id}

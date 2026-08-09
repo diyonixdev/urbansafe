@@ -232,7 +232,6 @@ export function EmergencyPanel({ embedded = false, initialSection = "quick" }: E
         <button
           type="button"
           className="em-send-btn"
-          disabled={!message.trim()}
           onClick={() => activateEmergency("MANUAL_SOS")}
         >
           <AlertOctagon size={15} />
