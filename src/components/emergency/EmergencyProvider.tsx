@@ -142,6 +142,18 @@ export function EmergencyProvider({ children }: { children: ReactNode }) {
         setPendingSource(source);
         setMockStatus("CONFIRMATION");
       }
+      }).catch(() => {
+        // Location resolution can fail on some devices. Keep the demo flow
+        // usable: clear the in-flight flag and proceed without coordinates.
+        mockActivationInProgress.current = false;
+        if (source === "VOICE_TRIGGER") {
+          startMockFlow(source, null, "Unable to determine current location.");
+        } else {
+          setPendingMockLocation(null);
+          setPendingMockLocationError("Unable to determine current location.");
+          setPendingSource(source);
+          setMockStatus("CONFIRMATION");
+        }
       });
     },
     [mockStatus, startMockFlow]

@@ -155,7 +155,12 @@ export function EmergencyPanel({ embedded = false, initialSection = "quick" }: E
   const playRecording = () => {
     if (!audioUrl) return;
     const audio = new Audio(audioUrl);
-    void audio.play();
+    // play() rejects when the browser blocks autoplay or the blob URL has
+    // been revoked; catch it so it can never become an unhandled rejection.
+    audio.play().catch(() => {
+      setRecStatus("idle");
+      setRecError("Playback was blocked. Please record again.");
+    });
   };
 
   const formatDuration = (seconds: number) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export interface LocationState {
   latitude: number | null;
@@ -18,6 +18,8 @@ export function useGeolocation() {
     error: null,
     permission: 'loading',
   });
+  const [refreshVersion, setRefreshVersion] = useState(0);
+  const refresh = useCallback(() => setRefreshVersion((version) => version + 1), []);
 
   useEffect(() => {
     if (!('geolocation' in navigator)) {
@@ -64,6 +66,7 @@ export function useGeolocation() {
       }));
     };
 
+<<<<<<< HEAD
     let watchId: number;
     // Start watching immediately
     watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, {
@@ -71,6 +74,41 @@ export function useGeolocation() {
       timeout: 10000,
       maximumAge: 0,
     });
+=======
+    let watchId: number | undefined;
+
+    // Start watching immediately. In insecure contexts (e.g. http://LAN-IP)
+    // or under a blocked permissions policy the browser throws synchronously
+    // instead of calling the error callback — never let that escape.
+    try {
+      watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      });
+    } catch {
+      setLocation((prev) => ({
+        ...prev,
+        error: "Location access is not available in this context.",
+        permission: 'unsupported',
+      }));
+      return;
+    }
+
+    // A user-initiated refresh asks for a new fix immediately while keeping
+    // the existing watch active for later, meaningful movement updates.
+    if (refreshVersion > 0) {
+      try {
+        navigator.geolocation.getCurrentPosition(handleSuccess, handleError, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        });
+      } catch {
+        // The watch above remains active; a synchronous throw here is not fatal.
+      }
+    }
+>>>>>>> 165fa26 (Add dynamic location and route safety features)
 
     // Try to get permission status for UI if available (fails gracefully if unsupported)
     if (navigator.permissions && navigator.permissions.query) {
@@ -101,7 +139,11 @@ export function useGeolocation() {
         navigator.geolocation.clearWatch(watchId);
       }
     };
+<<<<<<< HEAD
   }, []);
+=======
+  }, [refreshVersion]);
+>>>>>>> 165fa26 (Add dynamic location and route safety features)
 
-  return location;
+  return { ...location, refresh };
 }

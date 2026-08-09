@@ -5,6 +5,8 @@
 //   Street lighting / road-condition APIs           -> lighting, roads
 //   LLM endpoint (OpenAI-compatible)                -> suggestion generation
 
+import type { SafetyInsights } from "@/services/location-safety";
+
 export type SuggestionTone = "good" | "info" | "warn";
 
 export type SuggestionIcon =
@@ -44,7 +46,13 @@ export interface AlexPayload {
 export type RouteId = "safe" | "balanced" | "fastest";
 export type Level = "Low" | "Moderate" | "High";
 
-const MOCK_LOCATION = { city: "Jaipur", currentRoad: "MI Road" };
+export interface AlexLocationContext {
+  city?: string;
+  locality?: string;
+  road?: string;
+}
+
+const FALLBACK_LOCATION = { city: "Current area", currentRoad: "Current area" };
 
 const MOCK_ROAD_PROFILE = {
   nearbyIncidents: 2,
@@ -74,58 +82,82 @@ export function getTimeOfDay(hour = new Date().getHours()): string {
   return "Night";
 }
 
-function contextualSuggestions(timeOfDay: string): AlexSuggestion[] {
-  const road = MOCK_LOCATION.currentRoad;
+function toneFor(level: "good" | "moderate" | "poor" | "low" | "high"): SuggestionTone {
+  if (level === "good" || level === "low") return "good";
+  return level === "high" || level === "poor" ? "warn" : "info";
+}
+
+function contextualSuggestions(timeOfDay: string, road: string, insights?: SafetyInsights | null): AlexSuggestion[] {
+  if (insights) {
+    return [
+      { id: "ctx-lighting", icon: "lighting", title: insights.streetLighting.status, detail: insights.streetLighting.description, tone: toneFor(insights.streetLighting.level) },
+      { id: "ctx-crowd", icon: "users", title: insights.crowdDensity.status, detail: insights.crowdDensity.description, tone: toneFor(insights.crowdDensity.level) },
+      { id: "ctx-travel", icon: "safety", title: insights.travelSafety.status, detail: insights.travelSafety.description, tone: toneFor(insights.travelSafety.level) },
+      { id: "ctx-route", icon: "route", title: insights.saferRoute.status, detail: insights.saferRoute.description, tone: "info" },
+    ];
+  }
+
   const list: AlexSuggestion[] = [
-    { id: "ctx-lighting", icon: "lighting", title: "Street lighting is good", detail: `${road} holds 88% light coverage through the main stretch.`, tone: "good" },
-    { id: "ctx-crowd", icon: "users", title: "Moderate crowd density nearby", detail: "Crowds around the main junction are moderate right now.", tone: "info" },
+    { id: "ctx-lighting", icon: "lighting", title: "Lighting estimate", detail: `Demo estimate for ${road}; this is not a street-lighting feed.`, tone: "good" },
+    { id: "ctx-crowd", icon: "users", title: "Crowd estimate", detail: "Demo estimate based on the approximate area and time, not live crowd data.", tone: "info" },
   ];
 
   if (timeOfDay === "Night") {
-    list.push({ id: "ctx-night", icon: "moon", title: "Nighttime risk is rising", detail: "Consider staying on the main road after 9 PM — lighting drops on side lanes.", tone: "warn" });
+    list.push({ id: "ctx-night", icon: "moon", title: "Nighttime travel estimate", detail: "Demo guidance: consider staying on main roads after dark.", tone: "warn" });
   } else {
-    list.push({ id: "ctx-time", icon: "clock", title: "Good time to travel", detail: `Safety conditions on ${road} are favorable at this hour.`, tone: "good" });
+    list.push({ id: "ctx-time", icon: "clock", title: "Travel estimate", detail: `Demo guidance based on the time of day around ${road}.`, tone: "good" });
   }
 
-  list.push({ id: "ctx-stretch", icon: "route", title: "A safer stretch is available", detail: "Two blocks ahead, the Tonk Road junction has lower incident counts.", tone: "info" });
+  list.push({ id: "ctx-stretch", icon: "route", title: "Estimated route guidance", detail: "Main roads may offer better visibility than quieter side streets.", tone: "info" });
 
   return list;
 }
 
-function routeSuggestions(destination: string, route: RouteId): AlexSuggestion[] {
+function routeSuggestions(destination: string, route: RouteId, road: string, insights?: SafetyInsights | null): AlexSuggestion[] {
+  const lightingDetail = insights?.streetLighting.description;
+  const travelDetail = insights?.travelSafety.description;
+  const saferRouteDetail = insights?.saferRoute.description;
+
   if (route === "safe") {
     return [
-      { id: "safe-road", icon: "safety", title: "Safer road ahead", detail: "The next stretch has better lighting and lower reported incidents.", tone: "good" },
-      { id: "safe-police", icon: "shield", title: "Police presence nearby", detail: "Police presence is high around your current road.", tone: "good" },
-      { id: "safe-lighting", icon: "lighting", title: "Well-lit route available", detail: `Street-light coverage stays at 96% end to end toward ${destination}.`, tone: "good" },
-      { id: "safe-time", icon: "clock", title: "Good time to travel", detail: `Crowd levels are moderate on this route — about 18 min to ${destination}.`, tone: "info" },
+      { id: "safe-road", icon: "safety", title: insights?.saferRoute.status || "Estimated route guidance", detail: saferRouteDetail || "Demo guidance favors main, well-lit routes.", tone: "good" },
+      { id: "safe-route", icon: "shield", title: "Route estimate", detail: `This route is a demo comparison for travel toward ${destination}.`, tone: "good" },
+      { id: "safe-lighting", icon: "lighting", title: insights?.streetLighting.status || "Lighting estimate", detail: lightingDetail || "This is a demo lighting estimate, not a street-lighting feed.", tone: insights ? toneFor(insights.streetLighting.level) : "good" },
+      { id: "safe-time", icon: "clock", title: insights?.travelSafety.status || "Travel estimate", detail: travelDetail || "This is a demo estimate based on your area and time of day.", tone: insights ? toneFor(insights.travelSafety.level) : "info" },
     ];
   }
 
   if (route === "balanced") {
     return [
-      { id: "bal-risk", icon: "alert", title: "Moderate risk stretch ahead", detail: `Incident activity rises around the market junction in the ${destination} direction.`, tone: "warn" },
-      { id: "bal-lighting", icon: "lighting", title: "Lighting dips mid-route", detail: "Street-light coverage drops to 72% after the Broadway junction.", tone: "warn" },
-      { id: "bal-police", icon: "shield", title: "Patrol active nearby", detail: "Units are monitoring the mid-route junction.", tone: "good" },
-      { id: "bal-time", icon: "clock", title: "Balanced travel time", detail: `Estimated 15 min to ${destination} with moderate safety conditions.`, tone: "info" },
+      { id: "bal-risk", icon: "alert", title: "Moderate travel estimate", detail: `Demo guidance for the ${destination} direction.`, tone: "warn" },
+      { id: "bal-lighting", icon: "lighting", title: insights?.streetLighting.status || "Lighting estimate", detail: lightingDetail || "This is a demo lighting estimate, not a street-lighting feed.", tone: insights ? toneFor(insights.streetLighting.level) : "warn" },
+      { id: "bal-route", icon: "shield", title: "Route guidance", detail: "Prefer active, familiar streets when practical.", tone: "good" },
+      { id: "bal-time", icon: "clock", title: "Balanced travel time", detail: `Estimated 15 min to ${destination}; safety conditions are demo estimates.`, tone: "info" },
     ];
   }
 
   return [
-    { id: "fast-risk", icon: "alert", title: "High-risk area nearby", detail: "A recent incident was reported 400m ahead. Consider the alternate route.", tone: "warn" },
-    { id: "fast-alternate", icon: "route", title: "Safer alternate route available", detail: `The Safest Route adds 6 min but scores 92 vs 67 on this corridor to ${destination}.`, tone: "warn" },
-    { id: "fast-lighting", icon: "moon", title: "Poor lighting on sections", detail: "Street-light coverage drops to 61% near the high-risk corridor.", tone: "warn" },
-    { id: "fast-police", icon: "shield", title: "Limited police coverage", detail: "Only one unit sits within range of the fastest corridor.", tone: "warn" },
+    { id: "fast-risk", icon: "alert", title: "Higher travel estimate", detail: "This is a demo comparison, not a live incident report.", tone: "warn" },
+    { id: "fast-alternate", icon: "route", title: insights?.saferRoute.status || "Estimated alternate guidance", detail: saferRouteDetail || `The demo safest route adds 6 min toward ${destination}.`, tone: "warn" },
+    { id: "fast-lighting", icon: "moon", title: insights?.streetLighting.status || "Lighting estimate", detail: lightingDetail || "This is a demo lighting estimate, not a street-lighting feed.", tone: insights ? toneFor(insights.streetLighting.level) : "warn" },
+    { id: "fast-route", icon: "shield", title: "Route guidance", detail: "Use familiar, active streets if you prefer an alternate route.", tone: "warn" },
   ];
 }
 
-export function buildAlexPayload(destination: string | null, route: RouteId | null): AlexPayload {
+export function buildAlexPayload(
+  destination: string | null,
+  route: RouteId | null,
+  location?: AlexLocationContext | null,
+  insights?: SafetyInsights | null,
+): AlexPayload {
   const timeOfDay = getTimeOfDay();
+  const city = location?.city || location?.locality || FALLBACK_LOCATION.city;
+  const currentRoad = location?.road || location?.locality || city || FALLBACK_LOCATION.currentRoad;
 
   if (!destination || !route) {
     return {
-      city: MOCK_LOCATION.city,
-      currentRoad: MOCK_LOCATION.currentRoad,
+      city,
+      currentRoad,
       destination: null,
       routeRisk: "Low",
       nearbyIncidents: MOCK_ROAD_PROFILE.nearbyIncidents,
@@ -134,14 +166,14 @@ export function buildAlexPayload(destination: string | null, route: RouteId | nu
       crowdDensity: MOCK_ROAD_PROFILE.crowdDensity,
       roadConditions: MOCK_ROAD_PROFILE.roadConditions,
       timeOfDay,
-      suggestions: contextualSuggestions(timeOfDay),
+      suggestions: contextualSuggestions(timeOfDay, currentRoad, insights),
     };
   }
 
   const profile = ROUTE_PROFILES[route];
   return {
-    city: MOCK_LOCATION.city,
-    currentRoad: MOCK_LOCATION.currentRoad,
+    city,
+    currentRoad,
     destination,
     routeRisk: profile.risk,
     nearbyIncidents: profile.incidents,
@@ -150,6 +182,6 @@ export function buildAlexPayload(destination: string | null, route: RouteId | nu
     crowdDensity: profile.crowd,
     roadConditions: profile.roads,
     timeOfDay,
-    suggestions: routeSuggestions(destination, route),
+    suggestions: routeSuggestions(destination, route, currentRoad, insights),
   };
 }

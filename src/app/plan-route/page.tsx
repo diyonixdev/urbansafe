@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   AlertOctagon, AlertTriangle, ArrowUpDown, Bot, Car, CheckCircle2, ChevronRight, Clock, Gauge, Lightbulb, Layers,
@@ -13,6 +13,10 @@ import { UrbanSafeNavbar } from "@/components/layouts/UrbanSafeNavbar";
 import { buildAlexPayload } from "./alex-suggestions";
 import type { AlexPayload, SuggestionIcon, SuggestionTone } from "./alex-suggestions";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import { locationLabel, reverseGeocodeLocation } from "@/services/location-service";
+import type { LocationInfo } from "@/services/location-service";
+import { getLocationSafetyInsights } from "@/services/location-safety";
+import type { SafetyInsights } from "@/services/location-safety";
 
 type RouteId = "safe" | "balanced" | "fastest";
 
@@ -39,7 +43,7 @@ const ROUTES: RouteOption[] = [
     time: "18 min",
     distance: "4.2 km",
     score: 92,
-    summary: ["Excellent lighting", "Low incident activity", "Police nearby"],
+    summary: ["Estimated lighting", "Estimated lower-risk corridor", "Main-road guidance"],
     color: "#22c55e",
     path: "M70,470 C210,430 300,380 380,300 C440,240 520,180 640,150 C680,142 705,115 730,95",
     chipX: 480,
@@ -53,7 +57,7 @@ const ROUTES: RouteOption[] = [
     time: "15 min",
     distance: "3.8 km",
     score: 84,
-    summary: ["Balanced risk profile", "Good average speed"],
+    summary: ["Balanced estimate", "Good average speed"],
     color: "#f59e0b",
     path: "M70,470 C220,470 400,430 520,340 C600,280 660,200 730,95",
     chipX: 528,
@@ -66,7 +70,7 @@ const ROUTES: RouteOption[] = [
     time: "12 min",
     distance: "3.5 km",
     score: 67,
-    summary: ["Shortest travel time", "Higher risk corridors"],
+    summary: ["Shortest travel time", "Higher estimated risk"],
     color: "#ef4444",
     path: "M70,470 C280,420 480,320 730,95",
     chipX: 300,
@@ -75,41 +79,93 @@ const ROUTES: RouteOption[] = [
 ];
 
 const SIGNALS: { icon: LucideIcon; label: string; status: string; tone: string }[] = [
-  { icon: ShieldAlert, label: "Crime Risk", status: "Low", tone: "#10b981" },
-  { icon: Shield, label: "Police Presence", status: "High", tone: "#3b82f6" },
-  { icon: AlertTriangle, label: "Recent Incidents", status: "2 nearby", tone: "#f59e0b" },
-  { icon: Car, label: "Road Conditions", status: "Good", tone: "#10b981" },
-  { icon: Lightbulb, label: "Street Lighting", status: "Good", tone: "#10b981" },
-  { icon: Users, label: "Crowd Density", status: "Moderate", tone: "#f59e0b" },
+  { icon: ShieldAlert, label: "Travel Safety", status: "Estimated", tone: "#3b82f6" },
+  { icon: Shield, label: "Location Data", status: "Permission needed", tone: "#3b82f6" },
+  { icon: AlertTriangle, label: "Safety Model", status: "Demo estimate", tone: "#3b82f6" },
+  { icon: Car, label: "Route Guidance", status: "Estimated", tone: "#3b82f6" },
+  { icon: Lightbulb, label: "Lighting Estimate", status: "Estimated", tone: "#3b82f6" },
+  { icon: Users, label: "Crowd Estimate", status: "Estimated", tone: "#3b82f6" },
 ];
+
+function signalTone(level: "good" | "moderate" | "poor" | "low" | "high"): string {
+  if (level === "good" || level === "low") return "#10b981";
+  if (level === "poor" || level === "high") return "#ef4444";
+  return "#f59e0b";
+}
+
+function signalsForArea(insights: SafetyInsights | null): typeof SIGNALS {
+  if (!insights) return SIGNALS;
+
+  const riskStatus = insights.travelSafety.level === "good"
+    ? "Low"
+    : insights.travelSafety.level === "moderate" ? "Moderate" : "High";
+
+  return [
+    { icon: ShieldAlert, label: "Travel Safety", status: `${riskStatus} estimate`, tone: signalTone(insights.travelSafety.level) },
+    { icon: Shield, label: "Location Data", status: "Area resolved", tone: "#3b82f6" },
+    { icon: AlertTriangle, label: "Safety Model", status: "Demo estimate", tone: "#3b82f6" },
+    { icon: Car, label: "Route Guidance", status: insights.saferRoute.status, tone: "#3b82f6" },
+    { icon: Lightbulb, label: "Lighting Estimate", status: insights.streetLighting.status, tone: signalTone(insights.streetLighting.level) },
+    { icon: Users, label: "Crowd Estimate", status: insights.crowdDensity.status, tone: signalTone(insights.crowdDensity.level) },
+  ];
+}
 
 const SCORE_BREAKDOWN: Record<RouteId, { label: string; value: number }[]> = {
   safe: [
-    { label: "Crime", value: 91 },
-    { label: "Lighting", value: 96 },
-    { label: "Police proximity", value: 84 },
-    { label: "Incidents", value: 90 },
+    { label: "Area model", value: 91 },
+    { label: "Visibility estimate", value: 96 },
+    { label: "Main-road guidance", value: 84 },
+    { label: "Time-of-day model", value: 90 },
   ],
   balanced: [
-    { label: "Crime", value: 78 },
-    { label: "Lighting", value: 72 },
-    { label: "Police proximity", value: 76 },
-    { label: "Incidents", value: 80 },
+    { label: "Area model", value: 78 },
+    { label: "Visibility estimate", value: 72 },
+    { label: "Main-road guidance", value: 76 },
+    { label: "Time-of-day model", value: 80 },
   ],
   fastest: [
-    { label: "Crime", value: 55 },
-    { label: "Lighting", value: 61 },
-    { label: "Police proximity", value: 43 },
-    { label: "Incidents", value: 58 },
+    { label: "Area model", value: 55 },
+    { label: "Visibility estimate", value: 61 },
+    { label: "Main-road guidance", value: 43 },
+    { label: "Time-of-day model", value: 58 },
   ],
 };
 
 const LIVE_INTEL: { icon: LucideIcon; label: string; value: string; detail: string; tint: string }[] = [
-  { icon: AlertTriangle, label: "Recent incident", value: "0.6 km away", detail: "8 min ago", tint: "bg-red-50 text-red-500" },
-  { icon: Shield, label: "Police presence", value: "High", detail: "2 units nearby", tint: "bg-blue-50 text-blue-600" },
-  { icon: Lightbulb, label: "Street lighting", value: "94%", detail: "Route coverage", tint: "bg-orange-50 text-orange-500" },
-  { icon: Users, label: "Crowd density", value: "Moderate", detail: "Main road", tint: "bg-slate-100 text-slate-600" },
+  { icon: AlertTriangle, label: "Safety model", value: "Demo estimate", detail: "No live incident feed", tint: "bg-blue-50 text-blue-600" },
+  { icon: Shield, label: "Location source", value: "Browser area", detail: "Real location data", tint: "bg-blue-50 text-blue-600" },
+  { icon: Lightbulb, label: "Lighting estimate", value: "Pending", detail: "Not a lighting feed", tint: "bg-orange-50 text-orange-500" },
+  { icon: Users, label: "Crowd estimate", value: "Pending", detail: "Not a live crowd feed", tint: "bg-slate-100 text-slate-600" },
 ];
+
+function intelForArea(insights: SafetyInsights | null): typeof LIVE_INTEL {
+  if (!insights) return LIVE_INTEL;
+  return [
+    { icon: AlertTriangle, label: "Safety model", value: insights.travelSafety.status, detail: "Demo estimate", tint: "bg-blue-50 text-blue-600" },
+    { icon: Shield, label: "Location source", value: insights.locationName, detail: `${insights.timeOfDay} · browser area`, tint: "bg-blue-50 text-blue-600" },
+    { icon: Lightbulb, label: "Lighting estimate", value: insights.streetLighting.status, detail: "Not a lighting feed", tint: "bg-orange-50 text-orange-500" },
+    { icon: Users, label: "Crowd estimate", value: insights.crowdDensity.status, detail: "Not a live crowd feed", tint: "bg-slate-100 text-slate-600" },
+  ];
+}
+
+function cityFromOrigin(origin: string): string | undefined {
+  const firstPart = origin.split(",")[0]?.trim();
+  if (!firstPart || /^current location$/i.test(firstPart)) return undefined;
+  return firstPart;
+}
+
+function distanceInMeters(
+  first: Pick<LocationInfo, "latitude" | "longitude">,
+  second: Pick<LocationInfo, "latitude" | "longitude">,
+): number {
+  const earthRadius = 6_371_000;
+  const toRadians = (degrees: number) => (degrees * Math.PI) / 180;
+  const latitudeDelta = toRadians(second.latitude - first.latitude);
+  const longitudeDelta = toRadians(second.longitude - first.longitude);
+  const a = Math.sin(latitudeDelta / 2) ** 2
+    + Math.cos(toRadians(first.latitude)) * Math.cos(toRadians(second.latitude)) * Math.sin(longitudeDelta / 2) ** 2;
+  return 2 * earthRadius * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
 
 const SAFETY_TIPS: { icon: LucideIcon; text: string }[] = [
   { icon: Lightbulb, text: "Stick to well-lit streets, especially after dark" },
@@ -119,10 +175,10 @@ const SAFETY_TIPS: { icon: LucideIcon; text: string }[] = [
 ];
 
 const SCORE_GUIDE: { icon: LucideIcon; label: string; tier: string; color: string }[] = [
-  { icon: ShieldAlert, label: "Crime risk", tier: "Low", color: "#10b981" },
-  { icon: Lightbulb, label: "Street lighting", tier: "Excellent", color: "#10b981" },
-  { icon: Shield, label: "Police proximity", tier: "Nearby", color: "#3b82f6" },
-  { icon: AlertTriangle, label: "Incident activity", tier: "Minimal", color: "#10b981" },
+  { icon: ShieldAlert, label: "Area model", tier: "Estimated", color: "#3b82f6" },
+  { icon: Lightbulb, label: "Visibility", tier: "Estimated", color: "#3b82f6" },
+  { icon: Shield, label: "Route guidance", tier: "Estimated", color: "#3b82f6" },
+  { icon: AlertTriangle, label: "Time of day", tier: "Real", color: "#10b981" },
 ];
 
 const SCORE_TIERS = [
@@ -132,10 +188,10 @@ const SCORE_TIERS = [
 ];
 
 const AI_POINTS = [
-  "31% lower reported incident activity",
-  "Better street lighting coverage",
-  "Police presence within 500m",
-  "Lower nighttime risk",
+  "Your reverse-geocoded area and current time",
+  "Estimated visibility conditions",
+  "Main-road route guidance",
+  "Estimated time-of-day travel conditions",
 ];
 
 const ROADS = [
@@ -246,6 +302,12 @@ function PlanRouteContent() {
   const searchParams = useSearchParams();
   const location = useGeolocation();
   const [origin, setOrigin] = useState("Current Location");
+  const [usingCurrentLocation, setUsingCurrentLocation] = useState(true);
+  const [locationInfo, setLocationInfo] = useState<LocationInfo | null>(null);
+  const [locationLookupFailed, setLocationLookupFailed] = useState(false);
+  const [safetyPosition, setSafetyPosition] = useState<Pick<LocationInfo, "latitude" | "longitude" | "accuracy"> | null>(null);
+  const lastAcceptedPosition = useRef<Pick<LocationInfo, "latitude" | "longitude" | "accuracy"> | null>(null);
+  const lastGeocodedArea = useRef<string | null>(null);
   const [destination, setDestination] = useState("");
   const [searched, setSearched] = useState(false);
   const [processing, setProcessing] = useState(false);
@@ -255,12 +317,92 @@ function PlanRouteContent() {
   const selectedRoute = ROUTES.find(r => r.id === selected)!;
   const risk = riskFor(selectedRoute.score);
   const animatedScore = useAnimatedScore(selectedRoute.score, searched);
-  const isGps = origin === "Current Location";
+  const isGps = usingCurrentLocation;
+  // The browser position is the primary input. Reverse geocoding only enriches
+  // the area label, so an unavailable geocoding provider never disables the
+  // deterministic location-aware demo engine.
+  const browserLocation: LocationInfo | null = safetyPosition
+    ? {
+        latitude: safetyPosition.latitude,
+        longitude: safetyPosition.longitude,
+        accuracy: safetyPosition.accuracy,
+        city: locationInfo?.city || (usingCurrentLocation ? cityFromOrigin(origin) : undefined),
+        locality: locationInfo?.locality,
+        road: locationInfo?.road,
+      }
+    : null;
+  const safetyInsights = browserLocation
+    ? getLocationSafetyInsights({
+        latitude: browserLocation.latitude,
+        longitude: browserLocation.longitude,
+        city: browserLocation.city,
+        locality: browserLocation.locality,
+      })
+    : null;
+  const safetySignals = signalsForArea(safetyInsights);
+  const safetyIntel = intelForArea(safetyInsights);
+
+  useEffect(() => {
+    if (location.latitude === null || location.longitude === null) return;
+
+    const nextPosition = {
+      latitude: location.latitude,
+      longitude: location.longitude,
+      accuracy: location.accuracy ?? undefined,
+    };
+    const previousPosition = lastAcceptedPosition.current;
+    const accuracyAllowance = Math.max(nextPosition.accuracy ?? 0, previousPosition?.accuracy ?? 0);
+    const meaningfulMovement = Math.max(150, Math.min(500, accuracyAllowance));
+
+    if (previousPosition && distanceInMeters(previousPosition, nextPosition) < meaningfulMovement) return;
+
+    lastAcceptedPosition.current = nextPosition;
+    setSafetyPosition(nextPosition);
+    // Do not briefly apply the previous neighbourhood's name to a new position.
+    setLocationInfo(null);
+  }, [location.latitude, location.longitude, location.accuracy]);
+
+  useEffect(() => {
+    if (!safetyPosition) return;
+
+    // Accepted positions are already movement-gated; this key also prevents a
+    // duplicate lookup if a watch event repeats the same accepted position.
+    const areaKey = `${safetyPosition.latitude.toFixed(4)},${safetyPosition.longitude.toFixed(4)}`;
+    if (lastGeocodedArea.current === areaKey) return;
+    lastGeocodedArea.current = areaKey;
+
+    const controller = new AbortController();
+    setLocationLookupFailed(false);
+    reverseGeocodeLocation(
+      safetyPosition,
+      controller.signal,
+    )
+      .then((area) => {
+        setLocationInfo(area);
+        setLocationLookupFailed(!area.areaResolved);
+        if (usingCurrentLocation && (area.city || area.locality || area.road)) {
+          setOrigin(locationLabel(area));
+        }
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setLocationLookupFailed(true);
+      });
+
+    return () => controller.abort();
+  }, [safetyPosition, usingCurrentLocation]);
 
   const alex: AlexPayload = buildAlexPayload(
     searched ? destination.trim() || null : null,
-    searched ? selected : null
+    searched ? selected : null,
+    browserLocation,
+    safetyInsights,
   );
+  const locationUnavailable = location.permission === "denied"
+    || location.permission === "unsupported"
+    || Boolean(location.error)
+    || locationLookupFailed;
+  const alexIsLoading = !locationUnavailable && (!safetyPosition || !locationInfo?.areaResolved);
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -287,6 +429,7 @@ function PlanRouteContent() {
 
   const handleSwap = () => {
     setOrigin(destination.trim() ? destination : "Current Location");
+    setUsingCurrentLocation(!isGps);
     setDestination(isGps ? "" : origin);
   };
 
@@ -312,7 +455,7 @@ function PlanRouteContent() {
               Find the <span className="text-blue-600">safest</span> way to go.
             </h1>
             <p className="max-w-xl text-base md:text-lg text-slate-500 leading-relaxed">
-              Plan your route using real-time safety, road, lighting and incident intelligence.
+              Plan your route with your current area and time, plus clearly labelled safety estimates.
             </p>
           </section>
 
@@ -326,7 +469,7 @@ function PlanRouteContent() {
                   <span className="grid place-items-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 shrink-0"><RouteIcon size={16} /></span>
                   <div className="min-w-0">
                     <h2 className="text-[13px] font-extrabold uppercase tracking-[0.12em] text-slate-900">Plan your journey</h2>
-                    <p className="text-xs text-slate-500 mt-0.5">Choose your destination and UrbanSafe will compare routes using safety intelligence.</p>
+                    <p className="text-xs text-slate-500 mt-0.5">Choose your destination and UrbanSafe will compare routes using area-based demo estimates.</p>
                   </div>
                 </div>
 
@@ -344,14 +487,14 @@ function PlanRouteContent() {
                         {isGps && (
                           <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-green-50 border border-green-100 rounded-full px-2 py-0.5">
                             <LocateFixed size={10} />
-                            {location.latitude ? `${location.latitude.toFixed(4)}, ${location.longitude?.toFixed(4)}` : "GPS detected"}
+                            {locationInfo ? locationLabel(locationInfo) : "GPS detected"}
                           </span>
                         )}
                       </div>
                       <input
                         type="text"
                         value={origin}
-                        onChange={e => setOrigin(e.target.value)}
+                        onChange={e => { setOrigin(e.target.value); setUsingCurrentLocation(false); }}
                         placeholder="Your location"
                         className="bg-transparent w-full text-slate-900 font-medium outline-none placeholder:text-slate-400 mt-0.5"
                       />
@@ -403,12 +546,18 @@ function PlanRouteContent() {
                 <button
                   type="button"
                   onClick={() => {
-                    if (location.permission === 'denied' || location.error) {
+                    if (location.permission === 'denied' || location.permission === 'unsupported') {
                       alert(location.error || "Please enable location services in your browser settings.");
                       return;
                     }
-
+                    setUsingCurrentLocation(true);
                     setOrigin("Current Location");
+                    setLocationInfo(null);
+                    setLocationLookupFailed(false);
+                    setSafetyPosition(null);
+                    lastAcceptedPosition.current = null;
+                    lastGeocodedArea.current = null;
+                    location.refresh();
 
                     if (!destination.trim()) {
                       document.getElementById('destination-input')?.focus();
@@ -422,6 +571,16 @@ function PlanRouteContent() {
                   {location.permission === 'loading' ? <Loader2 size={14} className="animate-spin" /> : <LocateFixed size={14} />}
                   {location.permission === 'loading' ? 'Locating...' : 'Use my current location'}
                 </button>
+                {location.permission !== 'granted' && location.permission !== 'loading' && (
+                  <p className="text-center text-xs text-slate-500" role="status">
+                    Location access needed for area-based safety estimates.
+                  </p>
+                )}
+                {locationUnavailable && (
+                  <p className="text-center text-xs text-slate-500" role="status">
+                    Location unavailable — showing demo safety guidance.
+                  </p>
+                )}
               </form>
 
               {/* ALEX'S SUGGESTIONS */}
@@ -431,20 +590,42 @@ function PlanRouteContent() {
                   <span className="pr-alex-avatar"><Bot size={17} /></span>
                   <div className="min-w-0">
                     <h2 className="pr-alex-title">Alex&rsquo;s suggestions</h2>
-                    <p className="pr-alex-sub">AI-powered recommendations based on your route and local safety conditions.</p>
+                    <p className="pr-alex-sub">Recommendations use your real area and time with clearly labelled demo safety estimates.</p>
                   </div>
                   <Sparkles size={15} className="pr-alex-sparkle" aria-hidden />
                 </div>
 
-                <div className="pr-alex-context">
-                  <span><MapPin size={10} /> {alex.city}, {alex.currentRoad}</span>
-                  <span><Clock size={10} /> {alex.timeOfDay}</span>
-                  {alex.destination && <span><Navigation size={10} /> {alex.destination}</span>}
-                </div>
+                {!alexIsLoading && !locationUnavailable && (
+                  <div className="pr-alex-context">
+                    <span><MapPin size={10} /> {locationInfo?.locality || alex.currentRoad} <span aria-hidden>•</span> {alex.timeOfDay}</span>
+                    {alex.destination && <span><Navigation size={10} /> {alex.destination}</span>}
+                  </div>
+                )}
 
                 <div className="pr-alex-divider" />
 
-                <div key={`${searched}-${selected}`} className="flex flex-col gap-1">
+                {alexIsLoading ? (
+                  <div className="pr-alex-row pr-fade-in">
+                    <span className="pr-alex-row-icon" style={{ background: "rgba(59,130,246,0.14)", color: "#93c5fd" }}>
+                      <Loader2 size={15} className="animate-spin" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <b>Detecting your location...</b>
+                      <p>Preparing local safety suggestions...</p>
+                    </div>
+                  </div>
+                ) : locationUnavailable ? (
+                  <div className="pr-alex-row pr-fade-in">
+                    <span className="pr-alex-row-icon" style={{ background: "rgba(245,158,11,0.14)", color: "#fbbf24" }}>
+                      <AlertTriangle size={15} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <b>Location unavailable</b>
+                      <p>Showing demo safety guidance until location access is available.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div key={`${searched}-${selected}-${locationInfo?.displayName ?? "area"}`} className="flex flex-col gap-1">
                   {alex.suggestions.map((s, i) => {
                     const Icon = ALEX_ICONS[s.icon];
                     const tone = ALEX_TONES[s.tone];
@@ -464,7 +645,8 @@ function PlanRouteContent() {
                       </div>
                     );
                   })}
-                </div>
+                  </div>
+                )}
               </aside>
             </div>
 
@@ -557,27 +739,27 @@ function PlanRouteContent() {
                   {/* POI markers */}
                   <span className="pr-map-pin pr-marker pr-marker-d2" style={{ ...pos(300, 170), width: 30, height: 30, background: "#2563eb" }}>
                     <Shield size={15} />
-                    <span className="pr-pin-tip">Police station</span>
+                    <span className="pr-pin-tip">Demo map marker</span>
                   </span>
                   <span className="pr-map-pin pr-marker pr-marker-d3" style={{ ...pos(660, 110), width: 28, height: 28, background: "#2563eb" }}>
                     <Shield size={13} />
-                    <span className="pr-pin-tip">Police station</span>
+                    <span className="pr-pin-tip">Demo map marker</span>
                   </span>
                   <span className="pr-map-pin pr-marker pr-marker-d2" style={{ ...pos(380, 360), width: 28, height: 28, background: "#ef4444" }}>
                     <AlertTriangle size={13} />
-                    <span className="pr-pin-tip">Recent incident</span>
+                    <span className="pr-pin-tip">Demo safety marker</span>
                   </span>
                   <span className="pr-map-pin pr-marker pr-marker-d1" style={{ ...pos(240, 140), width: 28, height: 28, background: "#f59e0b" }}>
                     <Lightbulb size={13} />
-                    <span className="pr-pin-tip">Street lighting</span>
+                    <span className="pr-pin-tip">Demo lighting marker</span>
                   </span>
                   <span className="pr-map-pin pr-marker pr-marker-d3" style={{ ...pos(560, 220), width: 28, height: 28, background: "#f59e0b" }}>
                     <Lightbulb size={13} />
-                    <span className="pr-pin-tip">Street lighting</span>
+                    <span className="pr-pin-tip">Demo lighting marker</span>
                   </span>
                   <span className="pr-map-pin pr-marker pr-marker-d2" style={{ ...pos(95, 330), width: 28, height: 28, background: "#8b5cf6" }}>
                     <Users size={13} />
-                    <span className="pr-pin-tip">Crowd density</span>
+                    <span className="pr-pin-tip">Demo crowd marker</span>
                   </span>
 
                   {/* Route chips */}
@@ -659,12 +841,12 @@ function PlanRouteContent() {
                     <span className="grid place-items-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 shrink-0"><Radar size={16} /></span>
                     <div className="min-w-0">
                       <h2 className="text-[13px] font-extrabold uppercase tracking-[0.12em] text-slate-900">Safety signals</h2>
-                      <p className="text-xs text-slate-500 mt-0.5">Live intelligence for your area</p>
+                      <p className="text-xs text-slate-500 mt-0.5">Real: your area and time · Estimated: safety conditions</p>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
-                    {SIGNALS.map(signal => (
+                    {safetySignals.map(signal => (
                       <div className="pr-signal" key={signal.label}>
                         <span className="pr-signal-icon"><signal.icon size={15} /></span>
                         <div className="min-w-0">
@@ -676,6 +858,9 @@ function PlanRouteContent() {
                       </div>
                     ))}
                   </div>
+                  <p className="text-[11px] leading-relaxed text-slate-400">
+                    Lighting, crowd, and travel signals are demo estimates—not live police, crime, or infrastructure feeds.
+                  </p>
                 </div>
 
                 {!searched && (
@@ -686,7 +871,7 @@ function PlanRouteContent() {
                     <div className="min-w-0">
                       <h2 className="font-bold tracking-tight text-slate-900 text-[15px]">Plan your safer journey</h2>
                       <p className="mt-0.5 text-xs text-slate-500">
-                        Enter a destination above to compare routes using UrbanSafe safety intelligence.
+                        Enter a destination above to compare routes using area-based demo estimates.
                       </p>
                     </div>
                   </div>
@@ -833,15 +1018,15 @@ function PlanRouteContent() {
                 </div>
               </section>
 
-              {/* Live safety intelligence */}
+              {/* Safety estimates */}
               <section className="flex flex-col gap-5 pr-fade-up pr-fade-up-d1">
                 <SectionHeader
-                  eyebrow="Live data"
-                  title="Live safety intelligence"
-                  subtitle="Updated from city safety sensors and community reports."
+                  eyebrow="Safety estimates"
+                  title="Area-based safety estimates"
+                  subtitle="Real inputs: browser area and time. Estimated inputs: safety conditions and route guidance."
                 />
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  {LIVE_INTEL.map(card => (
+                  {safetyIntel.map(card => (
                     <div
                       key={card.label}
                       className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"

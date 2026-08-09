@@ -132,14 +132,22 @@ export function subscribeFirestoreNearby(
     where("geohash", "<=", maxGeohash)
   );
 
-  return onSnapshot(q, (snapshot) => {
-    const events: EmergencyEventRecord[] = [];
-    snapshot.forEach((doc) => {
-      const converted = convertDoc(doc);
-      if (converted) events.push(converted);
-    });
-    onChange(events);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const events: EmergencyEventRecord[] = [];
+      snapshot.forEach((doc) => {
+        const converted = convertDoc(doc);
+        if (converted) events.push(converted);
+      });
+      onChange(events);
+    },
+    (error) => {
+      // Without an error callback the SDK rejects internally, which shows up
+      // as an unhandled promise rejection (e.g. Firestore rules deny reads).
+      console.warn("[Emergency] Nearby subscription error", error);
+    }
+  );
 }
 
 /** Loads the current user's recent emergency activity (most recent first). */
@@ -173,15 +181,23 @@ export function subscribeFirestoreMyEvents(
 ): Unsubscribe {
   const db = getFirebaseFirestore();
   const q = query(collection(db, EMERGENCY_COLLECTION), where("createdBy", "==", uid));
-  return onSnapshot(q, (snapshot) => {
-    const events: EmergencyEventRecord[] = [];
-    snapshot.forEach((doc) => {
-      const converted = convertDoc(doc);
-      if (converted) events.push(converted);
-    });
-    events.sort((a, b) => b.createdAt - a.createdAt);
-    onChange(events);
-  });
+  return onSnapshot(
+    q,
+    (snapshot) => {
+      const events: EmergencyEventRecord[] = [];
+      snapshot.forEach((doc) => {
+        const converted = convertDoc(doc);
+        if (converted) events.push(converted);
+      });
+      events.sort((a, b) => b.createdAt - a.createdAt);
+      onChange(events);
+    },
+    (error) => {
+      // Without an error callback the SDK rejects internally, which shows up
+      // as an unhandled promise rejection (e.g. Firestore rules deny reads).
+      console.warn("[Emergency] My-events subscription error", error);
+    }
+  );
 }
 
 /** Uploads a voice recording to the creator's private storage space. */
