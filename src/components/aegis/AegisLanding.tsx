@@ -7,10 +7,11 @@ import {
   Lightbulb, Car, UserCheck, Crosshair, 
   ChevronRight, Phone, Navigation, Clock,
   AlertOctagon, CheckCircle2, Shield, HeartPulse,
-  Banknote, Coffee, Fuel, Loader2, Navigation2
+  Banknote, Coffee, Fuel, Loader2, Navigation2, Info
 } from "lucide-react";
 import { UrbanSafeNavbar } from "@/components/layouts/UrbanSafeNavbar";
 import { SosChatbot } from "@/components/emergency/SosChatbot";
+import { analyzeRoute, RouteMetrics } from "@/utils/routeScoring";
 
 // Dynamically import map to avoid SSR issues
 const RouteMap = dynamic(() => import("@/components/maps/RouteMap"), { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400"><Loader2 className="animate-spin" size={32} /></div> });
@@ -24,8 +25,10 @@ interface LocationResult {
 export default function AegisLanding() {
   const [origin, setOrigin] = useState<{lat: number, lon: number, name: string} | null>(null);
   const [destination, setDestination] = useState<{lat: number, lon: number, name: string} | null>(null);
-  const [routeCoords, setRouteCoords] = useState<[number, number][] | null>(null);
   
+  const [routes, setRoutes] = useState<RouteMetrics[] | null>(null);
+  const [selectedRouteId, setSelectedRouteId] = useState<number | null>(null);
+
   const [originInput, setOriginInput] = useState("");
   const [destInput, setDestInput] = useState("");
   
@@ -107,12 +110,44 @@ export default function AegisLanding() {
     }
     setIsRouting(true);
     setRouteError(null);
+    setRoutes(null);
+    setSelectedRouteId(null);
     try {
-      const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${destination.lon},${destination.lat}?overview=full&geometries=geojson`);
+      const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${destination.lon},${destination.lat}?overview=full&geometries=geojson&alternatives=true`);
       const data = await res.json();
+      
       if (data.routes && data.routes.length > 0) {
-        const coords = data.routes[0].geometry.coordinates.map((c: [number, number]) => [c[1], c[0]] as [number, number]);
-        setRouteCoords(coords);
+        const analyzedRoutes: RouteMetrics[] = [];
+        
+        for (let i = 0; i < data.routes.length; i++) {
+          const r = data.routes[i];
+          const coords = r.geometry.coordinates.map((c: [number, number]) => [c[1], c[0]] as [number, number]);
+          
+          const metrics = await analyzeRoute(i, coords, r.duration, r.distance);
+          analyzedRoutes.push(metrics);
+        }
+
+        // Determine recommended route: highest safety score, prioritizing shorter time on tie
+        analyzedRoutes.sort((a, b) => {
+          if (b.safetyScore !== a.safetyScore) {
+            return b.safetyScore - a.safetyScore;
+          }
+          return a.travelTime - b.travelTime;
+        });
+
+        if (analyzedRoutes.length > 0) {
+          analyzedRoutes[0].recommended = true;
+          setSelectedRouteId(analyzedRoutes[0].id);
+        }
+
+        // Sort by ID to keep consistent order in list, except recommended first
+        analyzedRoutes.sort((a, b) => {
+          if (a.recommended) return -1;
+          if (b.recommended) return 1;
+          return a.id - b.id;
+        });
+
+        setRoutes(analyzedRoutes);
       } else {
         setRouteError("No route found.");
       }
@@ -122,6 +157,8 @@ export default function AegisLanding() {
     }
     setIsRouting(false);
   };
+
+  const selectedRoute = routes?.find(r => r.id === selectedRouteId);
 
   return (
     <div className="urban-safe-page min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
@@ -217,7 +254,7 @@ export default function AegisLanding() {
                 className="mt-2 w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl py-3.5 font-semibold shadow-sm shadow-blue-600/20 transition-all flex items-center justify-center gap-2"
               >
                 {isRouting ? <Loader2 size={18} className="animate-spin" /> : <Search size={18} />}
-                {isRouting ? "Calculating..." : "Find Safest Route"}
+                {isRouting ? "Analyzing safety data..." : "Find Safest Route"}
               </button>
             </div>
 
@@ -226,8 +263,8 @@ export default function AegisLanding() {
               <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><AlertTriangle size={14} className="text-red-500"/> Crime</div>
               <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><Car size={14} className="text-orange-500"/> Accidents</div>
               <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><Lightbulb size={14} className="text-yellow-500"/> Lighting</div>
-              <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><Navigation size={14} className="text-slate-500"/> Roads</div>
               <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><Shield size={14} className="text-blue-500"/> Police</div>
+              <div className="flex items-center gap-1.5 text-xs font-medium bg-white border border-slate-200 px-2.5 py-1.5 rounded-md text-slate-600"><HeartPulse size={14} className="text-red-500"/> Hospitals</div>
             </div>
           </div>
 
@@ -236,95 +273,175 @@ export default function AegisLanding() {
             <RouteMap 
               origin={origin ? [origin.lat, origin.lon] : null}
               destination={destination ? [destination.lat, destination.lon] : null}
-              routeCoordinates={routeCoords}
+              routes={routes}
+              selectedRouteId={selectedRouteId}
+              onRouteSelect={setSelectedRouteId}
             />
           </div>
         </section>
 
         {/* ROUTE COMPARISON */}
-        <section className="flex flex-col gap-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-4">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">Choose your route</h2>
-              <p className="text-slate-500 mt-1">Routes are ranked based on safety score and travel time.</p>
-            </div>
-            <button className="text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors border border-blue-100">
-              <Crosshair size={14} /> Customize Weightage
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Safe Route */}
-            <div className="bg-white border-2 border-green-500 rounded-2xl p-5 shadow-sm shadow-green-100 relative cursor-pointer hover:shadow-md transition-shadow">
-              <div className="absolute -top-3 left-5 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide flex items-center gap-1">
-                <CheckCircle2 size={14} /> Recommended
+        {routes && routes.length > 0 && (
+          <section className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-4">
+              <div>
+                <h2 className="text-2xl font-bold text-slate-900">Choose your route</h2>
+                <p className="text-slate-500 mt-1">Routes are ranked based on safety score and travel time.</p>
               </div>
-              <div className="flex justify-between items-start mt-2">
-                <div>
-                  <h3 className="font-bold text-slate-900 text-lg">Safe Route</h3>
-                  <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
-                    <span className="font-semibold text-slate-900">24 min</span>
-                    <span>•</span>
-                    <span>9.3 km</span>
-                  </div>
-                </div>
-                <div className="bg-green-50 text-green-700 font-bold text-xl px-3 py-1.5 rounded-lg border border-green-100">
-                  89<span className="text-sm text-green-600/70">/100</span>
-                </div>
-              </div>
-              <ul className="mt-5 flex flex-col gap-2 text-sm text-slate-600 font-medium">
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Low crime</li>
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Well lit</li>
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Police nearby</li>
-              </ul>
             </div>
 
-            {/* Balanced Route */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-orange-300 hover:shadow-md transition-all cursor-pointer opacity-80 hover:opacity-100">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-bold text-slate-900 text-lg">Balanced Route</h3>
-                  <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
-                    <span className="font-semibold text-slate-900">21 min</span>
-                    <span>•</span>
-                    <span>8.5 km</span>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {routes.map((route, idx) => {
+                const isSelected = selectedRouteId === route.id;
+                const isRecommended = route.recommended;
+
+                let borderClass = "border-slate-200 hover:border-blue-300";
+                let badge = null;
+                let title = `Route ${idx + 1}`;
+
+                if (isRecommended) {
+                  borderClass = "border-2 border-green-500 shadow-sm shadow-green-100";
+                  title = "Safest Route";
+                  badge = (
+                    <div className="absolute -top-3 left-5 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide flex items-center gap-1">
+                      <ShieldCheck size={14} /> Recommended
+                    </div>
+                  );
+                } else if (isSelected) {
+                  borderClass = "border-2 border-blue-500 shadow-sm shadow-blue-100";
+                }
+
+                return (
+                  <div 
+                    key={route.id}
+                    onClick={() => setSelectedRouteId(route.id)}
+                    className={`bg-white rounded-2xl p-5 relative cursor-pointer hover:shadow-md transition-all ${borderClass} ${isSelected ? 'opacity-100' : 'opacity-70 hover:opacity-100'}`}
+                  >
+                    {badge}
+                    <div className="flex justify-between items-start mt-2">
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-lg">{title}</h3>
+                        <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
+                          <span className="font-semibold text-slate-900">{route.travelTime} min</span>
+                          <span>•</span>
+                          <span>{route.distance} km</span>
+                        </div>
+                      </div>
+                      <div className={`font-bold text-xl px-3 py-1.5 rounded-lg border ${isRecommended ? 'bg-green-50 text-green-700 border-green-100' : 'bg-slate-50 text-slate-700 border-slate-200'}`}>
+                        {route.safetyScore}<span className={`text-sm ${isRecommended ? 'text-green-600/70' : 'text-slate-400'}`}>/100</span>
+                      </div>
+                    </div>
+                    
+                    <ul className="mt-5 flex flex-col gap-2 text-sm text-slate-600 font-medium">
+                      <li className="flex justify-between items-center">
+                        <span className="flex items-center gap-2"><AlertTriangle size={14} className="text-red-500"/> Crime Risk</span>
+                        <span className="text-slate-400 text-xs">{route.crimeRisk}</span>
+                      </li>
+                      <li className="flex justify-between items-center">
+                        <span className="flex items-center gap-2"><Car size={14} className="text-orange-500"/> Accident Risk</span>
+                        <span className="text-slate-400 text-xs">{route.accidentRisk}</span>
+                      </li>
+                      <li className="flex justify-between items-center">
+                        <span className="flex items-center gap-2"><Lightbulb size={14} className="text-yellow-500"/> Est. Lighting</span>
+                        <span className="text-slate-900 font-bold">{route.lightingCoverage}%</span>
+                      </li>
+                    </ul>
                   </div>
-                </div>
-                <div className="bg-orange-50 text-orange-700 font-bold text-xl px-3 py-1.5 rounded-lg border border-orange-100">
-                  81<span className="text-sm text-orange-600/70">/100</span>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* BOTTOM WIDGETS ROW - ONLY SHOW IF ROUTE SELECTED */}
+        {selectedRoute && (
+          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-500">
+            
+            {/* Safety Breakdown */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col gap-5 lg:row-span-2">
+              <div>
+                <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2"><Info size={20} className="text-blue-500"/> Why this route?</h3>
+                <div className="flex items-center gap-2 mt-1 bg-green-50 text-green-700 w-fit px-2 py-1 rounded-md text-sm font-bold border border-green-100">
+                  Overall Score: {selectedRoute.safetyScore}/100
                 </div>
               </div>
-              <ul className="mt-5 flex flex-col gap-2 text-sm text-slate-600 font-medium">
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div> Moderate risk</li>
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-green-500"></div> Average lighting</li>
-              </ul>
+
+              <div className="flex flex-col gap-4 mt-2">
+                <div>
+                  <div className="flex justify-between text-sm mb-1 font-medium">
+                    <span className="text-slate-700">Lighting Est.</span>
+                    <span className="text-slate-900 font-bold">{selectedRoute.lightingCoverage}/100</span>
+                  </div>
+                  <div className="w-full bg-slate-100 rounded-full h-2">
+                    <div className="bg-green-400 h-2 rounded-full" style={{ width: `${selectedRoute.lightingCoverage}%` }}></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-2 pt-4 border-t border-slate-100 flex flex-col gap-3 text-sm text-slate-600">
+                <p className="flex items-start gap-2">
+                  <span className="text-green-600 font-bold">✓</span> 
+                  {selectedRoute.policeStationsNearby} police stations nearby
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-green-600 font-bold">✓</span> 
+                  {selectedRoute.hospitalsNearby} hospitals nearby
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-slate-400 font-bold text-lg leading-none">⚠</span> 
+                  Crime/Accident real-time data currently unavailable for this region.
+                </p>
+              </div>
             </div>
 
-            {/* Fastest Route */}
-            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:border-red-300 hover:shadow-md transition-all cursor-pointer opacity-80 hover:opacity-100">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-bold text-slate-900 text-lg">Fastest Route</h3>
-                  <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
-                    <span className="font-semibold text-slate-900">18 min</span>
-                    <span>•</span>
-                    <span>7.1 km</span>
-                  </div>
+            {/* Emergency / SOS */}
+            <div id="emergency" className="bg-white rounded-2xl border-2 border-red-100 p-6 shadow-sm relative overflow-hidden flex flex-col justify-between group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[100px] z-0 transition-transform group-hover:scale-110"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 text-red-600 mb-2">
+                  <AlertOctagon size={20} />
+                  <h3 className="font-bold text-lg">Emergency / SOS</h3>
                 </div>
-                <div className="bg-red-50 text-red-700 font-bold text-xl px-3 py-1.5 rounded-lg border border-red-100">
-                  64<span className="text-sm text-red-600/70">/100</span>
+                <p className="text-slate-600 text-sm mb-6">Tap to alert your contacts and emergency services.</p>
+                
+                <button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-md shadow-red-600/20 transition-all active:scale-95 text-lg">
+                  SOS
+                </button>
+              </div>
+              
+              <div className="relative z-10 mt-6 flex flex-col gap-3 text-sm text-slate-700 font-medium">
+                <label className="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-100 cursor-pointer">
+                  <span>Share live location</span>
+                  <div className="w-10 h-5 bg-blue-600 rounded-full relative">
+                    <div className="w-3.5 h-3.5 bg-white rounded-full absolute top-[3px] right-[3px]"></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {/* Report an Issue */}
+            <div className="bg-slate-900 rounded-2xl p-6 shadow-sm text-white flex flex-col justify-between relative overflow-hidden">
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/20 rounded-full blur-2xl pointer-events-none"></div>
+              <div>
+                <h3 className="font-bold text-lg mb-1">Report an issue</h3>
+                <p className="text-slate-400 text-sm mb-5">Help make the city safer for everyone by reporting hazards.</p>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  <span className="text-xs font-medium bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">Suspicious Activity</span>
+                  <span className="text-xs font-medium bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">Broken Light</span>
+                  <span className="text-xs font-medium bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">Accident</span>
                 </div>
               </div>
-              <ul className="mt-5 flex flex-col gap-2 text-sm text-slate-600 font-medium">
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> High risk area</li>
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> Poor lighting</li>
-              </ul>
+              <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-colors">
+                Report Now
+              </button>
             </div>
-          </div>
-        </section>
+
+          </section>
+        )}
 
         {/* AI EMERGENCY ASSISTANT */}
-        <section className="flex flex-col md:flex-row gap-8 bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
+        <section className="flex flex-col md:flex-row gap-8 bg-white border border-slate-200 rounded-3xl p-8 shadow-sm mt-8">
           <div className="flex-1 flex flex-col justify-center">
             <h2 className="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">AI Emergency Assistant</h2>
             <p className="text-slate-600 text-lg mb-6 leading-relaxed">
@@ -340,144 +457,6 @@ export default function AegisLanding() {
           </div>
         </section>
 
-        {/* BOTTOM WIDGETS ROW */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          
-          {/* Safety Breakdown */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col gap-5 lg:row-span-2">
-            <div>
-              <h3 className="font-bold text-lg text-slate-900">Why this route is safer</h3>
-              <div className="flex items-center gap-2 mt-1 bg-green-50 text-green-700 w-fit px-2 py-1 rounded-md text-sm font-bold border border-green-100">
-                Overall Score: 89/100
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4 mt-2">
-              {[
-                { label: "Crime Risk", score: 92, color: "bg-green-500" },
-                { label: "Accident History", score: 90, color: "bg-green-500" },
-                { label: "Lighting Conditions", score: 84, color: "bg-green-400" },
-                { label: "Road Conditions", score: 76, color: "bg-yellow-500" },
-                { label: "Police Proximity", score: 95, color: "bg-green-500" }
-              ].map((item, i) => (
-                <div key={i}>
-                  <div className="flex justify-between text-sm mb-1 font-medium">
-                    <span className="text-slate-700">{item.label}</span>
-                    <span className="text-slate-900 font-bold">{item.score}/100</span>
-                  </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2">
-                    <div className={`${item.color} h-2 rounded-full`} style={{ width: `${item.score}%` }}></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-2 pt-4 border-t border-slate-100 flex flex-col gap-2 text-sm text-slate-600">
-              <p className="flex items-start gap-2"><span className="text-green-600 font-bold">✓</span> 2 police stations within 1 km</p>
-              <p className="flex items-start gap-2"><span className="text-green-600 font-bold">✓</span> Good lighting for most of the route</p>
-              <p className="flex items-start gap-2"><span className="text-green-600 font-bold">✓</span> No active roadblocks</p>
-              <p className="flex items-start gap-2"><span className="text-green-600 font-bold">✓</span> Low recent accident activity</p>
-              <p className="flex items-start gap-2"><span className="text-yellow-600 font-bold text-lg leading-none">⚠</span> Construction work ahead</p>
-            </div>
-          </div>
-
-          {/* Emergency / SOS */}
-          <div id="emergency" className="bg-white rounded-2xl border-2 border-red-100 p-6 shadow-sm relative overflow-hidden flex flex-col justify-between group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-bl-[100px] z-0 transition-transform group-hover:scale-110"></div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 text-red-600 mb-2">
-                <AlertOctagon size={20} />
-                <h3 className="font-bold text-lg">Emergency / SOS</h3>
-              </div>
-              <p className="text-slate-600 text-sm mb-6">Tap to alert your contacts and emergency services.</p>
-              
-              <button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-md shadow-red-600/20 transition-all active:scale-95 text-lg">
-                SOS
-              </button>
-            </div>
-            
-            <div className="relative z-10 mt-6 flex flex-col gap-3 text-sm text-slate-700 font-medium">
-              <label className="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-100 cursor-pointer">
-                <span>Share live location</span>
-                <div className="w-10 h-5 bg-blue-600 rounded-full relative">
-                  <div className="w-3.5 h-3.5 bg-white rounded-full absolute top-[3px] right-[3px]"></div>
-                </div>
-              </label>
-              <div className="flex gap-2">
-                <button className="flex-1 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"><Shield size={14}/> Police</button>
-                <button className="flex-1 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center justify-center gap-2"><HeartPulse size={14}/> Hospital</button>
-              </div>
-            </div>
-          </div>
-
-          {/* Time-Based Safety */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col">
-            <div className="mb-4">
-              <h3 className="font-bold text-lg text-slate-900 flex items-center gap-2"><Clock size={18} className="text-blue-600"/> Travel time preview</h3>
-              <p className="text-slate-500 text-sm mt-1">Safety can change depending on when you travel.</p>
-            </div>
-
-            <div className="flex justify-between items-end h-full">
-              {[
-                { time: "NOW", score: 89, color: "bg-green-500", text: "text-green-700", bg: "bg-green-50", border: "border-green-200" },
-                { time: "6 PM", score: 84, color: "bg-green-400", text: "text-slate-700", bg: "bg-white", border: "border-slate-200" },
-                { time: "9 PM", score: 76, color: "bg-yellow-500", text: "text-slate-700", bg: "bg-white", border: "border-slate-200" },
-                { time: "11 PM", score: 62, color: "bg-red-500", text: "text-slate-700", bg: "bg-white", border: "border-slate-200" },
-              ].map((slot, i) => (
-                <div key={i} className={`flex flex-col items-center p-3 rounded-xl border ${slot.border} ${slot.bg} w-[22%]`}>
-                  <span className={`text-xl font-bold ${slot.text}`}>{slot.score}</span>
-                  <div className="w-full h-1 bg-slate-200 rounded-full my-2 overflow-hidden">
-                    <div className={`h-full ${slot.color}`} style={{width: `${slot.score}%`}}></div>
-                  </div>
-                  <span className="text-xs font-bold text-slate-500">{slot.time}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Nearby Safe Places */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col">
-            <h3 className="font-bold text-lg text-slate-900 mb-4">Nearby safe places on route</h3>
-            <div className="flex flex-col gap-3">
-              {[
-                { name: "Police Station", dist: "0.8 km", icon: <Shield size={16} className="text-blue-600"/>, color: "bg-blue-50" },
-                { name: "City Hospital", dist: "1.2 km", icon: <HeartPulse size={16} className="text-red-600"/>, color: "bg-red-50" },
-                { name: "Bank ATM", dist: "200 m", icon: <Banknote size={16} className="text-green-600"/>, color: "bg-green-50" },
-                { name: "24/7 Restaurant", dist: "350 m", icon: <Coffee size={16} className="text-orange-600"/>, color: "bg-orange-50" },
-                { name: "Petrol Pump", dist: "1.5 km", icon: <Fuel size={16} className="text-slate-600"/>, color: "bg-slate-100" },
-              ].map((place, i) => (
-                <div key={i} className="flex justify-between items-center p-2 rounded-lg hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full ${place.color} flex items-center justify-center`}>
-                      {place.icon}
-                    </div>
-                    <span className="font-medium text-sm text-slate-700">{place.name}</span>
-                  </div>
-                  <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">{place.dist}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Report an Issue */}
-          <div className="bg-slate-900 rounded-2xl p-6 shadow-sm text-white flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/20 rounded-full blur-2xl pointer-events-none"></div>
-            <div>
-              <h3 className="font-bold text-lg mb-1">Report an issue</h3>
-              <p className="text-slate-400 text-sm mb-5">Help make the city safer for everyone by reporting hazards.</p>
-              <div className="flex flex-wrap gap-2 mb-6">
-                <span className="text-xs font-medium bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">Suspicious Activity</span>
-                <span className="text-xs font-medium bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">Broken Light</span>
-                <span className="text-xs font-medium bg-slate-800 text-slate-300 px-2.5 py-1.5 rounded-lg border border-slate-700">Accident</span>
-              </div>
-            </div>
-            <button className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-colors">
-              Report Now
-            </button>
-          </div>
-
-        </section>
       </main>
 
       {/* FOOTER */}
