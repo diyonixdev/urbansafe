@@ -48,6 +48,7 @@ export function EmergencyPanel({ embedded = false, initialSection = "quick" }: E
   const chunksRef = useRef<Blob[]>([]);
   const durationTimerRef = useRef<number | null>(null);
   const countdownTimerRef = useRef<number | null>(null);
+  const countdownValueRef = useRef(0);
 
   useEffect(() => {
     return () => {
@@ -69,24 +70,24 @@ export function EmergencyPanel({ embedded = false, initialSection = "quick" }: E
 
   const beginCountdown = () => {
     if (countdown !== null) return;
+    countdownValueRef.current = COUNTDOWN_START;
     setCountdown(COUNTDOWN_START);
     countdownTimerRef.current = window.setInterval(() => {
-      setCountdown((current) => {
-        if (current === null) return null;
-        if (current <= 1) {
-          if (countdownTimerRef.current !== null) {
-            window.clearInterval(countdownTimerRef.current);
-            countdownTimerRef.current = null;
-          }
-          activateEmergency("MANUAL_SOS");
-          return null;
-        }
-        return current - 1;
-      });
+      countdownValueRef.current -= 1;
+      // React state updaters must stay pure — activating the shared
+      // emergency from inside the updater would trigger the
+      // "setState during render" warning. Countdown tracking lives in a
+      // ref; the activation happens here in the interval callback.
+      setCountdown(countdownValueRef.current);
+      if (countdownValueRef.current <= 0) {
+        cancelCountdown();
+        activateEmergency("MANUAL_SOS");
+      }
     }, 1000);
   };
 
   const cancelCountdown = () => {
+    countdownValueRef.current = 0;
     if (countdownTimerRef.current !== null) {
       window.clearInterval(countdownTimerRef.current);
       countdownTimerRef.current = null;
