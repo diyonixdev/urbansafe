@@ -1,0 +1,3002 @@
+[
+  {
+    "id": "C0001",
+    "latitude": 26.90706944910645,
+    "longitude": 75.82181833805068,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2026-01-19T00:35:01.484Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0002",
+    "latitude": 26.92307051879321,
+    "longitude": 75.79852781177313,
+    "category": "robbery",
+    "severity": 1,
+    "date": "2026-01-10T06:49:04.382Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0003",
+    "latitude": 26.95429799082201,
+    "longitude": 75.80404768529272,
+    "category": "theft",
+    "severity": 4,
+    "date": "2026-02-19T19:29:08.158Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0004",
+    "latitude": 26.881378292335498,
+    "longitude": 75.77647599759169,
+    "category": "harassment",
+    "severity": 4,
+    "date": "2025-11-13T02:23:08.469Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0005",
+    "latitude": 26.94944382352779,
+    "longitude": 75.76041285826632,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2026-03-15T18:22:44.626Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0006",
+    "latitude": 26.92669307075045,
+    "longitude": 75.76979874394584,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2026-05-27T00:39:03.324Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0007",
+    "latitude": 26.925476906613987,
+    "longitude": 75.80152305045188,
+    "category": "robbery",
+    "severity": 3,
+    "date": "2025-09-16T06:07:18.787Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0008",
+    "latitude": 26.913550911671035,
+    "longitude": 75.74347274583224,
+    "category": "vehicle_theft",
+    "severity": 1,
+    "date": "2025-10-23T06:34:22.448Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0009",
+    "latitude": 26.89069315356778,
+    "longitude": 75.76648131073038,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2025-12-31T00:02:06.897Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0010",
+    "latitude": 26.901680407621892,
+    "longitude": 75.76549986067698,
+    "category": "robbery",
+    "severity": 4,
+    "date": "2026-01-07T19:51:39.506Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0011",
+    "latitude": 26.87503585954566,
+    "longitude": 75.78183395266713,
+    "category": "theft",
+    "severity": 5,
+    "date": "2025-08-21T19:16:30.372Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0012",
+    "latitude": 26.89800278382132,
+    "longitude": 75.77289835611094,
+    "category": "assault",
+    "severity": 4,
+    "date": "2025-10-17T21:12:17.258Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0013",
+    "latitude": 26.925917726418437,
+    "longitude": 75.79230248472749,
+    "category": "theft",
+    "severity": 5,
+    "date": "2026-03-21T16:02:47.050Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0014",
+    "latitude": 26.91699590185186,
+    "longitude": 75.80142869583037,
+    "category": "other",
+    "severity": 4,
+    "date": "2026-05-31T11:49:49.628Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0015",
+    "latitude": 26.92255906244148,
+    "longitude": 75.75304209278718,
+    "category": "other",
+    "severity": 5,
+    "date": "2025-12-06T07:40:59.044Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0016",
+    "latitude": 26.925005263935173,
+    "longitude": 75.79208273499371,
+    "category": "vehicle_theft",
+    "severity": 1,
+    "date": "2026-03-24T05:22:08.459Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0017",
+    "latitude": 26.922613225362202,
+    "longitude": 75.79261936761127,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2025-12-28T17:42:55.935Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0018",
+    "latitude": 26.882219462272882,
+    "longitude": 75.77767964244387,
+    "category": "theft",
+    "severity": 5,
+    "date": "2025-08-15T13:55:41.893Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0019",
+    "latitude": 26.937714760777734,
+    "longitude": 75.75937669021427,
+    "category": "other",
+    "severity": 1,
+    "date": "2026-02-03T16:28:12.159Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0020",
+    "latitude": 26.922412827158176,
+    "longitude": 75.80027974721115,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2025-09-13T10:29:47.120Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0021",
+    "latitude": 26.884730224541176,
+    "longitude": 75.7727712937416,
+    "category": "robbery",
+    "severity": 1,
+    "date": "2026-03-07T02:17:10.777Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0022",
+    "latitude": 26.940020647016635,
+    "longitude": 75.78565936182811,
+    "category": "other",
+    "severity": 4,
+    "date": "2026-05-27T14:14:43.919Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0023",
+    "latitude": 26.926008220400448,
+    "longitude": 75.7700005380924,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-04-16T06:55:17.484Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0024",
+    "latitude": 26.92845154802637,
+    "longitude": 75.76887743994249,
+    "category": "theft",
+    "severity": 1,
+    "date": "2026-03-26T08:28:30.739Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0025",
+    "latitude": 26.881613797246253,
+    "longitude": 75.77089187953126,
+    "category": "assault",
+    "severity": 3,
+    "date": "2025-11-05T07:27:12.437Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0026",
+    "latitude": 26.927052091237996,
+    "longitude": 75.7646542438361,
+    "category": "theft",
+    "severity": 3,
+    "date": "2026-05-07T03:23:40.466Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0027",
+    "latitude": 26.948631337154197,
+    "longitude": 75.799290271681,
+    "category": "robbery",
+    "severity": 3,
+    "date": "2025-08-27T17:34:04.220Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0028",
+    "latitude": 26.92257461924216,
+    "longitude": 75.79654253382766,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2025-10-24T18:14:00.632Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0029",
+    "latitude": 26.941710974005453,
+    "longitude": 75.82116993188441,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2026-03-04T18:29:14.813Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0030",
+    "latitude": 26.89264926634987,
+    "longitude": 75.77100653986905,
+    "category": "theft",
+    "severity": 2,
+    "date": "2026-03-13T22:28:50.765Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0031",
+    "latitude": 26.922711253675267,
+    "longitude": 75.79715791661056,
+    "category": "theft",
+    "severity": 2,
+    "date": "2025-12-07T18:18:27.957Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0032",
+    "latitude": 26.92056552311613,
+    "longitude": 75.80451350127939,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2026-01-09T19:51:41.679Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0033",
+    "latitude": 26.892535245106966,
+    "longitude": 75.76977013686302,
+    "category": "robbery",
+    "severity": 4,
+    "date": "2026-04-22T21:15:16.487Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0034",
+    "latitude": 26.919763032854135,
+    "longitude": 75.8002632678289,
+    "category": "other",
+    "severity": 2,
+    "date": "2025-09-13T00:05:32.433Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0035",
+    "latitude": 26.923278375275782,
+    "longitude": 75.79596009289621,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2026-04-19T12:53:11.282Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0036",
+    "latitude": 26.934818959987588,
+    "longitude": 75.76683121088608,
+    "category": "assault",
+    "severity": 3,
+    "date": "2025-12-01T08:25:26.120Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0037",
+    "latitude": 26.897205780596014,
+    "longitude": 75.7549933854246,
+    "category": "assault",
+    "severity": 2,
+    "date": "2026-04-12T03:31:00.179Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0038",
+    "latitude": 26.9257530874259,
+    "longitude": 75.77119430458717,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2025-12-16T14:04:14.033Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0039",
+    "latitude": 26.917233424977884,
+    "longitude": 75.76150976602352,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-03-21T23:12:34.776Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0040",
+    "latitude": 26.8915615089882,
+    "longitude": 75.76453951440065,
+    "category": "theft",
+    "severity": 3,
+    "date": "2025-08-17T20:23:46.528Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0041",
+    "latitude": 26.92674771960527,
+    "longitude": 75.76839286691835,
+    "category": "other",
+    "severity": 1,
+    "date": "2025-11-05T18:09:49.637Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0042",
+    "latitude": 26.896120614414595,
+    "longitude": 75.7615168988175,
+    "category": "other",
+    "severity": 1,
+    "date": "2025-10-02T18:30:33.129Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0043",
+    "latitude": 26.88572299977012,
+    "longitude": 75.79869077441911,
+    "category": "theft",
+    "severity": 2,
+    "date": "2025-10-16T14:21:42.003Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0044",
+    "latitude": 26.89413211380484,
+    "longitude": 75.77310515758025,
+    "category": "other",
+    "severity": 4,
+    "date": "2026-05-09T13:57:32.667Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0045",
+    "latitude": 26.925807837693117,
+    "longitude": 75.77055359113902,
+    "category": "theft",
+    "severity": 1,
+    "date": "2025-08-26T12:30:29.080Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0046",
+    "latitude": 26.92757785429863,
+    "longitude": 75.77152447794553,
+    "category": "other",
+    "severity": 3,
+    "date": "2026-01-10T15:13:11.851Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0047",
+    "latitude": 26.921396396513945,
+    "longitude": 75.80034778855268,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2025-08-28T19:44:21.166Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0048",
+    "latitude": 26.925385956070247,
+    "longitude": 75.7958979742927,
+    "category": "theft",
+    "severity": 2,
+    "date": "2025-10-16T19:32:22.393Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0049",
+    "latitude": 26.90090632554889,
+    "longitude": 75.77548100066997,
+    "category": "theft",
+    "severity": 3,
+    "date": "2026-06-30T03:29:26.913Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0050",
+    "latitude": 26.87789051063839,
+    "longitude": 75.75535457492487,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2025-09-21T03:21:53.951Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0051",
+    "latitude": 26.879391669238483,
+    "longitude": 75.77593184153923,
+    "category": "harassment",
+    "severity": 4,
+    "date": "2025-08-31T14:35:46.067Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0052",
+    "latitude": 26.89423409777604,
+    "longitude": 75.77445087602355,
+    "category": "other",
+    "severity": 2,
+    "date": "2025-10-07T22:07:08.621Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0053",
+    "latitude": 26.890101990126205,
+    "longitude": 75.77391560512925,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2026-01-13T15:36:11.864Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0054",
+    "latitude": 26.89435174964364,
+    "longitude": 75.77722898931165,
+    "category": "other",
+    "severity": 2,
+    "date": "2025-08-19T19:41:44.514Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0055",
+    "latitude": 26.878967977706104,
+    "longitude": 75.83422766821369,
+    "category": "harassment",
+    "severity": 4,
+    "date": "2026-03-20T09:44:22.947Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0056",
+    "latitude": 26.887451158895654,
+    "longitude": 75.77035439541325,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2026-04-28T09:01:53.699Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0057",
+    "latitude": 26.926605524251954,
+    "longitude": 75.7677544737945,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2026-03-27T02:42:38.419Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0058",
+    "latitude": 26.932037829391692,
+    "longitude": 75.76223635472311,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2026-03-11T17:57:16.723Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0059",
+    "latitude": 26.91843340667264,
+    "longitude": 75.79588385247105,
+    "category": "robbery",
+    "severity": 1,
+    "date": "2025-12-15T19:34:13.203Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0060",
+    "latitude": 26.927424082265333,
+    "longitude": 75.77189475252878,
+    "category": "assault",
+    "severity": 3,
+    "date": "2025-08-21T15:58:11.762Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0061",
+    "latitude": 26.93234481579566,
+    "longitude": 75.79827248780153,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2025-08-24T18:03:49.617Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0062",
+    "latitude": 26.92266979978764,
+    "longitude": 75.7993269556895,
+    "category": "harassment",
+    "severity": 4,
+    "date": "2026-04-27T16:04:59.483Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0063",
+    "latitude": 26.95051503716318,
+    "longitude": 75.77051347663046,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2025-10-28T23:45:21.536Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0064",
+    "latitude": 26.926920709479287,
+    "longitude": 75.77055435767421,
+    "category": "assault",
+    "severity": 1,
+    "date": "2025-12-29T17:24:17.299Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0065",
+    "latitude": 26.887346450204745,
+    "longitude": 75.74182036699133,
+    "category": "assault",
+    "severity": 1,
+    "date": "2025-10-18T14:34:41.851Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0066",
+    "latitude": 26.92730330035548,
+    "longitude": 75.76674338522255,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2026-08-10T00:27:04.500Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0067",
+    "latitude": 26.886338582195627,
+    "longitude": 75.75508670163252,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2026-07-07T14:01:13.180Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0068",
+    "latitude": 26.92188088101633,
+    "longitude": 75.80339587899965,
+    "category": "other",
+    "severity": 4,
+    "date": "2025-08-21T20:18:56.415Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0069",
+    "latitude": 26.923864904035597,
+    "longitude": 75.7956863807122,
+    "category": "other",
+    "severity": 2,
+    "date": "2026-01-01T17:26:03.295Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0070",
+    "latitude": 26.931907669356487,
+    "longitude": 75.77389835458779,
+    "category": "other",
+    "severity": 1,
+    "date": "2026-06-27T06:26:57.537Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0071",
+    "latitude": 26.924448399281395,
+    "longitude": 75.76836384810065,
+    "category": "theft",
+    "severity": 5,
+    "date": "2026-07-12T10:20:54.147Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0072",
+    "latitude": 26.923866810398152,
+    "longitude": 75.76900254156787,
+    "category": "assault",
+    "severity": 2,
+    "date": "2026-01-09T00:44:24.065Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0073",
+    "latitude": 26.92423625879239,
+    "longitude": 75.79647516992667,
+    "category": "theft",
+    "severity": 2,
+    "date": "2025-09-02T07:57:17.194Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0074",
+    "latitude": 26.88698880337414,
+    "longitude": 75.77481569386795,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2025-08-13T19:14:22.229Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0075",
+    "latitude": 26.885902253119013,
+    "longitude": 75.74942521600076,
+    "category": "assault",
+    "severity": 2,
+    "date": "2026-08-07T11:52:18.121Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0076",
+    "latitude": 26.874830075688326,
+    "longitude": 75.76916441652422,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2025-11-28T11:22:12.050Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0077",
+    "latitude": 26.921521279374847,
+    "longitude": 75.83642846063708,
+    "category": "robbery",
+    "severity": 1,
+    "date": "2026-01-11T16:19:36.044Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0078",
+    "latitude": 26.932352146471757,
+    "longitude": 75.76934780494233,
+    "category": "theft",
+    "severity": 3,
+    "date": "2026-07-13T23:39:53.392Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0079",
+    "latitude": 26.92364036093608,
+    "longitude": 75.79579155138583,
+    "category": "theft",
+    "severity": 3,
+    "date": "2025-09-29T08:32:28.990Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0080",
+    "latitude": 26.884143265604944,
+    "longitude": 75.81176346851706,
+    "category": "assault",
+    "severity": 1,
+    "date": "2025-09-11T23:15:22.395Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0081",
+    "latitude": 26.94698208218268,
+    "longitude": 75.79996188080231,
+    "category": "assault",
+    "severity": 5,
+    "date": "2026-02-15T02:04:42.746Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0082",
+    "latitude": 26.927339993906138,
+    "longitude": 75.76738571958477,
+    "category": "assault",
+    "severity": 2,
+    "date": "2025-11-29T04:01:30.193Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0083",
+    "latitude": 26.883013992133836,
+    "longitude": 75.76872655530853,
+    "category": "harassment",
+    "severity": 3,
+    "date": "2026-04-18T17:11:28.254Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0084",
+    "latitude": 26.920834962375103,
+    "longitude": 75.78775154430608,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-06-05T07:44:05.531Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0085",
+    "latitude": 26.888524853757385,
+    "longitude": 75.7744621630254,
+    "category": "assault",
+    "severity": 5,
+    "date": "2026-03-16T07:39:28.315Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0086",
+    "latitude": 26.921034622240487,
+    "longitude": 75.76738968024698,
+    "category": "assault",
+    "severity": 4,
+    "date": "2026-01-01T18:24:14.162Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0087",
+    "latitude": 26.922558110120374,
+    "longitude": 75.79678821483378,
+    "category": "robbery",
+    "severity": 4,
+    "date": "2026-05-14T08:04:52.085Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0088",
+    "latitude": 26.920079375764132,
+    "longitude": 75.80198044926698,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2026-01-25T07:07:27.917Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0089",
+    "latitude": 26.927572279691876,
+    "longitude": 75.76719907269342,
+    "category": "theft",
+    "severity": 1,
+    "date": "2026-02-10T02:26:19.661Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0090",
+    "latitude": 26.916135296864407,
+    "longitude": 75.79383496381172,
+    "category": "other",
+    "severity": 1,
+    "date": "2026-01-21T10:05:38.424Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0091",
+    "latitude": 26.920647329442204,
+    "longitude": 75.80012411509303,
+    "category": "assault",
+    "severity": 2,
+    "date": "2026-04-03T01:32:59.884Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0092",
+    "latitude": 26.903875710357116,
+    "longitude": 75.76925993883799,
+    "category": "theft",
+    "severity": 4,
+    "date": "2026-07-26T05:06:22.513Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0093",
+    "latitude": 26.88362221073031,
+    "longitude": 75.77296840903513,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-04-21T01:39:17.694Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0094",
+    "latitude": 26.882478944368966,
+    "longitude": 75.79690855695168,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2025-12-06T17:09:20.886Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0095",
+    "latitude": 26.932171397306178,
+    "longitude": 75.76430730889977,
+    "category": "assault",
+    "severity": 4,
+    "date": "2026-06-23T15:23:44.673Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0096",
+    "latitude": 26.925321023011318,
+    "longitude": 75.78965723454418,
+    "category": "other",
+    "severity": 1,
+    "date": "2026-08-04T09:40:42.746Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0097",
+    "latitude": 26.891178152076513,
+    "longitude": 75.78185174038236,
+    "category": "theft",
+    "severity": 5,
+    "date": "2026-04-15T01:57:09.221Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0098",
+    "latitude": 26.927058916810655,
+    "longitude": 75.83036029809605,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2025-08-31T09:30:01.585Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0099",
+    "latitude": 26.923055178656917,
+    "longitude": 75.80128471697813,
+    "category": "harassment",
+    "severity": 4,
+    "date": "2026-07-01T15:03:03.286Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0100",
+    "latitude": 26.929361742480207,
+    "longitude": 75.76753131586507,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2026-04-20T01:20:01.380Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0101",
+    "latitude": 26.92784907110209,
+    "longitude": 75.77313714620598,
+    "category": "harassment",
+    "severity": 3,
+    "date": "2026-02-22T09:03:30.908Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0102",
+    "latitude": 26.924010231327177,
+    "longitude": 75.7994016255201,
+    "category": "assault",
+    "severity": 5,
+    "date": "2026-05-19T08:18:12.002Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0103",
+    "latitude": 26.878363377112354,
+    "longitude": 75.78110272115273,
+    "category": "other",
+    "severity": 5,
+    "date": "2026-06-12T22:41:57.679Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0104",
+    "latitude": 26.926050104589393,
+    "longitude": 75.76570790058433,
+    "category": "other",
+    "severity": 5,
+    "date": "2026-06-15T08:01:47.940Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0105",
+    "latitude": 26.894877829363775,
+    "longitude": 75.77330451706337,
+    "category": "assault",
+    "severity": 5,
+    "date": "2026-05-04T23:36:52.721Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0106",
+    "latitude": 26.908771415737185,
+    "longitude": 75.75384916910926,
+    "category": "vehicle_theft",
+    "severity": 1,
+    "date": "2025-08-30T08:38:52.595Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0107",
+    "latitude": 26.929863308489804,
+    "longitude": 75.77120398212534,
+    "category": "assault",
+    "severity": 4,
+    "date": "2026-04-22T09:53:03.519Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0108",
+    "latitude": 26.91774856624923,
+    "longitude": 75.79654834609686,
+    "category": "theft",
+    "severity": 2,
+    "date": "2025-09-27T00:40:36.452Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0109",
+    "latitude": 26.890428572277386,
+    "longitude": 75.77027484509391,
+    "category": "assault",
+    "severity": 2,
+    "date": "2025-09-30T06:40:39.917Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0110",
+    "latitude": 26.95480963009833,
+    "longitude": 75.79452168473358,
+    "category": "vehicle_theft",
+    "severity": 3,
+    "date": "2026-02-22T14:50:47.342Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0111",
+    "latitude": 26.88526956917075,
+    "longitude": 75.75310628139643,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2026-07-15T06:04:28.445Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0112",
+    "latitude": 26.922822947662183,
+    "longitude": 75.79766492975322,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2026-06-28T05:59:01.812Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0113",
+    "latitude": 26.93726647528335,
+    "longitude": 75.80585216910215,
+    "category": "assault",
+    "severity": 4,
+    "date": "2026-07-04T07:09:18.412Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0114",
+    "latitude": 26.883727190792204,
+    "longitude": 75.76778488916658,
+    "category": "other",
+    "severity": 4,
+    "date": "2026-01-06T22:41:12.866Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0115",
+    "latitude": 26.924525345875313,
+    "longitude": 75.8018343613935,
+    "category": "vehicle_theft",
+    "severity": 1,
+    "date": "2026-04-22T16:49:21.590Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0116",
+    "latitude": 26.920158412537937,
+    "longitude": 75.76956837451321,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2026-04-02T02:21:30.588Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0117",
+    "latitude": 26.933783877584407,
+    "longitude": 75.74628505998393,
+    "category": "assault",
+    "severity": 3,
+    "date": "2026-01-10T21:57:28.368Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0118",
+    "latitude": 26.898647847367137,
+    "longitude": 75.7686644874947,
+    "category": "other",
+    "severity": 4,
+    "date": "2026-04-12T00:02:48.754Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0119",
+    "latitude": 26.9163695736323,
+    "longitude": 75.76663780432217,
+    "category": "other",
+    "severity": 5,
+    "date": "2026-08-07T23:03:18.541Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0120",
+    "latitude": 26.926352503037744,
+    "longitude": 75.76741368726205,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2025-10-29T16:58:53.726Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0121",
+    "latitude": 26.893403922249774,
+    "longitude": 75.79868669519925,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2025-12-14T12:39:17.293Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0122",
+    "latitude": 26.923419526474003,
+    "longitude": 75.79397231411187,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2026-08-06T04:25:35.631Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0123",
+    "latitude": 26.92737847991126,
+    "longitude": 75.80177882221297,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2025-09-03T05:10:35.319Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0124",
+    "latitude": 26.929285124263636,
+    "longitude": 75.7716803028219,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2025-09-15T00:39:52.243Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0125",
+    "latitude": 26.93808461697595,
+    "longitude": 75.74335539198505,
+    "category": "robbery",
+    "severity": 4,
+    "date": "2026-04-08T17:56:45.973Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0126",
+    "latitude": 26.956174445267248,
+    "longitude": 75.82110500899037,
+    "category": "harassment",
+    "severity": 3,
+    "date": "2026-03-11T19:47:12.978Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0127",
+    "latitude": 26.89165883223792,
+    "longitude": 75.77967307344588,
+    "category": "other",
+    "severity": 4,
+    "date": "2026-05-07T02:22:00.513Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0128",
+    "latitude": 26.920820933228455,
+    "longitude": 75.80126745889093,
+    "category": "assault",
+    "severity": 4,
+    "date": "2025-09-09T10:49:43.425Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0129",
+    "latitude": 26.875545391677424,
+    "longitude": 75.8177967296753,
+    "category": "assault",
+    "severity": 2,
+    "date": "2026-07-21T20:22:55.670Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0130",
+    "latitude": 26.925501940613938,
+    "longitude": 75.7670265605243,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2026-07-30T03:59:43.995Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0131",
+    "latitude": 26.929398831509538,
+    "longitude": 75.76227115982815,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2025-09-17T01:05:11.965Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0132",
+    "latitude": 26.91801355913857,
+    "longitude": 75.77750979630912,
+    "category": "theft",
+    "severity": 4,
+    "date": "2025-08-10T06:24:58.362Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0133",
+    "latitude": 26.921537487460473,
+    "longitude": 75.79760298769366,
+    "category": "assault",
+    "severity": 1,
+    "date": "2025-10-26T02:44:12.094Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0134",
+    "latitude": 26.89057269807057,
+    "longitude": 75.77595073841921,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2025-12-27T11:06:07.978Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0135",
+    "latitude": 26.891164881620785,
+    "longitude": 75.77118290721442,
+    "category": "theft",
+    "severity": 2,
+    "date": "2025-10-25T19:30:23.770Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0136",
+    "latitude": 26.925836965086845,
+    "longitude": 75.76922913416064,
+    "category": "assault",
+    "severity": 4,
+    "date": "2026-03-04T18:27:13.638Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0137",
+    "latitude": 26.89376640330237,
+    "longitude": 75.76717347916171,
+    "category": "assault",
+    "severity": 3,
+    "date": "2026-04-13T23:42:45.679Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0138",
+    "latitude": 26.88726147945229,
+    "longitude": 75.78256247612045,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2025-12-06T21:10:05.695Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0139",
+    "latitude": 26.925332924504144,
+    "longitude": 75.78892740257456,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2025-10-10T07:15:02.641Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0140",
+    "latitude": 26.883852377271637,
+    "longitude": 75.82746875078253,
+    "category": "other",
+    "severity": 1,
+    "date": "2025-12-30T12:31:21.994Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0141",
+    "latitude": 26.920260296461777,
+    "longitude": 75.77350877383894,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-07-23T15:41:19.670Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0142",
+    "latitude": 26.88902346759756,
+    "longitude": 75.7780879535948,
+    "category": "assault",
+    "severity": 3,
+    "date": "2025-09-03T00:00:33.998Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0143",
+    "latitude": 26.929658971034545,
+    "longitude": 75.77359290794534,
+    "category": "assault",
+    "severity": 2,
+    "date": "2025-12-21T21:10:55.390Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0144",
+    "latitude": 26.89814893702754,
+    "longitude": 75.82451675065845,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2026-01-08T05:45:18.908Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0145",
+    "latitude": 26.89926019334004,
+    "longitude": 75.76832798391355,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2025-12-29T17:21:05.932Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0146",
+    "latitude": 26.8935044946788,
+    "longitude": 75.77106857073001,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2026-03-28T12:53:58.997Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0147",
+    "latitude": 26.9341049346801,
+    "longitude": 75.80665620082361,
+    "category": "assault",
+    "severity": 5,
+    "date": "2025-11-12T12:42:09.339Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0148",
+    "latitude": 26.888902360349114,
+    "longitude": 75.78242432998019,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2026-04-25T21:10:00.421Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0149",
+    "latitude": 26.89455639001579,
+    "longitude": 75.79212928012217,
+    "category": "theft",
+    "severity": 1,
+    "date": "2026-06-23T19:39:48.233Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0150",
+    "latitude": 26.882283817322328,
+    "longitude": 75.76928430288442,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2026-05-11T22:00:34.595Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0151",
+    "latitude": 26.94286627869223,
+    "longitude": 75.76968042794984,
+    "category": "robbery",
+    "severity": 4,
+    "date": "2025-08-11T18:43:46.847Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0152",
+    "latitude": 26.918831902498987,
+    "longitude": 75.8035732581573,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2025-10-05T19:08:34.300Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0153",
+    "latitude": 26.924442411802303,
+    "longitude": 75.76592364439175,
+    "category": "theft",
+    "severity": 4,
+    "date": "2025-11-17T02:26:35.829Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0154",
+    "latitude": 26.95377524737047,
+    "longitude": 75.80546720606098,
+    "category": "assault",
+    "severity": 3,
+    "date": "2026-05-14T21:19:44.243Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0155",
+    "latitude": 26.942259130034742,
+    "longitude": 75.78255917878884,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2026-02-23T22:47:29.263Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0156",
+    "latitude": 26.88289226756809,
+    "longitude": 75.77719528339952,
+    "category": "assault",
+    "severity": 4,
+    "date": "2026-02-07T13:02:08.596Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0157",
+    "latitude": 26.93095923024131,
+    "longitude": 75.7687855355306,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2025-10-26T16:52:43.707Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0158",
+    "latitude": 26.91892212111624,
+    "longitude": 75.79633825818046,
+    "category": "other",
+    "severity": 1,
+    "date": "2026-06-08T03:50:54.217Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0159",
+    "latitude": 26.92024398212764,
+    "longitude": 75.75190501433097,
+    "category": "vehicle_theft",
+    "severity": 3,
+    "date": "2025-12-15T19:46:53.822Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0160",
+    "latitude": 26.927633374779017,
+    "longitude": 75.76764176591402,
+    "category": "vehicle_theft",
+    "severity": 1,
+    "date": "2025-12-15T14:04:55.529Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0161",
+    "latitude": 26.926118852833234,
+    "longitude": 75.76784072741275,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2025-09-04T05:25:21.723Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0162",
+    "latitude": 26.932793768709566,
+    "longitude": 75.76784908052834,
+    "category": "other",
+    "severity": 3,
+    "date": "2026-01-13T09:45:28.341Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0163",
+    "latitude": 26.920475879302924,
+    "longitude": 75.79705769951708,
+    "category": "other",
+    "severity": 3,
+    "date": "2026-04-08T11:44:55.744Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0164",
+    "latitude": 26.891474092326607,
+    "longitude": 75.77261866620624,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-04-25T20:16:38.257Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0165",
+    "latitude": 26.93916857224831,
+    "longitude": 75.77220493512307,
+    "category": "other",
+    "severity": 3,
+    "date": "2025-10-04T01:31:47.655Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0166",
+    "latitude": 26.927451098551437,
+    "longitude": 75.76719821608772,
+    "category": "other",
+    "severity": 2,
+    "date": "2025-09-03T09:43:55.667Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0167",
+    "latitude": 26.93286071027012,
+    "longitude": 75.7863549742843,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2026-02-13T22:58:31.327Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0168",
+    "latitude": 26.88963332868034,
+    "longitude": 75.77449707407155,
+    "category": "robbery",
+    "severity": 3,
+    "date": "2026-03-27T11:01:48.232Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0169",
+    "latitude": 26.89072858421716,
+    "longitude": 75.77482735906162,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2026-06-29T18:40:56.377Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0170",
+    "latitude": 26.926213250093895,
+    "longitude": 75.76924724888973,
+    "category": "harassment",
+    "severity": 3,
+    "date": "2025-12-26T09:30:33.235Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0171",
+    "latitude": 26.950101741390604,
+    "longitude": 75.76342616279548,
+    "category": "other",
+    "severity": 1,
+    "date": "2026-05-03T17:01:14.754Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0172",
+    "latitude": 26.912534743383272,
+    "longitude": 75.78083819199964,
+    "category": "assault",
+    "severity": 5,
+    "date": "2026-05-02T14:08:43.113Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0173",
+    "latitude": 26.943973425588183,
+    "longitude": 75.7562265864545,
+    "category": "robbery",
+    "severity": 4,
+    "date": "2026-03-08T07:11:13.803Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0174",
+    "latitude": 26.902731407482076,
+    "longitude": 75.77019382280074,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2025-12-17T03:49:48.687Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0175",
+    "latitude": 26.91801981456583,
+    "longitude": 75.80218754076486,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2026-02-20T02:58:37.621Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0176",
+    "latitude": 26.92233479266931,
+    "longitude": 75.80655636364841,
+    "category": "theft",
+    "severity": 3,
+    "date": "2026-01-04T16:54:56.757Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0177",
+    "latitude": 26.92620012185295,
+    "longitude": 75.79701652723018,
+    "category": "theft",
+    "severity": 5,
+    "date": "2026-04-27T08:22:22.919Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0178",
+    "latitude": 26.93056385194521,
+    "longitude": 75.76539206502943,
+    "category": "robbery",
+    "severity": 3,
+    "date": "2026-05-08T13:06:50.190Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0179",
+    "latitude": 26.937558558004845,
+    "longitude": 75.74524959650417,
+    "category": "other",
+    "severity": 1,
+    "date": "2026-06-13T08:51:11.323Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0180",
+    "latitude": 26.949611546487013,
+    "longitude": 75.76881911839808,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2026-03-05T13:02:09.173Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0181",
+    "latitude": 26.91393093331438,
+    "longitude": 75.76920485789489,
+    "category": "other",
+    "severity": 3,
+    "date": "2025-08-30T02:47:10.629Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0182",
+    "latitude": 26.893817704650875,
+    "longitude": 75.77669125890283,
+    "category": "assault",
+    "severity": 4,
+    "date": "2026-03-21T21:56:32.580Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0183",
+    "latitude": 26.896507281253616,
+    "longitude": 75.8097919937719,
+    "category": "assault",
+    "severity": 2,
+    "date": "2026-05-03T05:21:45.621Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0184",
+    "latitude": 26.870294786249218,
+    "longitude": 75.74058335666632,
+    "category": "assault",
+    "severity": 5,
+    "date": "2025-11-20T17:28:07.889Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0185",
+    "latitude": 26.93126764850094,
+    "longitude": 75.76115287738503,
+    "category": "other",
+    "severity": 5,
+    "date": "2026-07-16T06:26:14.715Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0186",
+    "latitude": 26.926409515582172,
+    "longitude": 75.77271794770061,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2026-08-06T17:29:10.356Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0187",
+    "latitude": 26.92246499257261,
+    "longitude": 75.76180614112442,
+    "category": "robbery",
+    "severity": 3,
+    "date": "2026-07-11T19:09:33.323Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0188",
+    "latitude": 26.92275877485987,
+    "longitude": 75.76416015449419,
+    "category": "robbery",
+    "severity": 1,
+    "date": "2025-12-08T21:09:55.355Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0189",
+    "latitude": 26.919943908823107,
+    "longitude": 75.8035770758792,
+    "category": "theft",
+    "severity": 3,
+    "date": "2025-10-17T17:50:31.709Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0190",
+    "latitude": 26.922016715131672,
+    "longitude": 75.78679743956472,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2025-09-01T04:34:49.424Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0191",
+    "latitude": 26.893191597887505,
+    "longitude": 75.77245457727342,
+    "category": "assault",
+    "severity": 3,
+    "date": "2025-10-03T00:08:29.640Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0192",
+    "latitude": 26.88877439130169,
+    "longitude": 75.77718762163484,
+    "category": "theft",
+    "severity": 2,
+    "date": "2026-04-25T14:52:48.849Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0193",
+    "latitude": 26.91087280403816,
+    "longitude": 75.81608915006639,
+    "category": "assault",
+    "severity": 3,
+    "date": "2025-12-14T01:58:07.792Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0194",
+    "latitude": 26.9267255096879,
+    "longitude": 75.76709220382594,
+    "category": "assault",
+    "severity": 1,
+    "date": "2026-06-23T21:52:48.744Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0195",
+    "latitude": 26.922769578018627,
+    "longitude": 75.79841910798403,
+    "category": "robbery",
+    "severity": 3,
+    "date": "2025-11-22T19:33:11.630Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0196",
+    "latitude": 26.899351835419154,
+    "longitude": 75.7833106133921,
+    "category": "theft",
+    "severity": 5,
+    "date": "2026-07-09T17:00:07.433Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0197",
+    "latitude": 26.906125119710165,
+    "longitude": 75.74953421908288,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2025-12-16T03:53:43.880Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0198",
+    "latitude": 26.89957435627668,
+    "longitude": 75.76580790930078,
+    "category": "assault",
+    "severity": 3,
+    "date": "2026-01-20T23:23:08.565Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0199",
+    "latitude": 26.934882340193347,
+    "longitude": 75.76536474981,
+    "category": "theft",
+    "severity": 2,
+    "date": "2026-03-25T19:16:51.501Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0200",
+    "latitude": 26.902978061506456,
+    "longitude": 75.77158363607329,
+    "category": "assault",
+    "severity": 1,
+    "date": "2026-01-27T19:10:06.287Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0201",
+    "latitude": 26.8897502934201,
+    "longitude": 75.78205716095088,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2025-12-31T22:33:17.556Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0202",
+    "latitude": 26.93335398927017,
+    "longitude": 75.78967656385296,
+    "category": "other",
+    "severity": 5,
+    "date": "2025-12-10T11:34:52.425Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0203",
+    "latitude": 26.926759501772338,
+    "longitude": 75.79591711434414,
+    "category": "vehicle_theft",
+    "severity": 3,
+    "date": "2026-04-26T14:48:13.434Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0204",
+    "latitude": 26.89075732630577,
+    "longitude": 75.76274954883401,
+    "category": "assault",
+    "severity": 2,
+    "date": "2025-09-20T23:08:15.812Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0205",
+    "latitude": 26.894843173055058,
+    "longitude": 75.82185323410535,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2025-09-22T15:04:57.919Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0206",
+    "latitude": 26.91934704982067,
+    "longitude": 75.79766475221454,
+    "category": "harassment",
+    "severity": 4,
+    "date": "2025-12-23T15:54:37.341Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0207",
+    "latitude": 26.886338903585028,
+    "longitude": 75.77998410563265,
+    "category": "theft",
+    "severity": 4,
+    "date": "2025-12-16T05:42:17.325Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0208",
+    "latitude": 26.926173208860643,
+    "longitude": 75.78869382299048,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2026-02-16T20:04:23.056Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0209",
+    "latitude": 26.914235631367458,
+    "longitude": 75.74664338723744,
+    "category": "harassment",
+    "severity": 3,
+    "date": "2026-08-03T11:39:21.182Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0210",
+    "latitude": 26.886185785210824,
+    "longitude": 75.80047352496965,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2026-03-15T02:32:17.429Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0211",
+    "latitude": 26.94464489094096,
+    "longitude": 75.75693723963201,
+    "category": "harassment",
+    "severity": 3,
+    "date": "2026-06-10T02:40:42.600Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0212",
+    "latitude": 26.922676766133787,
+    "longitude": 75.79915055458152,
+    "category": "robbery",
+    "severity": 4,
+    "date": "2025-11-24T09:48:30.414Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0213",
+    "latitude": 26.9178539254242,
+    "longitude": 75.79549697884377,
+    "category": "assault",
+    "severity": 1,
+    "date": "2025-08-21T14:28:59.542Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0214",
+    "latitude": 26.931240368234413,
+    "longitude": 75.769441138224,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2025-12-24T01:37:22.162Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0215",
+    "latitude": 26.953509724419078,
+    "longitude": 75.83158009660664,
+    "category": "assault",
+    "severity": 5,
+    "date": "2026-06-11T05:39:02.497Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0216",
+    "latitude": 26.927368816491985,
+    "longitude": 75.76754196224171,
+    "category": "other",
+    "severity": 4,
+    "date": "2025-09-11T04:20:21.157Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0217",
+    "latitude": 26.89535655812078,
+    "longitude": 75.77309087953125,
+    "category": "other",
+    "severity": 3,
+    "date": "2025-08-19T09:25:56.608Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0218",
+    "latitude": 26.906522364420265,
+    "longitude": 75.77392668381988,
+    "category": "theft",
+    "severity": 5,
+    "date": "2026-05-25T18:23:30.594Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0219",
+    "latitude": 26.891378551358052,
+    "longitude": 75.77511028063712,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2025-11-25T22:16:29.187Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0220",
+    "latitude": 26.910744845308177,
+    "longitude": 75.76454129952107,
+    "category": "assault",
+    "severity": 1,
+    "date": "2026-06-16T14:49:02.408Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0221",
+    "latitude": 26.94600496248089,
+    "longitude": 75.7894695452604,
+    "category": "harassment",
+    "severity": 3,
+    "date": "2026-05-17T20:13:56.883Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0222",
+    "latitude": 26.889729570156177,
+    "longitude": 75.7819317183907,
+    "category": "assault",
+    "severity": 3,
+    "date": "2026-05-27T17:12:53.571Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0223",
+    "latitude": 26.888113693741143,
+    "longitude": 75.76407361508954,
+    "category": "assault",
+    "severity": 5,
+    "date": "2026-03-05T08:18:43.190Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0224",
+    "latitude": 26.89694734850554,
+    "longitude": 75.76159024164043,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2025-09-25T15:08:13.164Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0225",
+    "latitude": 26.923942391560118,
+    "longitude": 75.79635167835868,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-05-17T04:20:21.423Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0226",
+    "latitude": 26.89316459949803,
+    "longitude": 75.77783470074422,
+    "category": "other",
+    "severity": 4,
+    "date": "2026-01-15T19:48:59.741Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0227",
+    "latitude": 26.92825484566397,
+    "longitude": 75.76481052410618,
+    "category": "vehicle_theft",
+    "severity": 1,
+    "date": "2026-04-02T23:29:32.119Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0228",
+    "latitude": 26.890951090244315,
+    "longitude": 75.77205119457423,
+    "category": "assault",
+    "severity": 3,
+    "date": "2025-09-20T09:23:26.537Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0229",
+    "latitude": 26.917483667816057,
+    "longitude": 75.79907355456892,
+    "category": "robbery",
+    "severity": 1,
+    "date": "2026-05-16T07:41:31.480Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0230",
+    "latitude": 26.954535817039428,
+    "longitude": 75.79318000652192,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2026-05-18T21:20:55.558Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0231",
+    "latitude": 26.88831943870975,
+    "longitude": 75.7674515710714,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2025-12-05T13:17:13.328Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0232",
+    "latitude": 26.88484351474555,
+    "longitude": 75.77814103832496,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2026-08-08T10:09:56.265Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0233",
+    "latitude": 26.9125042772334,
+    "longitude": 75.79785416831064,
+    "category": "theft",
+    "severity": 5,
+    "date": "2025-10-03T12:59:00.080Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0234",
+    "latitude": 26.931739834505283,
+    "longitude": 75.82011838365429,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2025-08-11T20:34:09.270Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0235",
+    "latitude": 26.878241319928772,
+    "longitude": 75.74278674816506,
+    "category": "assault",
+    "severity": 1,
+    "date": "2026-06-01T17:53:01.356Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0236",
+    "latitude": 26.922423682010727,
+    "longitude": 75.79740903791154,
+    "category": "other",
+    "severity": 4,
+    "date": "2026-01-15T05:14:05.151Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0237",
+    "latitude": 26.92893250860492,
+    "longitude": 75.77025312768141,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-03-18T19:51:40.882Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0238",
+    "latitude": 26.921417159141896,
+    "longitude": 75.79744842406302,
+    "category": "harassment",
+    "severity": 5,
+    "date": "2025-08-23T18:03:55.259Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0239",
+    "latitude": 26.956230572212505,
+    "longitude": 75.78745104602547,
+    "category": "assault",
+    "severity": 4,
+    "date": "2026-03-19T09:59:29.924Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0240",
+    "latitude": 26.891858607191118,
+    "longitude": 75.77192762617084,
+    "category": "theft",
+    "severity": 1,
+    "date": "2026-03-04T06:06:00.570Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0241",
+    "latitude": 26.91438628544396,
+    "longitude": 75.8295253808788,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2025-10-23T07:35:24.297Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0242",
+    "latitude": 26.929569528046773,
+    "longitude": 75.79040731930279,
+    "category": "theft",
+    "severity": 4,
+    "date": "2025-10-22T22:27:27.918Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0243",
+    "latitude": 26.922863504752094,
+    "longitude": 75.76880013722304,
+    "category": "theft",
+    "severity": 2,
+    "date": "2025-11-23T14:05:22.461Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0244",
+    "latitude": 26.92003540938584,
+    "longitude": 75.80314921105614,
+    "category": "other",
+    "severity": 2,
+    "date": "2026-03-26T19:52:25.975Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0245",
+    "latitude": 26.915245421501368,
+    "longitude": 75.76905034022954,
+    "category": "other",
+    "severity": 2,
+    "date": "2026-07-27T06:26:56.149Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0246",
+    "latitude": 26.91645822417936,
+    "longitude": 75.75864947047219,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-01-03T13:59:01.722Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0247",
+    "latitude": 26.892689791808216,
+    "longitude": 75.76712374835934,
+    "category": "robbery",
+    "severity": 2,
+    "date": "2026-02-01T01:52:14.595Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0248",
+    "latitude": 26.908898848074777,
+    "longitude": 75.79631326238393,
+    "category": "harassment",
+    "severity": 4,
+    "date": "2025-10-22T07:35:23.955Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0249",
+    "latitude": 26.922770574374447,
+    "longitude": 75.7936844177716,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2025-10-24T10:04:35.736Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0250",
+    "latitude": 26.886335231750653,
+    "longitude": 75.742718939065,
+    "category": "other",
+    "severity": 4,
+    "date": "2026-04-16T13:46:48.238Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0251",
+    "latitude": 26.891787646927416,
+    "longitude": 75.77596212633193,
+    "category": "vehicle_theft",
+    "severity": 1,
+    "date": "2025-11-13T22:40:48.878Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0252",
+    "latitude": 26.881074534503508,
+    "longitude": 75.7994070984159,
+    "category": "assault",
+    "severity": 3,
+    "date": "2026-07-01T07:24:27.976Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0253",
+    "latitude": 26.931498271516997,
+    "longitude": 75.76742101783127,
+    "category": "other",
+    "severity": 5,
+    "date": "2025-09-13T16:14:29.876Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0254",
+    "latitude": 26.927760765402333,
+    "longitude": 75.76847386349057,
+    "category": "other",
+    "severity": 3,
+    "date": "2026-02-28T12:17:12.697Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0255",
+    "latitude": 26.891920064980333,
+    "longitude": 75.73922743154786,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2025-10-29T01:41:53.756Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0256",
+    "latitude": 26.882379051372247,
+    "longitude": 75.81830891381412,
+    "category": "theft",
+    "severity": 1,
+    "date": "2025-10-12T18:05:53.317Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0257",
+    "latitude": 26.92845162910374,
+    "longitude": 75.76565935394072,
+    "category": "theft",
+    "severity": 2,
+    "date": "2025-09-20T03:28:00.094Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0258",
+    "latitude": 26.939721290067105,
+    "longitude": 75.76590979091444,
+    "category": "assault",
+    "severity": 1,
+    "date": "2026-02-16T03:35:52.696Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0259",
+    "latitude": 26.89020333296314,
+    "longitude": 75.76799194902486,
+    "category": "harassment",
+    "severity": 3,
+    "date": "2026-02-10T13:45:59.688Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0260",
+    "latitude": 26.92924145399362,
+    "longitude": 75.77440516901594,
+    "category": "robbery",
+    "severity": 3,
+    "date": "2026-02-28T15:06:13.228Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0261",
+    "latitude": 26.928215495515367,
+    "longitude": 75.76795164497163,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2025-10-21T05:45:44.377Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0262",
+    "latitude": 26.875428841111837,
+    "longitude": 75.78672436999875,
+    "category": "assault",
+    "severity": 1,
+    "date": "2026-08-06T21:45:18.779Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0263",
+    "latitude": 26.890269794768503,
+    "longitude": 75.76467151296715,
+    "category": "assault",
+    "severity": 1,
+    "date": "2025-12-27T07:27:59.106Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0264",
+    "latitude": 26.922688483698735,
+    "longitude": 75.79782825481254,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2025-10-02T04:09:35.086Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0265",
+    "latitude": 26.89325767293374,
+    "longitude": 75.77297375192556,
+    "category": "assault",
+    "severity": 2,
+    "date": "2026-04-03T07:10:38.277Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0266",
+    "latitude": 26.908336552410848,
+    "longitude": 75.82933651226853,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2025-11-19T14:08:46.228Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0267",
+    "latitude": 26.872440265968834,
+    "longitude": 75.81741933688467,
+    "category": "vehicle_theft",
+    "severity": 4,
+    "date": "2025-08-17T11:13:38.833Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0268",
+    "latitude": 26.955906300112666,
+    "longitude": 75.73779982420744,
+    "category": "theft",
+    "severity": 3,
+    "date": "2026-05-22T12:40:46.237Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0269",
+    "latitude": 26.92422640287898,
+    "longitude": 75.74623967458194,
+    "category": "assault",
+    "severity": 3,
+    "date": "2026-01-11T06:59:59.300Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0270",
+    "latitude": 26.932570544778432,
+    "longitude": 75.76592976525147,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2025-12-02T02:24:31.357Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0271",
+    "latitude": 26.929978905853265,
+    "longitude": 75.83312149920644,
+    "category": "theft",
+    "severity": 3,
+    "date": "2025-08-18T08:39:17.927Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0272",
+    "latitude": 26.896138766374143,
+    "longitude": 75.80392976887515,
+    "category": "assault",
+    "severity": 4,
+    "date": "2026-05-02T12:18:29.934Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0273",
+    "latitude": 26.91520446778345,
+    "longitude": 75.80006680086855,
+    "category": "assault",
+    "severity": 1,
+    "date": "2025-12-09T19:42:40.730Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0274",
+    "latitude": 26.888298550360958,
+    "longitude": 75.76111108823531,
+    "category": "vehicle_theft",
+    "severity": 3,
+    "date": "2026-01-16T05:30:25.911Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0275",
+    "latitude": 26.944636484038483,
+    "longitude": 75.79796766845575,
+    "category": "theft",
+    "severity": 4,
+    "date": "2026-02-16T01:06:05.996Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0276",
+    "latitude": 26.890787049114753,
+    "longitude": 75.7689517753686,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2025-09-22T13:31:03.293Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0277",
+    "latitude": 26.925086947094755,
+    "longitude": 75.76986017020049,
+    "category": "theft",
+    "severity": 3,
+    "date": "2026-06-12T11:44:18.694Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0278",
+    "latitude": 26.928342545495585,
+    "longitude": 75.76775590180274,
+    "category": "robbery",
+    "severity": 4,
+    "date": "2026-08-06T14:50:15.273Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0279",
+    "latitude": 26.913503756294016,
+    "longitude": 75.83278805702679,
+    "category": "robbery",
+    "severity": 4,
+    "date": "2025-11-12T13:53:12.695Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0280",
+    "latitude": 26.92726761215037,
+    "longitude": 75.76922531791439,
+    "category": "theft",
+    "severity": 5,
+    "date": "2025-11-27T10:32:49.402Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0281",
+    "latitude": 26.931645780980798,
+    "longitude": 75.79796429002118,
+    "category": "other",
+    "severity": 1,
+    "date": "2026-05-22T18:49:24.539Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0282",
+    "latitude": 26.92294326446183,
+    "longitude": 75.77611711214952,
+    "category": "assault",
+    "severity": 5,
+    "date": "2025-09-28T04:08:35.181Z",
+    "time_of_day": "evening",
+    "status": "resolved"
+  },
+  {
+    "id": "C0283",
+    "latitude": 26.922082921361664,
+    "longitude": 75.797864600537,
+    "category": "vehicle_theft",
+    "severity": 3,
+    "date": "2025-10-30T07:54:23.910Z",
+    "time_of_day": "night",
+    "status": "reported"
+  },
+  {
+    "id": "C0284",
+    "latitude": 26.872930154645303,
+    "longitude": 75.80976693711608,
+    "category": "theft",
+    "severity": 5,
+    "date": "2026-06-25T18:08:12.755Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0285",
+    "latitude": 26.92235552333301,
+    "longitude": 75.7974462671174,
+    "category": "theft",
+    "severity": 5,
+    "date": "2025-12-08T18:31:22.346Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0286",
+    "latitude": 26.89479351111886,
+    "longitude": 75.7801315690936,
+    "category": "harassment",
+    "severity": 4,
+    "date": "2025-12-21T07:42:54.095Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0287",
+    "latitude": 26.938105004384656,
+    "longitude": 75.81452253511517,
+    "category": "assault",
+    "severity": 2,
+    "date": "2026-04-10T21:01:04.153Z",
+    "time_of_day": "night",
+    "status": "resolved"
+  },
+  {
+    "id": "C0288",
+    "latitude": 26.930614868145607,
+    "longitude": 75.78022414258776,
+    "category": "theft",
+    "severity": 4,
+    "date": "2026-08-04T14:48:53.081Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0289",
+    "latitude": 26.901571041686353,
+    "longitude": 75.76915458874899,
+    "category": "harassment",
+    "severity": 4,
+    "date": "2025-10-16T07:13:01.002Z",
+    "time_of_day": "morning",
+    "status": "reported"
+  },
+  {
+    "id": "C0290",
+    "latitude": 26.89603631567642,
+    "longitude": 75.7723565644093,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-03-12T13:03:09.092Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0291",
+    "latitude": 26.931127789155234,
+    "longitude": 75.7611079113994,
+    "category": "vehicle_theft",
+    "severity": 2,
+    "date": "2025-10-14T23:35:45.329Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0292",
+    "latitude": 26.92453363771726,
+    "longitude": 75.76570456278313,
+    "category": "assault",
+    "severity": 2,
+    "date": "2025-11-03T20:15:47.924Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0293",
+    "latitude": 26.89394694392714,
+    "longitude": 75.77303680443826,
+    "category": "vehicle_theft",
+    "severity": 5,
+    "date": "2025-09-14T15:38:42.380Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0294",
+    "latitude": 26.89366960808373,
+    "longitude": 75.7783753587975,
+    "category": "theft",
+    "severity": 3,
+    "date": "2025-09-10T11:55:11.618Z",
+    "time_of_day": "evening",
+    "status": "reported"
+  },
+  {
+    "id": "C0295",
+    "latitude": 26.923343214815446,
+    "longitude": 75.8212997165065,
+    "category": "theft",
+    "severity": 5,
+    "date": "2025-10-10T13:14:12.472Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0296",
+    "latitude": 26.921095959022878,
+    "longitude": 75.7491768748676,
+    "category": "vehicle_theft",
+    "severity": 1,
+    "date": "2026-06-10T06:57:55.753Z",
+    "time_of_day": "afternoon",
+    "status": "resolved"
+  },
+  {
+    "id": "C0297",
+    "latitude": 26.87928089669713,
+    "longitude": 75.80457950755368,
+    "category": "robbery",
+    "severity": 5,
+    "date": "2026-07-25T05:54:36.483Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  },
+  {
+    "id": "C0298",
+    "latitude": 26.886527324966874,
+    "longitude": 75.77267413989438,
+    "category": "other",
+    "severity": 1,
+    "date": "2025-11-27T12:24:02.504Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0299",
+    "latitude": 26.925749147529217,
+    "longitude": 75.79386929072461,
+    "category": "harassment",
+    "severity": 1,
+    "date": "2026-05-28T04:21:38.773Z",
+    "time_of_day": "afternoon",
+    "status": "reported"
+  },
+  {
+    "id": "C0300",
+    "latitude": 26.924071869942953,
+    "longitude": 75.76367959945814,
+    "category": "harassment",
+    "severity": 2,
+    "date": "2025-08-13T14:25:15.694Z",
+    "time_of_day": "morning",
+    "status": "resolved"
+  }
+]

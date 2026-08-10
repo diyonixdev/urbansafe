@@ -72,19 +72,16 @@ export const PLACE_EMOJI: Record<PlaceKind, string> = {
   restaurant: "🍽️",
 };
 
-/** Map anchor: MI Road, Jaipur. */
-export const MI_ROAD_ANCHOR = { latitude: 26.9124, longitude: 75.7873 } as const;
-
 /** Rough meter-per-pixel scale of the original 800×600 map canvas. */
 const METERS_TO_PX = 0.16;
 
-/** Converts a legacy canvas coordinate to a real lat/lng near MI Road. */
-export function canvasToLatLng(x: number, y: number): [number, number] {
+/** Converts a legacy canvas coordinate to a real lat/lng near the given anchor. */
+export function canvasToLatLng(x: number, y: number, anchorLat: number, anchorLng: number): [number, number] {
   const dLngMeters = (x - 400) / METERS_TO_PX;
   const dLatMeters = (305 - y) / METERS_TO_PX;
   const lng =
-    MI_ROAD_ANCHOR.longitude +
-    dLngMeters / (111320 * Math.cos((MI_ROAD_ANCHOR.latitude * Math.PI) / 180));
-  const lat = MI_ROAD_ANCHOR.latitude + dLatMeters / 111320;
+    anchorLng +
+    dLngMeters / (111320 * Math.cos((anchorLat * Math.PI) / 180));
+  const lat = anchorLat + dLatMeters / 111320;
   return [lat, lng];
 }

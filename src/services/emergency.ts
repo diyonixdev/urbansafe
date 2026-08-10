@@ -84,12 +84,6 @@ function cacheLocation(uid: string, location: EmergencyLocation): void {
   locationCache.set(uid, { location, at: Date.now() });
 }
 
-/**
- * Resolves the user's current location for emergency reporting.
- * - Real mode: browser geolocation (a browser permission prompt is
- *   shown by the browser when required — never silently).
- * - Demo mode: simulated Jaipur-area coordinates.
- */
 export function getMyLocation(
   uid: string,
   force = false
@@ -97,18 +91,6 @@ export function getMyLocation(
   const cached = locationCache.get(uid);
   if (!force && cached && Date.now() - cached.at < 30_000) {
     return Promise.resolve(cached.location);
-  }
-
-  if (!isFirebaseConfigured()) {
-    const { latitude, longitude } = getSimulatedLocation(uid);
-    const location: EmergencyLocation = {
-      latitude,
-      longitude,
-      permission: "demo",
-      areaLabel: "MI Road, Jaipur (demo area)",
-    };
-    cacheLocation(uid, location);
-    return Promise.resolve(location);
   }
 
   if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
@@ -145,7 +127,7 @@ export function getMyLocation(
         cacheLocation(uid, location);
         resolve(location);
       },
-      { timeout: 8000, maximumAge: 300_000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   });
 }

@@ -22,7 +22,7 @@ interface LocationResult {
 }
 
 export default function AegisLanding() {
-  const [origin, setOrigin] = useState<{lat: number, lon: number, name: string} | null>(null);
+  const [origin, setOrigin] = useState<{lat: number, lon: number, name: string, accuracy?: number} | null>(null);
   const [destination, setDestination] = useState<{lat: number, lon: number, name: string} | null>(null);
   
   const [routes, setRoutes] = useState<RouteMetrics[] | null>(null);
@@ -33,8 +33,12 @@ export default function AegisLanding() {
   
   const [destSuggestions, setDestSuggestions] = useState<LocationResult[]>([]);
   const [showDestSuggestions, setShowDestSuggestions] = useState(false);
+  const [activeTab, setActiveTab] = useState<'routes'|'alerts'|'emergency'>('routes');
   const [isLocating, setIsLocating] = useState(false);
   const [isRouting, setIsRouting] = useState(false);
+  const [isSharingLocation, setIsSharingLocation] = useState(false);
+
+  const [originResults, setOriginResults] = useState<LocationResult[]>([]);
   const [routeError, setRouteError] = useState<string | null>(null);
 
   // ALL map layers default to OFF to keep the navigation view clean
@@ -52,10 +56,10 @@ export default function AegisLanding() {
 
   const destTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleLocateMe = () => {
+  const handleLocateMe = (isAutoDetect = false) => {
     setIsLocating(true);
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser");
+      if (!isAutoDetect) alert("Geolocation is not supported by your browser");
       setIsLocating(false);
       return;
     }
@@ -63,26 +67,78 @@ export default function AegisLanding() {
       async (position) => {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
         try {
           const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
           const data = await res.json();
           const name = data.display_name || "Current Location";
-          setOrigin({ lat, lon, name });
+          setOrigin({ lat, lon, name, accuracy });
           setOriginInput(name);
         } catch (error) {
           console.error("Reverse geocode error", error);
-          setOrigin({ lat, lon, name: "Current Location" });
+          setOrigin({ lat, lon, name: "Current Location", accuracy });
           setOriginInput("Current Location");
         }
         setIsLocating(false);
       },
       (error) => {
-        alert("Failed to get location. Please allow location access.");
+        if (!isAutoDetect) alert("Failed to get location. Please allow location access.");
         setIsLocating(false);
       },
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
+
+  const handleShareLocation = async () => {
+    if (isSharingLocation) return;
+    setIsSharingLocation(true);
+
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      setIsSharingLocation(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
+        const shareText = `I need help! Here is my current location: ${mapLink}`;
+
+        try {
+          if (navigator.share) {
+            await navigator.share({
+              title: "Emergency Location Share",
+              text: shareText,
+            });
+          } else {
+            await navigator.clipboard.writeText(shareText);
+            alert("Location link copied to clipboard!");
+          }
+        } catch (err) {
+           if ((err as Error).name !== 'AbortError') {
+             alert("Failed to share. Please copy the link manually: " + mapLink);
+           }
+        }
+        setIsSharingLocation(false);
+      },
+      (error) => {
+        let msg = "Failed to get location.";
+        if (error.code === error.PERMISSION_DENIED) msg = "Location permission denied. Please enable location access.";
+        else if (error.code === error.POSITION_UNAVAILABLE) msg = "Location unavailable. Please try again.";
+        else if (error.code === error.TIMEOUT) msg = "Location request timed out. Please try again.";
+        alert(msg);
+        setIsSharingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  };
+
+  React.useEffect(() => {
+    handleLocateMe(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleDestChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -178,7 +234,7 @@ export default function AegisLanding() {
   };
 
   const toggleFilter = (key: keyof typeof mapFilters) => {
-    if (['police', 'hospitals'].includes(key)) {
+    if (['police', 'hospitals', 'crime', 'accidents'].includes(key)) {
       setMapFilters(prev => ({ ...prev, [key]: !prev[key] }));
     }
   };
@@ -212,7 +268,12 @@ export default function AegisLanding() {
                 </div>
                 <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-2">
                   <div className="flex-1">
-                    <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Your location</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Your location</p>
+                      {origin?.accuracy && (
+                        <p className="text-[10px] text-slate-400 font-medium mb-1">(Accuracy: {Math.round(origin.accuracy)}m)</p>
+                      )}
+                    </div>
                     <input 
                       type="text" 
                       value={originInput}
@@ -222,7 +283,7 @@ export default function AegisLanding() {
                     />
                   </div>
                   <button 
-                    onClick={handleLocateMe}
+                    onClick={() => handleLocateMe(false)}
                     disabled={isLocating}
                     className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
                     title="Use my current location"
@@ -302,11 +363,17 @@ export default function AegisLanding() {
               
               <div className="w-px h-4 bg-slate-200 mx-1"></div>
               
-              <button disabled className="px-3 py-1.5 rounded-full text-xs font-bold border bg-white text-slate-400 border-slate-100 opacity-50 cursor-not-allowed flex items-center gap-1.5" title="Data unavailable">
-                <AlertTriangle size={14} /> Crime
+              <button 
+                onClick={() => toggleFilter('crime')} 
+                className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all flex items-center gap-1.5 ${mapFilters.crime ? 'bg-red-50 text-red-700 border-red-200 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+              >
+                <AlertTriangle size={14} className={mapFilters.crime ? 'text-red-600' : 'text-slate-400'}/> Crime
               </button>
-              <button disabled className="px-3 py-1.5 rounded-full text-xs font-bold border bg-white text-slate-400 border-slate-100 opacity-50 cursor-not-allowed flex items-center gap-1.5" title="Data unavailable">
-                <Car size={14} /> Accidents
+              <button 
+                onClick={() => toggleFilter('accidents')} 
+                className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all flex items-center gap-1.5 ${mapFilters.accidents ? 'bg-orange-50 text-orange-700 border-orange-200 shadow-sm' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
+              >
+                <Car size={14} className={mapFilters.accidents ? 'text-orange-600' : 'text-slate-400'}/> Accidents
               </button>
             </div>
 
@@ -510,45 +577,60 @@ export default function AegisLanding() {
               )}
             </div>
 
-            {/* Simple SOS */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-center gap-6">
-              <div className="text-center">
-                <AlertOctagon size={32} className="text-red-500 mx-auto mb-2" />
-                <h3 className="font-bold text-lg text-slate-900">Emergency Actions</h3>
-                <p className="text-slate-500 text-sm mt-1">Quick access to essential services.</p>
-              </div>
-              
-              <div className="flex flex-col gap-3">
-                <button className="w-full bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
-                  <Phone size={18} /> Call Services (100)
-                </button>
-                <button className="w-full bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-                  <Share2 size={18} /> Share Location
-                </button>
-                <button className="w-full bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-                  <Users size={18} /> Notify Contacts
-                </button>
-              </div>
-            </div>
-
           </section>
         )}
 
-        {/* AI EMERGENCY ASSISTANT */}
-        <section className="flex flex-col md:flex-row gap-8 bg-white border border-slate-200 rounded-3xl p-8 shadow-sm mt-8">
-          <div className="flex-1 flex flex-col justify-center">
-            <h2 className="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">AI Emergency Assistant</h2>
-            <p className="text-slate-600 text-lg mb-6 leading-relaxed">
-              Get immediate, calm, and actionable advice during critical situations. Whether it&apos;s first aid, disaster response, or safety protocols, our AI is ready to guide you step-by-step.
-            </p>
-            <div className="flex items-center gap-3 bg-blue-50 text-blue-700 px-4 py-3 rounded-xl border border-blue-100 font-medium text-sm w-fit">
-              <ShieldCheck size={20} />
-              Free and accessible 24/7 for all users.
+        {/* EMERGENCY TOOLS ROW */}
+        <section className="flex flex-col lg:flex-row gap-8 mt-8">
+          
+          {/* AI EMERGENCY ASSISTANT (Left Column) */}
+          <div className="lg:w-2/3 flex flex-col md:flex-row gap-8 bg-white border border-slate-200 rounded-3xl p-8 shadow-sm h-full">
+            <div className="flex-1 flex flex-col justify-center">
+              <h2 className="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">AI Emergency Assistant</h2>
+              <p className="text-slate-600 text-lg mb-6 leading-relaxed">
+                Get immediate, calm, and actionable advice during critical situations. Whether it&apos;s first aid, disaster response, or safety protocols, our AI is ready to guide you step-by-step.
+              </p>
+              <div className="flex items-center gap-3 bg-blue-50 text-blue-700 px-4 py-3 rounded-xl border border-blue-100 font-medium text-sm w-fit">
+                <ShieldCheck size={20} />
+                Free and accessible 24/7 for all users.
+              </div>
+            </div>
+            <div className="flex-1 max-w-md w-full mx-auto">
+              <SosChatbot />
             </div>
           </div>
-          <div className="flex-1 max-w-md w-full mx-auto">
-            <SosChatbot />
+
+          {/* Simple SOS / Emergency Actions (Right Column) */}
+          <div className="lg:w-1/3 w-full">
+            <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm flex flex-col justify-center gap-6 h-full">
+              <div className="text-center">
+                <AlertOctagon size={36} className="text-red-500 mx-auto mb-3" />
+                <h3 className="font-bold text-2xl text-slate-900">Emergency Actions</h3>
+                <p className="text-slate-500 text-base mt-2">Quick access to essential services.</p>
+              </div>
+              
+              <div className="flex flex-col gap-4 mt-2">
+                <button className="w-full bg-red-50 text-red-700 border border-red-200 hover:bg-red-600 hover:text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-3 text-lg">
+                  <Phone size={20} /> Call Services (100)
+                </button>
+                <button 
+                  onClick={handleShareLocation}
+                  disabled={isSharingLocation}
+                  className="w-full bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-3 text-lg"
+                >
+                  {isSharingLocation ? (
+                    <><Loader2 size={20} className="animate-spin" /> Getting location...</>
+                  ) : (
+                    <><Share2 size={20} /> Share Location</>
+                  )}
+                </button>
+                <button className="w-full bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold py-4 rounded-xl transition-colors flex items-center justify-center gap-3 text-lg">
+                  <Users size={20} /> Notify Contacts
+                </button>
+              </div>
+            </div>
           </div>
+
         </section>
 
       </main>

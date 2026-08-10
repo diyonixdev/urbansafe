@@ -1,0 +1,1502 @@
+[
+  {
+    "id": "A0001",
+    "latitude": 26.924163248834972,
+    "longitude": 75.77008665272953,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2026-02-23T03:36:03.789Z",
+    "time_of_day": "night",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0002",
+    "latitude": 26.90837719490134,
+    "longitude": 75.73989698311466,
+    "accident_type": "vehicle_collision",
+    "severity": "minor",
+    "date": "2026-01-01T20:52:23.668Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0003",
+    "latitude": 26.89582268031783,
+    "longitude": 75.7792743765022,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2026-08-08T18:05:06.852Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0004",
+    "latitude": 26.87042271649193,
+    "longitude": 75.82128674038098,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-04-08T22:39:18.580Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0005",
+    "latitude": 26.876328288722842,
+    "longitude": 75.79375612714449,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2026-05-06T12:33:50.866Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0006",
+    "latitude": 26.922657094503574,
+    "longitude": 75.79720256086978,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-04-16T10:36:00.239Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0007",
+    "latitude": 26.872655937472345,
+    "longitude": 75.75060897604016,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2026-05-02T05:52:55.045Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0008",
+    "latitude": 26.956122809258467,
+    "longitude": 75.77951156154865,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-07-14T21:03:24.096Z",
+    "time_of_day": "night",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0009",
+    "latitude": 26.939683169931374,
+    "longitude": 75.80326753165976,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-04-19T19:41:21.134Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0010",
+    "latitude": 26.927307812651545,
+    "longitude": 75.79634341726653,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2026-01-01T08:37:31.590Z",
+    "time_of_day": "night",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0011",
+    "latitude": 26.918980305391354,
+    "longitude": 75.799104291037,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2025-10-03T17:06:18.476Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0012",
+    "latitude": 26.927129020176558,
+    "longitude": 75.76754466792669,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2026-05-17T17:36:02.115Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0013",
+    "latitude": 26.928580865242324,
+    "longitude": 75.76678254026515,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2025-11-04T02:46:34.312Z",
+    "time_of_day": "morning",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0014",
+    "latitude": 26.934761383048492,
+    "longitude": 75.81601667949685,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2026-04-12T03:00:23.767Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0015",
+    "latitude": 26.921552609695617,
+    "longitude": 75.80135334383999,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2026-04-28T23:54:29.567Z",
+    "time_of_day": "night",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0016",
+    "latitude": 26.92542449658159,
+    "longitude": 75.7667944366793,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2026-07-13T11:31:36.710Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0017",
+    "latitude": 26.926889291720585,
+    "longitude": 75.76755154378485,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2025-11-15T18:42:18.213Z",
+    "time_of_day": "night",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0018",
+    "latitude": 26.92619967146373,
+    "longitude": 75.78186979330712,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-08-10T02:13:09.760Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0019",
+    "latitude": 26.91926114894937,
+    "longitude": 75.80250937596303,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2026-04-25T19:17:30.954Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0020",
+    "latitude": 26.922098689864086,
+    "longitude": 75.7719749352935,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-07-16T22:35:34.438Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0021",
+    "latitude": 26.932667235438508,
+    "longitude": 75.77113706449524,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-01-20T14:16:56.635Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0022",
+    "latitude": 26.94112451341942,
+    "longitude": 75.7651153568066,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2026-07-05T04:15:10.823Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0023",
+    "latitude": 26.87472599818072,
+    "longitude": 75.741064516432,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2026-03-02T19:47:12.611Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0024",
+    "latitude": 26.934474822305155,
+    "longitude": 75.77061513119625,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-03-02T14:28:39.180Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0025",
+    "latitude": 26.92700010868587,
+    "longitude": 75.76720273168061,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2026-02-02T21:50:19.967Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0026",
+    "latitude": 26.914810069963867,
+    "longitude": 75.82849738096604,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2025-10-06T18:27:07.333Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0027",
+    "latitude": 26.888318762184074,
+    "longitude": 75.7796391938703,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2025-10-06T22:53:52.195Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0028",
+    "latitude": 26.92666366176628,
+    "longitude": 75.76575344958393,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2026-04-07T16:18:42.055Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0029",
+    "latitude": 26.921092549683028,
+    "longitude": 75.83253767858116,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2025-08-13T02:56:44.050Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0030",
+    "latitude": 26.91469121911494,
+    "longitude": 75.80249138414128,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2026-08-02T08:17:11.226Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0031",
+    "latitude": 26.93469740414746,
+    "longitude": 75.78050277347559,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-03-25T09:05:34.458Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0032",
+    "latitude": 26.92491036552246,
+    "longitude": 75.7703984270596,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2026-07-27T16:01:59.251Z",
+    "time_of_day": "morning",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0033",
+    "latitude": 26.957049418857267,
+    "longitude": 75.74189460163117,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2026-04-17T12:49:59.870Z",
+    "time_of_day": "night",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0034",
+    "latitude": 26.929343575667858,
+    "longitude": 75.76652293269888,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-03-05T16:48:31.669Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0035",
+    "latitude": 26.924416780103094,
+    "longitude": 75.7978898806268,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2026-05-26T19:03:35.045Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0036",
+    "latitude": 26.92862498960972,
+    "longitude": 75.76621902208954,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2025-09-25T22:19:37.268Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0037",
+    "latitude": 26.91218450390641,
+    "longitude": 75.77918390756992,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2026-07-30T16:45:08.259Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0038",
+    "latitude": 26.91908862281553,
+    "longitude": 75.8291147390335,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2025-10-18T17:42:30.591Z",
+    "time_of_day": "night",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0039",
+    "latitude": 26.932031878350323,
+    "longitude": 75.7625923616509,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2025-09-26T09:20:25.575Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0040",
+    "latitude": 26.92342779720023,
+    "longitude": 75.76878444532113,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2026-03-20T22:09:27.209Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0041",
+    "latitude": 26.887120811764877,
+    "longitude": 75.7784417609105,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2025-11-10T11:47:22.239Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0042",
+    "latitude": 26.927769036173167,
+    "longitude": 75.77003941769092,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-01-03T21:44:47.703Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0043",
+    "latitude": 26.911397625598767,
+    "longitude": 75.77378353345489,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2026-02-11T17:31:12.380Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0044",
+    "latitude": 26.92672499514443,
+    "longitude": 75.76870514859544,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2026-05-07T07:26:43.265Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0045",
+    "latitude": 26.88884884322244,
+    "longitude": 75.77368283895028,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2026-07-13T20:36:35.916Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0046",
+    "latitude": 26.91860831901238,
+    "longitude": 75.7393016709815,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2026-06-30T10:00:13.814Z",
+    "time_of_day": "night",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0047",
+    "latitude": 26.890766041885392,
+    "longitude": 75.76418188046439,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2025-12-18T19:06:03.811Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0048",
+    "latitude": 26.88591203223424,
+    "longitude": 75.74188152252438,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2026-04-25T17:16:17.671Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0049",
+    "latitude": 26.928865752354884,
+    "longitude": 75.80162341250141,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2026-07-31T16:13:43.636Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0050",
+    "latitude": 26.93136503253261,
+    "longitude": 75.76182655570437,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2025-11-22T03:05:16.341Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0051",
+    "latitude": 26.930354976710632,
+    "longitude": 75.7711515470014,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2025-10-10T06:28:54.513Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0052",
+    "latitude": 26.89533787025949,
+    "longitude": 75.76149444428964,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2026-06-14T19:04:26.436Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0053",
+    "latitude": 26.943671950836737,
+    "longitude": 75.7833737622546,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2025-08-23T02:40:56.015Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0054",
+    "latitude": 26.922669953202178,
+    "longitude": 75.78824136432678,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2025-12-01T14:38:35.601Z",
+    "time_of_day": "night",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0055",
+    "latitude": 26.907354240107,
+    "longitude": 75.81893864887807,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2025-12-16T22:07:23.454Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0056",
+    "latitude": 26.8975835754122,
+    "longitude": 75.77259894472971,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2026-03-08T09:16:29.251Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0057",
+    "latitude": 26.87683419054263,
+    "longitude": 75.81485629522813,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2026-06-01T08:48:06.961Z",
+    "time_of_day": "night",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0058",
+    "latitude": 26.893321861264422,
+    "longitude": 75.77512118364872,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2026-07-26T19:19:45.266Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0059",
+    "latitude": 26.923449666973042,
+    "longitude": 75.79590480571582,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2026-01-04T13:59:48.176Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0060",
+    "latitude": 26.88541528634688,
+    "longitude": 75.77563756395045,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2026-01-05T08:24:52.260Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0061",
+    "latitude": 26.949159224937766,
+    "longitude": 75.82097240310756,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2026-02-24T16:35:08.814Z",
+    "time_of_day": "morning",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0062",
+    "latitude": 26.93439140606289,
+    "longitude": 75.77041825479688,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2025-10-29T13:32:50.718Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0063",
+    "latitude": 26.92941519903155,
+    "longitude": 75.74051130866516,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2025-10-18T18:39:45.921Z",
+    "time_of_day": "night",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0064",
+    "latitude": 26.88613022221401,
+    "longitude": 75.77308855665463,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2026-05-13T18:29:57.976Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0065",
+    "latitude": 26.926793786993123,
+    "longitude": 75.77238643578147,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2025-11-18T17:04:46.174Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0066",
+    "latitude": 26.933598807983046,
+    "longitude": 75.76407118966723,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2025-10-21T20:10:16.869Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0067",
+    "latitude": 26.871180034909063,
+    "longitude": 75.79862300356474,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2025-10-05T22:26:39.883Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0068",
+    "latitude": 26.902902930685055,
+    "longitude": 75.75144440357717,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2026-03-17T19:37:02.875Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0069",
+    "latitude": 26.885254451654244,
+    "longitude": 75.76416172241984,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2026-04-15T22:32:38.192Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0070",
+    "latitude": 26.918013765503563,
+    "longitude": 75.788384688528,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2026-04-01T10:43:35.426Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0071",
+    "latitude": 26.933131272291064,
+    "longitude": 75.8290258358819,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2026-01-15T14:33:51.195Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0072",
+    "latitude": 26.94706253690902,
+    "longitude": 75.80686730717493,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2026-05-17T05:59:39.228Z",
+    "time_of_day": "night",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0073",
+    "latitude": 26.934207875921203,
+    "longitude": 75.76683426601285,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2025-10-04T10:00:28.620Z",
+    "time_of_day": "night",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0074",
+    "latitude": 26.903606592679793,
+    "longitude": 75.77244822924452,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2025-10-28T08:00:59.136Z",
+    "time_of_day": "morning",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0075",
+    "latitude": 26.92245463787645,
+    "longitude": 75.8042102351097,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2026-05-08T09:43:41.102Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0076",
+    "latitude": 26.932114058897447,
+    "longitude": 75.76790886828395,
+    "accident_type": "vehicle_collision",
+    "severity": "minor",
+    "date": "2025-12-29T20:19:44.349Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0077",
+    "latitude": 26.925813684797422,
+    "longitude": 75.80172288984942,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2026-03-23T17:22:15.168Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0078",
+    "latitude": 26.926048322762462,
+    "longitude": 75.79626284685172,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-02-25T03:08:52.288Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0079",
+    "latitude": 26.921537772015927,
+    "longitude": 75.79923126455643,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2025-12-06T10:44:44.510Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0080",
+    "latitude": 26.931615355065183,
+    "longitude": 75.79445606724015,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2026-05-27T02:33:17.768Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0081",
+    "latitude": 26.923802101609603,
+    "longitude": 75.76177019641219,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2026-05-20T20:26:39.199Z",
+    "time_of_day": "morning",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0082",
+    "latitude": 26.945380403512146,
+    "longitude": 75.76140304822543,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2026-07-31T18:47:28.127Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0083",
+    "latitude": 26.888877272723047,
+    "longitude": 75.78272539348278,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2025-10-27T13:18:54.469Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0084",
+    "latitude": 26.898804633056656,
+    "longitude": 75.77546284670522,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2025-11-21T09:31:35.795Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0085",
+    "latitude": 26.949469630305646,
+    "longitude": 75.79163758310905,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2026-07-10T17:43:27.687Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0086",
+    "latitude": 26.954689736299393,
+    "longitude": 75.8333018009491,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2025-08-22T06:46:15.319Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0087",
+    "latitude": 26.912231543359578,
+    "longitude": 75.79412675998856,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2026-03-02T11:26:36.673Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0088",
+    "latitude": 26.917831576538042,
+    "longitude": 75.80408623949961,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-02-19T17:43:02.985Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0089",
+    "latitude": 26.897000487716582,
+    "longitude": 75.78055065364468,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2026-07-24T11:47:06.295Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0090",
+    "latitude": 26.89221325692012,
+    "longitude": 75.77526691151921,
+    "accident_type": "vehicle_collision",
+    "severity": "minor",
+    "date": "2026-07-05T14:17:44.526Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0091",
+    "latitude": 26.93281913783542,
+    "longitude": 75.73758748829404,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2026-06-20T07:01:19.931Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0092",
+    "latitude": 26.91428825787212,
+    "longitude": 75.7489692919846,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2025-12-24T12:07:24.739Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0093",
+    "latitude": 26.88779402711104,
+    "longitude": 75.77731660611018,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2025-12-31T12:41:20.983Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0094",
+    "latitude": 26.927590603833004,
+    "longitude": 75.79290960404533,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2025-10-25T17:36:01.064Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0095",
+    "latitude": 26.92894623430454,
+    "longitude": 75.76882885662255,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2025-10-07T07:19:40.830Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0096",
+    "latitude": 26.931191759786753,
+    "longitude": 75.76292532343423,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2025-08-23T16:33:30.697Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0097",
+    "latitude": 26.887675967556827,
+    "longitude": 75.77031071554435,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-01-24T23:22:10.757Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0098",
+    "latitude": 26.888698662308762,
+    "longitude": 75.79498388869757,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2025-11-17T00:29:48.237Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0099",
+    "latitude": 26.92885879087019,
+    "longitude": 75.76475979091832,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2025-09-09T06:09:46.554Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0100",
+    "latitude": 26.89152237735234,
+    "longitude": 75.77065310881879,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2026-03-30T17:22:29.256Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0101",
+    "latitude": 26.889041099982215,
+    "longitude": 75.7884938619889,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2025-08-11T14:31:46.650Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0102",
+    "latitude": 26.920806479838223,
+    "longitude": 75.80008703140435,
+    "accident_type": "vehicle_collision",
+    "severity": "major",
+    "date": "2025-11-04T02:23:07.946Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0103",
+    "latitude": 26.926162956230492,
+    "longitude": 75.79928596461643,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2025-11-09T12:32:34.626Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0104",
+    "latitude": 26.922563957588753,
+    "longitude": 75.78789851579934,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-03-07T12:46:04.885Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0105",
+    "latitude": 26.917108841819612,
+    "longitude": 75.77116754024176,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-01-07T06:29:32.529Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0106",
+    "latitude": 26.87078346523969,
+    "longitude": 75.7470539155424,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2026-05-09T06:32:32.649Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0107",
+    "latitude": 26.889899278783535,
+    "longitude": 75.7621249735392,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2025-11-28T01:44:53.240Z",
+    "time_of_day": "night",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0108",
+    "latitude": 26.90091531938696,
+    "longitude": 75.77938433638616,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-04-02T12:19:14.899Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0109",
+    "latitude": 26.892801089576732,
+    "longitude": 75.77140564687807,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2025-09-07T19:46:57.282Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0110",
+    "latitude": 26.87704163390536,
+    "longitude": 75.7436207719777,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2025-11-28T23:58:01.053Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0111",
+    "latitude": 26.915453639148993,
+    "longitude": 75.77916716451644,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2026-02-16T02:51:02.236Z",
+    "time_of_day": "morning",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0112",
+    "latitude": 26.90889569770083,
+    "longitude": 75.82519479947814,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2025-10-28T14:49:13.097Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0113",
+    "latitude": 26.92724541055142,
+    "longitude": 75.77128132458115,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-08-03T08:47:40.662Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0114",
+    "latitude": 26.87580547049028,
+    "longitude": 75.77879928741197,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2025-12-25T20:48:12.903Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0115",
+    "latitude": 26.923208321305278,
+    "longitude": 75.76717705157621,
+    "accident_type": "vehicle_collision",
+    "severity": "minor",
+    "date": "2025-10-30T03:49:54.570Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0116",
+    "latitude": 26.9528140367391,
+    "longitude": 75.82131771586039,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2026-03-02T19:49:16.436Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0117",
+    "latitude": 26.88457469026168,
+    "longitude": 75.76592809732225,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2026-03-10T07:18:44.453Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0118",
+    "latitude": 26.87003795581144,
+    "longitude": 75.83033326655136,
+    "accident_type": "vehicle_collision",
+    "severity": "minor",
+    "date": "2025-11-23T17:55:42.331Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0119",
+    "latitude": 26.933940653960075,
+    "longitude": 75.83107169130884,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2025-10-27T05:07:58.888Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0120",
+    "latitude": 26.870579742583693,
+    "longitude": 75.76000254639109,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2026-06-25T14:50:33.682Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0121",
+    "latitude": 26.922802707617247,
+    "longitude": 75.79724649287014,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2026-01-02T09:59:24.684Z",
+    "time_of_day": "morning",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0122",
+    "latitude": 26.941852431116143,
+    "longitude": 75.78046713042464,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2026-06-26T07:00:11.386Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0123",
+    "latitude": 26.92767673285624,
+    "longitude": 75.80082044455298,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2026-07-29T22:33:22.282Z",
+    "time_of_day": "night",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0124",
+    "latitude": 26.93196707549717,
+    "longitude": 75.7622900270977,
+    "accident_type": "vehicle_collision",
+    "severity": "minor",
+    "date": "2026-05-06T23:55:12.532Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0125",
+    "latitude": 26.891662473833062,
+    "longitude": 75.77893204678408,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2026-06-08T02:23:38.636Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0126",
+    "latitude": 26.927391654392142,
+    "longitude": 75.76738798501316,
+    "accident_type": "two_wheeler",
+    "severity": "major",
+    "date": "2025-09-15T17:31:01.425Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0127",
+    "latitude": 26.94397819865763,
+    "longitude": 75.81010072888111,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2025-11-26T08:48:00.510Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0128",
+    "latitude": 26.929347859375632,
+    "longitude": 75.76028821763515,
+    "accident_type": "vehicle_collision",
+    "severity": "minor",
+    "date": "2026-07-17T00:21:33.094Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0129",
+    "latitude": 26.928190772103644,
+    "longitude": 75.76800317113272,
+    "accident_type": "vehicle_collision",
+    "severity": "minor",
+    "date": "2025-12-17T21:15:20.519Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0130",
+    "latitude": 26.92547940256935,
+    "longitude": 75.7925861664118,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2025-11-08T07:53:28.925Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0131",
+    "latitude": 26.92807800941229,
+    "longitude": 75.76164576321266,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2026-02-08T18:54:44.896Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0132",
+    "latitude": 26.934536024331315,
+    "longitude": 75.7689296796844,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2025-11-08T01:07:23.094Z",
+    "time_of_day": "night",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0133",
+    "latitude": 26.933032081086033,
+    "longitude": 75.76551900014859,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2025-12-07T02:54:15.180Z",
+    "time_of_day": "night",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0134",
+    "latitude": 26.92844613618959,
+    "longitude": 75.76888525001353,
+    "accident_type": "pedestrian",
+    "severity": "major",
+    "date": "2026-05-21T20:12:43.795Z",
+    "time_of_day": "afternoon",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0135",
+    "latitude": 26.90772877391796,
+    "longitude": 75.78024396333478,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2025-12-15T12:12:35.300Z",
+    "time_of_day": "afternoon",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0136",
+    "latitude": 26.918435036361664,
+    "longitude": 75.80470947024398,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2025-12-28T07:54:55.648Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0137",
+    "latitude": 26.93135443017127,
+    "longitude": 75.76635782710001,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-07-29T19:17:17.143Z",
+    "time_of_day": "afternoon",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0138",
+    "latitude": 26.910811838861978,
+    "longitude": 75.76267350421263,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2026-04-15T08:16:58.148Z",
+    "time_of_day": "night",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0139",
+    "latitude": 26.893486838518104,
+    "longitude": 75.78047580494969,
+    "accident_type": "two_wheeler",
+    "severity": "minor",
+    "date": "2025-10-08T13:58:29.848Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0140",
+    "latitude": 26.88693534517889,
+    "longitude": 75.77315188638791,
+    "accident_type": "hit_and_run",
+    "severity": "major",
+    "date": "2025-11-02T14:00:36.941Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0141",
+    "latitude": 26.916987448980198,
+    "longitude": 75.76007537585421,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-04-15T17:55:13.638Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0142",
+    "latitude": 26.914537713940305,
+    "longitude": 75.82734958507274,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2025-08-11T08:26:06.032Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0143",
+    "latitude": 26.931950001132883,
+    "longitude": 75.78827490086037,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2025-11-10T18:19:37.567Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0144",
+    "latitude": 26.873150907660897,
+    "longitude": 75.80768381544218,
+    "accident_type": "hit_and_run",
+    "severity": "fatal",
+    "date": "2026-05-08T06:11:21.653Z",
+    "time_of_day": "night",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0145",
+    "latitude": 26.924254334554185,
+    "longitude": 75.79213624970983,
+    "accident_type": "vehicle_collision",
+    "severity": "fatal",
+    "date": "2026-05-08T11:18:39.007Z",
+    "time_of_day": "morning",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0146",
+    "latitude": 26.922749745312498,
+    "longitude": 75.79470185165006,
+    "accident_type": "pedestrian",
+    "severity": "fatal",
+    "date": "2026-01-25T11:44:07.991Z",
+    "time_of_day": "evening",
+    "road_type": "highway"
+  },
+  {
+    "id": "A0147",
+    "latitude": 26.88997154115859,
+    "longitude": 75.78269494313902,
+    "accident_type": "two_wheeler",
+    "severity": "fatal",
+    "date": "2026-05-31T19:45:50.117Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0148",
+    "latitude": 26.89182498132719,
+    "longitude": 75.77243665900878,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2026-04-20T00:19:24.007Z",
+    "time_of_day": "evening",
+    "road_type": "residential"
+  },
+  {
+    "id": "A0149",
+    "latitude": 26.927457929982932,
+    "longitude": 75.76640769178493,
+    "accident_type": "hit_and_run",
+    "severity": "minor",
+    "date": "2025-10-19T18:44:21.220Z",
+    "time_of_day": "evening",
+    "road_type": "main_road"
+  },
+  {
+    "id": "A0150",
+    "latitude": 26.883043305080385,
+    "longitude": 75.77308786487073,
+    "accident_type": "pedestrian",
+    "severity": "minor",
+    "date": "2025-09-26T02:15:26.219Z",
+    "time_of_day": "morning",
+    "road_type": "highway"
+  }
+]

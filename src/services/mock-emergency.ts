@@ -163,7 +163,7 @@ export function requestMockEmergencyLocation(): Promise<MockLocationResult> {
         });
       },
       onFailure,
-      { enableHighAccuracy: true, timeout: 10_000, maximumAge: 0 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
       );
     } catch {
       resolve({ location: null, error: "Unable to determine current location." });

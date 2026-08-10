@@ -67,6 +67,8 @@ function getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon
   return R * c;
 }
 
+import { calculate_route_safety_score } from './safetyScoringAlgorithm';
+
 export async function analyzeRoute(
   id: number,
   geometry: [number, number][], 
@@ -171,48 +173,39 @@ export async function analyzeRoute(
   let lightingCoverage = Math.min(100, Math.round((litRoadsCount / Math.max(1, distance)) * 10));
   if (litRoadsCount === 0) lightingCoverage = 20; // fallback if OSM doesn't have lighting data in the area
 
-  // We have 5 total possible factors: Crime, Accident, Lighting, Police, Hospital
-  // Since Crime and Accident data are unavailable from live open APIs for arbitrary segments:
-  const factorsAvailable = 3;
-  const totalFactors = 5;
-
-  // We allocate available points only to the available factors.
-  // Base points: 40%
-  // Available factor points: 60%
-  // Lighting weight: 30%
-  // Police weight: 20%
-  // Hospital weight: 10%
-  const basePoints = 40;
-  
-  const lightingPoints = Math.min(30, (lightingCoverage / 100) * 30);
-  const policePoints = Math.min(20, policeCount * 5); // 5 points per station up to 20
-  const hospitalPoints = Math.min(10, hospitalCount * 3); // 3 points per hospital up to 10
-
-  const totalScore = Math.round(basePoints + lightingPoints + policePoints + hospitalPoints);
+  const mappedGeometry = geometry.map(c => ({ lat: c[0], lng: c[1] }));
+  const scoreResult = calculate_route_safety_score(mappedGeometry);
 
   return {
     id,
     travelTime,
     distance,
-    crimeRisk: "Data unavailable",
-    accidentRisk: "Data unavailable",
+    crimeRisk: scoreResult.rating,
+    accidentRisk: scoreResult.rating,
     lightingCoverage,
     policeStationsNearby: policeCount,
     hospitalsNearby: hospitalCount,
     nearestPoliceKm: nearestPoliceKm !== null ? Math.max(0.1, nearestPoliceKm) : null,
     nearestHospitalKm: nearestHospitalKm !== null ? Math.max(0.1, nearestHospitalKm) : null,
-    safetyScore: totalScore,
+    safetyScore: scoreResult.final_score,
     scoreBreakdown: {
-      factorsAvailable,
-      totalFactors,
-      weights: { crime: 0, accident: 0, lighting: 30, police: 20, hospitals: 10, base: 40 },
+      factorsAvailable: 5,
+      totalFactors: 5,
+      weights: { 
+        crime: 50, 
+        accident: 30, 
+        lighting: 0, // Simplified out from new score for now
+        police: 20, 
+        hospitals: 0,
+        base: 0
+      },
       points: { 
-        crime: 0, 
-        accident: 0, 
-        lighting: Math.round(lightingPoints), 
-        police: Math.round(policePoints), 
-        hospitals: Math.round(hospitalPoints), 
-        base: basePoints 
+        crime: scoreResult.breakdown.crime_score, 
+        accident: scoreResult.breakdown.accident_score, 
+        lighting: 0, 
+        police: scoreResult.breakdown.police_proximity_score, 
+        hospitals: 0, 
+        base: 0 
       }
     },
     recommended: false, // Will be set later

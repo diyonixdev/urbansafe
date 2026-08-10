@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, type MutableRefObject } from "react";
+import { useEffect, useMemo, useRef, useCallback, type MutableRefObject } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -17,7 +17,6 @@ import { formatDistance, timeAgo } from "@/lib/geo";
 import type { EmergencyLocation, NearbyEmergency } from "@/services/emergency-types";
 import {
   canvasToLatLng,
-  MI_ROAD_ANCHOR,
   PLACE_EMOJI,
   PLACES_INFO,
   SAFETY_LAYER_META,
@@ -172,15 +171,15 @@ function MapController({ mapRef, focusEventId, emergencies, fitPoints }: MapCont
   return null;
 }
 
-function StaticMarker({ marker, spotlight }: { marker: StaticLayerMarker; spotlight: boolean }) {
+function StaticMarker({ marker, spotlight, anchorLat, anchorLng }: { marker: StaticLayerMarker; spotlight: boolean; anchorLat: number; anchorLng: number; }) {
   const meta = SAFETY_LAYER_META[marker.layer];
   const position = useMemo<[number, number]>(
     () =>
       marker.position ??
       (marker.canvas
-        ? canvasToLatLng(marker.canvas[0], marker.canvas[1])
-        : [MI_ROAD_ANCHOR.latitude, MI_ROAD_ANCHOR.longitude]),
-    [marker]
+        ? canvasToLatLng(marker.canvas[0], marker.canvas[1], anchorLat, anchorLng)
+        : [anchorLat, anchorLng]),
+    [marker, anchorLat, anchorLng]
   );
   const icon = useMemo(() => staticLayerIcon(meta.color, meta.emoji, spotlight), [meta, spotlight]);
 
@@ -196,10 +195,10 @@ function StaticMarker({ marker, spotlight }: { marker: StaticLayerMarker; spotli
   );
 }
 
-function PlaceMarker({ place, active }: { place: PlaceMarkerInfo; active: boolean }) {
+function PlaceMarker({ place, active, anchorLat, anchorLng }: { place: PlaceMarkerInfo; active: boolean; anchorLat: number; anchorLng: number; }) {
   const position = useMemo<[number, number]>(
-    () => canvasToLatLng(place.canvas[0], place.canvas[1]),
-    [place]
+    () => canvasToLatLng(place.canvas[0], place.canvas[1], anchorLat, anchorLng),
+    [place, anchorLat, anchorLng]
   );
   const icon = useMemo(() => placeIcon(PLACE_EMOJI[place.kind], active), [place.kind, active]);
 
@@ -293,27 +292,38 @@ export default function RealSafetyMap({
     [hiddenSet]
   );
 
-  const userPosition: [number, number] = useMemo(() => {
-    if (userLocation && userLocation.permission !== "denied") {
-      return [userLocation.latitude, userLocation.longitude];
-    }
-    return [MI_ROAD_ANCHOR.latitude, MI_ROAD_ANCHOR.longitude];
-  }, [userLocation]);
+  const userPosition: [number, number] | null =
+    userLocation?.latitude != null && userLocation?.longitude != null
+      ? [userLocation.latitude, userLocation.longitude]
+      : null;
+
+  // Fallback to MI Road Jaipur if user position is unknown
+  const anchorLat = userPosition ? userPosition[0] : 26.9124;
+  const anchorLng = userPosition ? userPosition[1] : 75.7873;
+
+  const getMarkerPosition = useCallback(
+    (marker: (typeof STATIC_LAYER_MARKERS)[0]): [number, number] => {
+      if (marker.position) return marker.position;
+      return marker.canvas
+        ? canvasToLatLng(marker.canvas[0], marker.canvas[1], anchorLat, anchorLng)
+        : [anchorLat, anchorLng];
+    },
+    [anchorLat, anchorLng]
+  );
 
   const fitPoints = useMemo<[number, number][]>(() => {
-    const points: [number, number][] = [
-      [MI_ROAD_ANCHOR.latitude, MI_ROAD_ANCHOR.longitude],
-      [26.914, 75.789],
-    ];
+    const points: [number, number][] = [];
+    if (userPosition) points.push(userPosition);
+
     visibleStatics.forEach((marker) => {
       points.push(
         marker.position ??
           (marker.canvas
-            ? canvasToLatLng(marker.canvas[0], marker.canvas[1])
-            : [MI_ROAD_ANCHOR.latitude, MI_ROAD_ANCHOR.longitude])
+            ? canvasToLatLng(marker.canvas[0], marker.canvas[1], anchorLat, anchorLng)
+            : [26.9124, 75.7873])
       );
     });
-    PLACES_INFO.forEach((place) => points.push(canvasToLatLng(place.canvas[0], place.canvas[1])));
+    PLACES_INFO.forEach((place) => points.push(canvasToLatLng(place.canvas[0], place.canvas[1], anchorLat, anchorLng)));
     emergencies.forEach((event) => points.push([event.latitude, event.longitude]));
     return points;
   }, [visibleStatics, emergencies]);
@@ -329,7 +339,7 @@ export default function RealSafetyMap({
       }}
     >
       <MapContainer
-        center={userPosition}
+        center={[anchorLat, anchorLng]}
         zoom={15}
         scrollWheelZoom={true}
         zoomControl={false}
@@ -348,17 +358,20 @@ export default function RealSafetyMap({
         />
 
         {/* Your location */}
-        <Marker position={userPosition} icon={userIcon}>
-          <Popup>
-            <strong>📍 You are here</strong>
-            <br />
-            {userLocation?.areaLabel ?? "MI Road, Jaipur"}
-          </Popup>
-        </Marker>
+        {userPosition && (
+          <Marker position={userPosition} icon={userIcon}>
+            <Popup>
+              <strong>📍 You are here</strong>
+              <br />
+              <span className="text-xs text-muted-foreground">Location updating live</span>
+            </Popup>
+            <Tooltip direction="top">Your location</Tooltip>
+          </Marker>
+        )}
 
         {/* Danger zone */}
         <Circle
-          center={[26.914, 75.789]}
+          center={userPosition || [0,0]}
           radius={350}
           pathOptions={{
             color: "#ef4444",
@@ -367,7 +380,7 @@ export default function RealSafetyMap({
             weight: 2,
           }}
         />
-        <Marker position={[26.914, 75.789]} icon={dangerIcon}>
+        <Marker position={userPosition || [0,0]} icon={dangerIcon}>
           <Popup>
             <strong>⚠️ High-risk area</strong>
             <br />
@@ -379,12 +392,12 @@ export default function RealSafetyMap({
 
         {/* Safety layers (crime / construction / accident / lighting / police) */}
         {visibleStatics.map((marker) => (
-          <StaticMarker key={marker.id} marker={marker} spotlight={spotlightSet.has(marker.id)} />
+          <StaticMarker key={marker.id} marker={marker} spotlight={spotlightSet.has(marker.id)} anchorLat={anchorLat} anchorLng={anchorLng} />
         ))}
 
         {/* Nearby places */}
         {PLACES_INFO.map((place) => (
-          <PlaceMarker key={place.id} place={place} active={spotlightSet.has(place.id)} />
+          <PlaceMarker key={place.id} place={place} active={spotlightSet.has(place.id)} anchorLat={anchorLat} anchorLng={anchorLng} />
         ))}
 
         {/* LIVE EMERGENCY MARKERS (community SOS) */}

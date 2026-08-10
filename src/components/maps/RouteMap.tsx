@@ -5,7 +5,10 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { Loader2 } from 'lucide-react';
 import type { RouteMetrics } from '@/utils/routeScoring';
+import crimes from '@/data/crime_data.json';
+import accidents from '@/data/accident_data.json';
 
 // Fix Leaflet's default icon paths in Next.js
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -125,7 +128,6 @@ interface RouteMapProps {
 }
 
 export default function RouteMap({ origin, destination, routes, selectedRouteId, onRouteSelect, filters }: RouteMapProps) {
-  const defaultCenter: [number, number] = [28.6139, 77.2090];
   const selectedRoute = routes?.find(r => r.id === selectedRouteId);
 
   // Custom cluster styling to prevent huge clusters from looking ugly
@@ -142,10 +144,19 @@ export default function RouteMap({ origin, destination, routes, selectedRouteId,
     });
   };
 
+  if (!origin && !destination) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-50 text-slate-500 gap-3 border-2 border-dashed border-slate-200 rounded-xl">
+        <Loader2 className="animate-spin text-blue-500" size={32} />
+        <p className="text-sm font-medium">Detecting your location...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full h-full relative z-0">
       <MapContainer
-        center={origin || destination || defaultCenter}
+        center={origin || destination || [0, 0]}
         zoom={13}
         scrollWheelZoom={true}
         style={{ height: '100%', width: '100%' }}
@@ -183,6 +194,24 @@ export default function RouteMap({ origin, destination, routes, selectedRouteId,
               </Marker>
             );
           })}
+
+          {filters.crime && crimes.map((crime, idx) => (
+            <Marker key={`crime-${idx}`} position={[crime.latitude, crime.longitude]} icon={icons.crime}>
+              <Popup>
+                <div className="font-bold text-sm text-red-700 capitalize">Crime Report: {crime.category}</div>
+                <div className="text-xs text-slate-600 mt-1">Severity: {crime.severity}/5</div>
+              </Popup>
+            </Marker>
+          ))}
+
+          {filters.accidents && accidents.map((accident, idx) => (
+            <Marker key={`accident-${idx}`} position={[accident.latitude, accident.longitude]} icon={icons.accident}>
+              <Popup>
+                <div className="font-bold text-sm text-orange-700 capitalize">Accident Report: {accident.accident_type}</div>
+                <div className="text-xs text-slate-600 mt-1">Severity: {accident.severity}/5</div>
+              </Popup>
+            </Marker>
+          ))}
         </MarkerClusterGroup>
 
         {origin && (

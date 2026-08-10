@@ -1,0 +1,137 @@
+[
+  {
+    "id": "P001",
+    "name": "Station 1",
+    "latitude": 26.92199856020302,
+    "longitude": 75.78630960704876,
+    "jurisdiction_area_code": "JA-859",
+    "contact": "555-7193",
+    "response_time_avg_minutes": 12
+  },
+  {
+    "id": "P002",
+    "name": "Station 2",
+    "latitude": 26.93938741145245,
+    "longitude": 75.76391224584901,
+    "jurisdiction_area_code": "JA-115",
+    "contact": "555-8280",
+    "response_time_avg_minutes": 20
+  },
+  {
+    "id": "P003",
+    "name": "Station 3",
+    "latitude": 26.95141372606068,
+    "longitude": 75.77392973972125,
+    "jurisdiction_area_code": "JA-519",
+    "contact": "555-6314",
+    "response_time_avg_minutes": 15
+  },
+  {
+    "id": "P004",
+    "name": "Station 4",
+    "latitude": 26.89081962712545,
+    "longitude": 75.74069178938585,
+    "jurisdiction_area_code": "JA-613",
+    "contact": "555-3469",
+    "response_time_avg_minutes": 12
+  },
+  {
+    "id": "P005",
+    "name": "Station 5",
+    "latitude": 26.929954838509975,
+    "longitude": 75.75473265242172,
+    "jurisdiction_area_code": "JA-833",
+    "contact": "555-1106",
+    "response_time_avg_minutes": 6
+  },
+  {
+    "id": "P006",
+    "name": "Station 6",
+    "latitude": 26.896584561364214,
+    "longitude": 75.77761479521052,
+    "jurisdiction_area_code": "JA-691",
+    "contact": "555-4496",
+    "response_time_avg_minutes": 8
+  },
+  {
+    "id": "P007",
+    "name": "Station 7",
+    "latitude": 26.916015315642124,
+    "longitude": 75.79188592472917,
+    "jurisdiction_area_code": "JA-634",
+    "contact": "555-6170",
+    "response_time_avg_minutes": 13
+  },
+  {
+    "id": "P008",
+    "name": "Station 8",
+    "latitude": 26.92578354418551,
+    "longitude": 75.77772563807805,
+    "jurisdiction_area_code": "JA-588",
+    "contact": "555-6835",
+    "response_time_avg_minutes": 17
+  },
+  {
+    "id": "P009",
+    "name": "Station 9",
+    "latitude": 26.92951320010162,
+    "longitude": 75.76036287618683,
+    "jurisdiction_area_code": "JA-517",
+    "contact": "555-1696",
+    "response_time_avg_minutes": 9
+  },
+  {
+    "id": "P010",
+    "name": "Station 10",
+    "latitude": 26.92156769119909,
+    "longitude": 75.81316742720404,
+    "jurisdiction_area_code": "JA-807",
+    "contact": "555-9637",
+    "response_time_avg_minutes": 16
+  },
+  {
+    "id": "P011",
+    "name": "Station 11",
+    "latitude": 26.93161929328,
+    "longitude": 75.81441959819529,
+    "jurisdiction_area_code": "JA-762",
+    "contact": "555-3042",
+    "response_time_avg_minutes": 15
+  },
+  {
+    "id": "P012",
+    "name": "Station 12",
+    "latitude": 26.876913522213876,
+    "longitude": 75.74850001881744,
+    "jurisdiction_area_code": "JA-730",
+    "contact": "555-6824",
+    "response_time_avg_minutes": 18
+  },
+  {
+    "id": "P013",
+    "name": "Station 13",
+    "latitude": 26.918165696774302,
+    "longitude": 75.77640082738844,
+    "jurisdiction_area_code": "JA-256",
+    "contact": "555-2585",
+    "response_time_avg_minutes": 15
+  },
+  {
+    "id": "P014",
+    "name": "Station 14",
+    "latitude": 26.881369080541422,
+    "longitude": 75.80243571921987,
+    "jurisdiction_area_code": "JA-730",
+    "contact": "555-1274",
+    "response_time_avg_minutes": 20
+  },
+  {
+    "id": "P015",
+    "name": "Station 15",
+    "latitude": 26.95601257918357,
+    "longitude": 75.83331932707297,
+    "jurisdiction_area_code": "JA-201",
+    "contact": "555-7581",
+    "response_time_avg_minutes": 7
+  }
+]

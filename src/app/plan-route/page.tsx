@@ -300,7 +300,7 @@ function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: s
 
 function PlanRouteContent() {
   const searchParams = useSearchParams();
-  const location = useGeolocation();
+  const { location } = useGeolocation();
   const [origin, setOrigin] = useState("Current Location");
   const [usingCurrentLocation, setUsingCurrentLocation] = useState(true);
   const [locationInfo, setLocationInfo] = useState<LocationInfo | null>(null);

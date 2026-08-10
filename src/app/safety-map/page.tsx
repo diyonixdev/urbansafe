@@ -155,7 +155,7 @@ function SafetyMapContent() {
         setLocating(false);
         showHint("Could not access your location");
       },
-      { timeout: 6000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 
@@ -172,7 +172,7 @@ function SafetyMapContent() {
             <p className="sm-eyebrow"><span />Live safety overlay</p>
             <h1 className="mt-2.5 text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">Safety Map</h1>
             <p className="mt-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-500">
-              <MapPin size={14} className="text-blue-600 shrink-0" /> Your current area — MI Road, Jaipur
+              <MapPin size={14} className="text-blue-600 shrink-0" /> Your current area
             </p>
           </div>
 
@@ -270,7 +270,7 @@ function SafetyMapContent() {
             <span className="sm-score-label">Your area</span>
             <div className="sm-score-num">82<small>/100</small></div>
             <div className="sm-score-risk"><i />Low risk</div>
-            <p className="sm-score-sub">MI Road, Jaipur</p>
+            <p className="sm-score-sub">Current Location</p>
           </aside>
 
           {/* Transient hint */}

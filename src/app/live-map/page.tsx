@@ -21,7 +21,7 @@ const SafetyMap = dynamic(() => import('@/components/maps/SafetyMap'), {
 });
 
 export default function LiveMapPage() {
-  const location = useGeolocation();
+  const { location } = useGeolocation();
   const { facilities, loading: facilitiesLoading, error: facilitiesError } = useNearbyFacilities(
     location.latitude,
     location.longitude,
