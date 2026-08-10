@@ -66,15 +66,6 @@ export function useGeolocation() {
       }));
     };
 
-<<<<<<< HEAD
-    let watchId: number;
-    // Start watching immediately
-    watchId = navigator.geolocation.watchPosition(handleSuccess, handleError, {
-      enableHighAccuracy: true,
-      timeout: 10000,
-      maximumAge: 0,
-    });
-=======
     let watchId: number | undefined;
 
     // Start watching immediately. In insecure contexts (e.g. http://LAN-IP)
@@ -108,7 +99,6 @@ export function useGeolocation() {
         // The watch above remains active; a synchronous throw here is not fatal.
       }
     }
->>>>>>> 165fa26 (Add dynamic location and route safety features)
 
     // Try to get permission status for UI if available (fails gracefully if unsupported)
     if (navigator.permissions && navigator.permissions.query) {
@@ -139,11 +129,7 @@ export function useGeolocation() {
         navigator.geolocation.clearWatch(watchId);
       }
     };
-<<<<<<< HEAD
-  }, []);
-=======
   }, [refreshVersion]);
->>>>>>> 165fa26 (Add dynamic location and route safety features)
 
   return { ...location, refresh };
 }
