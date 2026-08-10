@@ -1,0 +1,25 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "emergencyEvents",
+      "fields": [
+        {
+          "fieldPath": "createdBy",
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        },
+        {
+          "fieldPath": "__name__",
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

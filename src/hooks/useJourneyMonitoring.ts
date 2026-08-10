@@ -4,32 +4,27 @@
  * useJourneyMonitoring — continuous journey safety monitoring.
  *
  * Lifecycle:
- *   - Watching (navigator.geolocation.watchPosition) starts ONLY when a
- *     journey config is supplied AND a user is signed in.
- *   - A short interval re-evaluates dwell state between GPS fixes.
- *   - Everything is torn down when the journey completes, is cancelled,
+ *   - GPS watching starts only when a journey config and signed-in user exist.
+ *   - Monitoring is torn down when the journey ends, is cancelled,
  *     the user logs out, or the hook unmounts.
  *
  * Dwell detection:
- *   - Entering a zone's influence (radius + approach margin) starts a
- *     dwell window. Accumulated drift inside the zone is tracked.
- *   - The safety check fires only when the user has been inside the zone
- *     for >= JOURNEY_DWELL_THRESHOLD_MS AND has been effectively
- *     stationary (low average speed / bounded drift). Passing through a
- *     zone never triggers the check by itself.
- *   - After a check is shown, the zone enters a cooldown so the user is
- *     not nagged repeatedly.
+ *   - Entering a danger-zone influence area starts a dwell window.
+ *   - A safety check is shown only after the configured dwell duration
+ *     while the user remains effectively stationary.
+ *   - Each zone has a cooldown after a prompt.
  *
  * Emergency integration:
- *   - "I Need Help" calls the EXISTING real sendSos() pipeline once per
- *     journey (lock guard). The mock activateEmergency() flow is never
- *     used here.
+ *   - "I Need Help" uses the existing sendSos() pipeline.
+ *   - SOS is locked to one successful request per journey.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
+
 import { useEmergency } from "@/components/emergency/EmergencyProvider";
 import { nearestZone, type DangerZone } from "@/services/dangerZones";
+
 import {
   JOURNEY_ALERT_COOLDOWN_MS,
   JOURNEY_DESTINATION_REACHED_METERS,
@@ -39,6 +34,7 @@ import {
   JOURNEY_TICK_MS,
   JOURNEY_ZONE_APPROACH_MARGIN_METERS,
 } from "@/services/journey-config";
+
 import type { EmergencyEventRecord } from "@/services/emergency-types";
 import { haversineMeters } from "@/lib/geo";
 import type { RouteMetrics } from "@/utils/routeScoring";
@@ -55,7 +51,10 @@ export type JourneyStatus =
 
 export interface JourneyConfig {
   route: RouteMetrics;
-  destination: { latitude: number; longitude: number };
+  destination: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 export interface UserPositionFix {
@@ -107,21 +106,30 @@ export function useJourneyMonitoring(
   const { sendSos, sending } = useEmergency();
 
   const [status, setStatus] = useState<JourneyStatus>("idle");
-  const [userPosition, setUserPosition] = useState<UserPositionFix | null>(null);
+  const [userPosition, setUserPosition] =
+    useState<UserPositionFix | null>(null);
   const [nearZone, setNearZone] = useState<DangerZone | null>(null);
   const [promptZone, setPromptZone] = useState<DangerZone | null>(null);
   const [dwellElapsedMs, setDwellElapsedMs] = useState(0);
   const [isStationary, setIsStationary] = useState(false);
   const [journeyElapsedMs, setJourneyElapsedMs] = useState(0);
   const [locationDenied, setLocationDenied] = useState(false);
-  const [helpEvent, setHelpEvent] = useState<EmergencyEventRecord | null>(null);
+  const [helpEvent, setHelpEvent] =
+    useState<EmergencyEventRecord | null>(null);
 
   const watchIdRef = useRef<number | null>(null);
   const tickIdRef = useRef<number | null>(null);
+
   const startedAtRef = useRef<number | null>(null);
-  const dwellRef = useRef<DwellState>({ ...EMPTY_DWELL });
+
+  const dwellRef = useRef<DwellState>({
+    ...EMPTY_DWELL,
+  });
+
   const dismissedUntilRef = useRef<Record<string, number>>({});
+
   const helpLockedRef = useRef(false);
+
   const notificationAskedRef = useRef(false);
 
   const configRef = useRef<JourneyConfig | null>(config);
@@ -133,22 +141,34 @@ export function useJourneyMonitoring(
   const promptZoneRef = useRef<DangerZone | null>(null);
   promptZoneRef.current = promptZone;
 
+  /**
+   * Stops GPS + interval monitoring.
+   */
   const clearMonitoring = useCallback(() => {
     if (watchIdRef.current !== null) {
       navigator.geolocation.clearWatch(watchIdRef.current);
       watchIdRef.current = null;
     }
+
     if (tickIdRef.current !== null) {
       window.clearInterval(tickIdRef.current);
       tickIdRef.current = null;
     }
   }, []);
 
+  /**
+   * Resets the complete monitoring state.
+   */
   const stopAndReset = useCallback(() => {
     clearMonitoring();
+
     helpLockedRef.current = false;
     startedAtRef.current = null;
-    dwellRef.current = { ...EMPTY_DWELL };
+
+    dwellRef.current = {
+      ...EMPTY_DWELL,
+    };
+
     setStatus("idle");
     setUserPosition(null);
     setNearZone(null);
@@ -160,9 +180,73 @@ export function useJourneyMonitoring(
     setHelpEvent(null);
   }, [clearMonitoring]);
 
-  /* Main lifecycle: start/stop the watcher based on journey + auth. */
-  useEffect(() => {
+  /**
+   * Browser notification helper.
+   */
+  const notifyBrowser = useCallback((zone: DangerZone) => {
+    if (
+      typeof window === "undefined" ||
+      !("Notification" in window)
+    ) {
+      return;
+    }
+
+    const show = () => {
+      try {
+        new Notification("UrbanSafe — safety check", {
+          body: `You've been near a safety-risk area (${zone.reason}) for a while. Are you okay?`,
+        });
+      } catch {
+        // The in-app popup remains the primary UX.
+      }
+    };
+
+    if (Notification.permission === "granted") {
+      show();
+      return;
+    }
+
+    if (
+      Notification.permission === "default" &&
+      !notificationAskedRef.current
+    ) {
+      notificationAskedRef.current = true;
+
+      void Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          show();
+        }
+      });
+    }
+  }, []);
+
+  /**
+   * Stable identifier for the current journey.
+   *
+   * This prevents the GPS effect from restarting simply because
+   * the parent recreated the config object during a render.
+   */
+  const journeyKey = useMemo(() => {
     if (!config || !uid) {
+      return null;
+    }
+
+    return [
+      uid,
+      config.destination.latitude,
+      config.destination.longitude,
+      config.route.dangerZones
+        .map((zone) => zone.id)
+        .sort()
+        .join(","),
+    ].join("|");
+  }, [config, uid]);
+
+  /**
+   * Main journey lifecycle.
+   */
+  useEffect(() => {
+    if (!config || !uid || !journeyKey) {
       stopAndReset();
       return;
     }
@@ -173,177 +257,359 @@ export function useJourneyMonitoring(
       return;
     }
 
-    const zones = config.route.dangerZones;
-    const destination = config.destination;
-    startedAtRef.current = Date.now();
-    setStatus("active");
+    /*
+     * Capture the current journey configuration.
+     *
+     * The ref prevents GPS callbacks from depending on changing
+     * React state/objects.
+     */
+    const journeyConfig = configRef.current;
 
-    const handlePosition = (position: GeolocationPosition) => {
+    if (!journeyConfig) {
+      return;
+    }
+
+    const zones = journeyConfig.route.dangerZones;
+    const destination = journeyConfig.destination;
+
+    startedAtRef.current = Date.now();
+
+    setStatus("active");
+    setJourneyElapsedMs(0);
+
+    const handlePosition = (
+      position: GeolocationPosition
+    ) => {
       const fix: UserPositionFix = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         accuracy: position.coords.accuracy,
       };
+
       setUserPosition(fix);
       setLocationDenied(false);
 
-      // Destination reached → stop monitoring.
+      /*
+       * Destination reached.
+       */
+      const destinationDistance = haversineMeters(
+        fix.latitude,
+        fix.longitude,
+        destination.latitude,
+        destination.longitude
+      );
+
       if (
-        haversineMeters(fix.latitude, fix.longitude, destination.latitude, destination.longitude) <=
+        destinationDistance <=
         JOURNEY_DESTINATION_REACHED_METERS
       ) {
         clearMonitoring();
+
         startedAtRef.current = null;
+
         setStatus("complete");
+
         return;
       }
 
+      /*
+       * Update dwell movement.
+       */
       const dwell = dwellRef.current;
+
       const moved =
         dwell.lastTs > 0
-          ? haversineMeters(dwell.lastLat, dwell.lastLng, fix.latitude, fix.longitude)
+          ? haversineMeters(
+              dwell.lastLat,
+              dwell.lastLng,
+              fix.latitude,
+              fix.longitude
+            )
           : 0;
+
       dwell.lastLat = fix.latitude;
       dwell.lastLng = fix.longitude;
       dwell.lastTs = position.timestamp;
 
-      const zone = nearestZone(zones, fix.latitude, fix.longitude, JOURNEY_ZONE_APPROACH_MARGIN_METERS);
+      /*
+       * Find nearest safety-risk zone.
+       */
+      const zone = nearestZone(
+        zones,
+        fix.latitude,
+        fix.longitude,
+        JOURNEY_ZONE_APPROACH_MARGIN_METERS
+      );
 
       if (zone) {
         dwell.drift += moved;
+
+        /*
+         * Entered a new zone.
+         */
         if (dwell.zoneId !== zone.id) {
           dwell.zoneId = zone.id;
           dwell.since = Date.now();
           dwell.drift = 0;
+
           setDwellElapsedMs(0);
-          if (statusRef.current === "active") setStatus("near");
+
+          if (statusRef.current === "active") {
+            setStatus("near");
+          }
         }
+
         setNearZone(zone);
       } else {
+        /*
+         * User left the zone.
+         */
         dwell.zoneId = null;
         dwell.since = 0;
         dwell.drift = 0;
+
         setDwellElapsedMs(0);
         setIsStationary(false);
         setNearZone(null);
-        if (statusRef.current === "near") setStatus("active");
+
+        if (statusRef.current === "near") {
+          setStatus("active");
+        }
       }
     };
 
-    const handleError = (error: GeolocationPositionError) => {
-      if (error.code === error.PERMISSION_DENIED) {
+    const handleError = (
+      error: GeolocationPositionError
+    ) => {
+      if (
+        error.code ===
+        error.PERMISSION_DENIED
+      ) {
         setLocationDenied(true);
         setDwellElapsedMs(0);
       }
     };
 
-    watchIdRef.current = navigator.geolocation.watchPosition(handlePosition, handleError, {
-      enableHighAccuracy: true,
-      timeout: 12000,
-      maximumAge: 3000,
-    });
+    /*
+     * Start GPS watcher.
+     */
+    watchIdRef.current =
+      navigator.geolocation.watchPosition(
+        handlePosition,
+        handleError,
+        {
+          enableHighAccuracy: true,
+          timeout: 12000,
+          maximumAge: 3000,
+        }
+      );
 
+    /*
+     * Periodically evaluate dwell state.
+     */
     tickIdRef.current = window.setInterval(() => {
-      if (startedAtRef.current) setJourneyElapsedMs(Date.now() - startedAtRef.current);
+      if (startedAtRef.current !== null) {
+        setJourneyElapsedMs(
+          Date.now() - startedAtRef.current
+        );
+      }
 
       const dwell = dwellRef.current;
-      const currentStatus = statusRef.current;
-      if (currentStatus === "prompt_shown" || currentStatus === "help") return;
-      if (!dwell.zoneId || dwell.since === 0) return;
 
-      const elapsed = Date.now() - dwell.since;
-      const speed = elapsed > 1000 ? dwell.drift / (elapsed / 1000) : Infinity;
-      const stationary = dwell.drift <= JOURNEY_DRIFT_LIMIT_METERS && speed < JOURNEY_STATIONARY_SPEED_MS;
+      const currentStatus =
+        statusRef.current;
+
+      if (
+        currentStatus === "prompt_shown" ||
+        currentStatus === "help"
+      ) {
+        return;
+      }
+
+      if (
+        !dwell.zoneId ||
+        dwell.since === 0
+      ) {
+        return;
+      }
+
+      const elapsed =
+        Date.now() - dwell.since;
+
+      const speed =
+        elapsed > 1000
+          ? dwell.drift /
+            (elapsed / 1000)
+          : Infinity;
+
+      const stationary =
+        dwell.drift <=
+          JOURNEY_DRIFT_LIMIT_METERS &&
+        speed <
+          JOURNEY_STATIONARY_SPEED_MS;
+
       setDwellElapsedMs(elapsed);
       setIsStationary(stationary);
 
-      const zone = zones.find((candidate) => candidate.id === dwell.zoneId) ?? null;
-      if (!zone) return;
-      const now = Date.now();
-      if (elapsed < JOURNEY_DWELL_THRESHOLD_MS || !stationary) return;
-      if ((dismissedUntilRef.current[zone.id] ?? 0) > now) return;
+      const zone =
+        zones.find(
+          (candidate) =>
+            candidate.id === dwell.zoneId
+        ) ?? null;
 
-      // Prompt shown → cooldown starts now so the same zone stays quiet
-      // whether the user dismisses or the popup is otherwise closed.
-      dismissedUntilRef.current[zone.id] = now + JOURNEY_ALERT_COOLDOWN_MS;
+      if (!zone) {
+        return;
+      }
+
+      const now = Date.now();
+
+      /*
+       * Dwell requirement not reached.
+       */
+      if (
+        elapsed <
+          JOURNEY_DWELL_THRESHOLD_MS ||
+        !stationary
+      ) {
+        return;
+      }
+
+      /*
+       * Zone is still on cooldown.
+       */
+      if (
+        (dismissedUntilRef.current[
+          zone.id
+        ] ?? 0) > now
+      ) {
+        return;
+      }
+
+      /*
+       * Prompt the user.
+       */
+      dismissedUntilRef.current[
+        zone.id
+      ] =
+        now +
+        JOURNEY_ALERT_COOLDOWN_MS;
+
       setPromptZone(zone);
       setStatus("prompt_shown");
+
       notifyBrowser(zone);
     }, JOURNEY_TICK_MS);
 
+    /*
+     * Cleanup when journey changes/unmounts.
+     */
     return () => {
       clearMonitoring();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config, uid, clearMonitoring, stopAndReset]);
+  }, [
+    journeyKey,
+    uid,
+    stopAndReset,
+    clearMonitoring,
+    notifyBrowser,
+  ]);
 
-  const notifyBrowser = useCallback((zone: DangerZone) => {
-    if (typeof window === "undefined" || !("Notification" in window)) return;
-    const show = () => {
-      try {
-        new Notification("UrbanSafe — safety check", {
-          body: `You've been near a safety-risk area (${zone.reason}) for a while. Are you okay?`,
-        });
-      } catch {
-        // In-app popup remains the primary UX.
-      }
-    };
-    if (Notification.permission === "granted") {
-      show();
-    } else if (Notification.permission === "default" && !notificationAskedRef.current) {
-      notificationAskedRef.current = true;
-      void Notification.requestPermission().then((permission) => {
-        if (permission === "granted") show();
-      });
-    }
-  }, []);
-
+  /**
+   * Dismiss safety prompt / mark safe.
+   */
   const dismissPrompt = useCallback(() => {
-    const zoneId = promptZoneRef.current?.id ?? dwellRef.current.zoneId;
+    const zoneId =
+      promptZoneRef.current?.id ??
+      dwellRef.current.zoneId;
+
     if (zoneId) {
-      dismissedUntilRef.current[zoneId] = Date.now() + JOURNEY_ALERT_COOLDOWN_MS;
+      dismissedUntilRef.current[
+        zoneId
+      ] =
+        Date.now() +
+        JOURNEY_ALERT_COOLDOWN_MS;
     }
+
     dwellRef.current.zoneId = null;
     dwellRef.current.since = 0;
     dwellRef.current.drift = 0;
+
     setPromptZone(null);
     setDwellElapsedMs(0);
+    setIsStationary(false);
     setStatus("safe");
   }, []);
 
+  /**
+   * Close help state and return to active journey.
+   */
   const acknowledgeHelp = useCallback(() => {
     setPromptZone(null);
     setStatus("active");
   }, []);
 
+  /**
+   * Send SOS through the existing emergency system.
+   *
+   * Locked so one journey cannot create duplicate SOS requests.
+   */
   const requestHelp = useCallback(async () => {
-    if (helpLockedRef.current) return;
-    if (!uid) {
-      toast.error("Please sign in to request help during a journey.");
+    if (helpLockedRef.current) {
       return;
     }
+
+    if (!uid) {
+      toast.error(
+        "Please sign in to request help during a journey."
+      );
+      return;
+    }
+
     helpLockedRef.current = true;
+
     setStatus("help");
+
     try {
       const event = await sendSos({
         type: "personal_safety",
-        message: "Safety check triggered: user has been stationary near a safety-risk area during a journey.",
+        message:
+          "Safety check triggered: user has been stationary near a safety-risk area during a journey.",
       });
+
       setHelpEvent(event);
-      toast.success("Help request sent. Nearby UrbanSafe users have been notified.");
+
+      toast.success(
+        "Help request sent. Nearby UrbanSafe users have been notified."
+      );
     } catch (error) {
-      // Nothing was created — allow one retry from the popup.
+      /*
+       * No successful SOS was created.
+       * Allow retry.
+       */
       helpLockedRef.current = false;
-      toast.error(error instanceof Error ? error.message : "Could not send the help request.");
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Could not send the help request."
+      );
     }
   }, [uid, sendSos]);
 
+  /**
+   * Manually end/cancel journey.
+   */
   const endJourney = useCallback(() => {
     clearMonitoring();
+
     startedAtRef.current = null;
+
     setStatus("cancelled");
   }, [clearMonitoring]);
 
+  /**
+   * Memoized public hook result.
+   */
   return useMemo<JourneyMonitoringResult>(
     () => ({
       status,

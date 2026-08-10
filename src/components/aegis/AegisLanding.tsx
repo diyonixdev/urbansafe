@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import dynamic from 'next/dynamic';
 import toast from "react-hot-toast";
 import { 
@@ -15,7 +15,7 @@ import { UrbanSafeNavbar } from "@/components/layouts/UrbanSafeNavbar";
 import { SosChatbot } from "@/components/emergency/SosChatbot";
 import { SafetyCheckModal } from "@/components/journey/SafetyCheckModal";
 import { useAuth } from "@/hooks/useAuth";
-import { useJourneyMonitoring, type JourneyStatus } from "@/hooks/useJourneyMonitoring";
+import { useJourneyMonitoring, type JourneyStatus, type JourneyConfig } from "@/hooks/useJourneyMonitoring";
 import { analyzeRoute, RouteMetrics } from "@/utils/routeScoring";
 
 // Dynamically import map to avoid SSR issues
@@ -62,12 +62,21 @@ export default function AegisLanding() {
 
   const destTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const monitoring = useJourneyMonitoring(
-    journey
-      ? { route: journey.route, destination: { latitude: journey.destination.latitude, longitude: journey.destination.longitude } }
-      : null,
-    user?.uid ?? null
+  const journeyConfig = useMemo<JourneyConfig | null>(
+    () =>
+      journey
+        ? {
+            route: journey.route,
+            destination: {
+              latitude: journey.destination.latitude,
+              longitude: journey.destination.longitude,
+            },
+          }
+        : null,
+    [journey]
   );
+
+  const monitoring = useJourneyMonitoring(journeyConfig, user?.uid ?? null);
 
   const handleLocateMe = () => {
     setIsLocating(true);
