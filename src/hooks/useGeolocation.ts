@@ -131,5 +131,5 @@ export function useGeolocation() {
     };
   }, [refreshVersion]);
 
-  return { ...location, refresh };
+  return { location, refresh };
 }
